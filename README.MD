@@ -9,7 +9,7 @@ run.bat
 ```
 
 ## Demo
-![example1](example1.gif)
+<img src="example1.gif" alt="example1" width="300" height="500"/>
 
 ## Algorithm
 1. Get the expression as a string.
