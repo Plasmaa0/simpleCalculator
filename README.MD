@@ -61,7 +61,7 @@ vars
 > END
 ```
 
-### Save current variables. Load previously saved variables if binary file with them exists. Use keywords 'save', 'saveB', 'load'.
+### Save current variables in text or binary file. Load previously saved variables if binary file with them exists. Use keywords 'save', 'saveB', 'load'.
 ### Save and load example:
 ```
 x = 1
