@@ -205,7 +205,7 @@ Expression *handleUnaryMinus(Expression *expr)
     for (int i = 0; i < expr->length; i++)
     {
         bool isUnary = false;
-        if (expr->symbols[i].type == OPERATOR && expr->symbols[i].entity.operator_ == '-')
+        if (expr->symbols[i].type == OPERATOR && (expr->symbols[i].entity.operator_ == '-' || expr->symbols[i].entity.operator_ == '+'))
         {
             if (i > 0)
             {
@@ -245,7 +245,16 @@ Expression *handleUnaryMinus(Expression *expr)
 
             withUnary[writeIndex + 1].type = NUMBER;
             withUnary[writeIndex + 1].entity.number.type = INTEGER;
-            withUnary[writeIndex + 1].entity.number.value.integer = -1;
+            if (expr->symbols[i].entity.operator_ == '-')
+            {
+                //unary minus
+                withUnary[writeIndex + 1].entity.number.value.integer = -1;
+            }
+            else
+            {
+                //unary plus
+                withUnary[writeIndex + 1].entity.number.value.integer = 1;
+            }
 
             withUnary[writeIndex + 2].type = CLOSING_BRACKET;
             withUnary[writeIndex + 2].entity.bracket = ')';
