@@ -17,6 +17,12 @@ BETNode *exprToAET(Expression *expr, int nestLevel)
     }
 
     priorOpIndex = prioritizedOperatorIndex(expr);
+
+    if (priorOpIndex == PRIORITIZED_OPERATOR_NOT_FOUND)
+    {
+        return nullptr;
+    }
+
     Symbol *priorSymbol = expr->symbols + priorOpIndex;
     insert(root, priorSymbol);
 
@@ -53,6 +59,8 @@ bool eval(char *str, Dictionary *dict, Number &result)
     // printf("\n");
     BETNode *root = exprToAET(e);
     // printf("exprToAET success\n");
+    // prettyPrint(root);
+    // print(root);
     bool evalSuccess = eval(root, dict, result);
     // printf("|%d|\n", (evalSuccess ? 111111 : 999999));
     // printf("eval success\n");
@@ -65,23 +73,27 @@ bool eval(char *str, Dictionary *dict, Number &result)
     // printf("post-order: ");
     // post_order(root);
     // printf("\n");
-    // prettyPrint(root);
-    // print(root);
 
     return evalSuccess;
 }
 
 void consoleModeStart(unsigned int dictionarySize)
 {
-    printf("> hello\n");
+    printf("hello\n");
     Dictionary *dict = createDictionary(dictionarySize);
     char expr[EXPR_MAX_LEN + 1];
     char var[MAX_VARIABLE_NAME_LEN + 1];
     while (1)
     {
+        printf(">>> ");
         fgets(expr, EXPR_MAX_LEN, stdin);
 
         expr[strlen(expr) - 1] = '\0';
+        if (expr[0] == '\0')
+        {
+            continue;
+        }
+
         // printf("%s\n%s\n", expr, "exit");
         if (strcmp(expr, "exit") == 0)
         {
@@ -126,8 +138,7 @@ void consoleModeStart(unsigned int dictionarySize)
         if (evalSuccess)
         {
             setVariable("_", result, dict);
-            printf("> ");
-            print(result, true);
+            print(result);
             printf("\n");
             if (resultToVariable)
             {
@@ -135,5 +146,5 @@ void consoleModeStart(unsigned int dictionarySize)
             }
         }
     }
-    printf("> bye\n");
+    printf("bye\n");
 }

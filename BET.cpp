@@ -36,6 +36,11 @@ void insert(BETNode *root, Symbol *s)
 
 bool eval(BETNode *root, Dictionary *dict, Number &result)
 {
+    if (root == nullptr)
+    {
+        printf("syntax error\n");
+        return false;
+    }
     if (root->s->type == NUMBER)
     {
         result = root->s->entity.number;
@@ -43,10 +48,15 @@ bool eval(BETNode *root, Dictionary *dict, Number &result)
     }
     if (root->s->type == VARIABLE)
     {
-        result.type = FLOATING_POINT;
-        result.value.decimal = getVariable(root->s->entity.variable, dict);
+        result = getVariable(root->s->entity.variable, dict);
         return true;
     }
+    if (root->left == nullptr or root->right == nullptr)
+    {
+        printf("syntax error\n");
+        return false;
+    }
+
     Number a;
     bool aSuccess = eval(root->left, dict, a);
     Number b;
