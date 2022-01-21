@@ -50,7 +50,7 @@ bool solve(Number a, Number b, char op, Number &result)
         }
         else
         {
-            printf("> unavailable natural power due to operand types\n");
+            printf("unavailable natural power due to operand types\n");
             return false;
         }
         break;
@@ -62,12 +62,12 @@ bool solve(Number a, Number b, char op, Number &result)
         }
         else
         {
-            printf("> modulus operation not available due to operand types\n");
+            printf("modulus operation not available due to operand types\n");
             return false;
         }
         break;
     default:
-        printf("> invalid operator [%c] [SOLVE]\n", op);
+        printf("invalid operator [%c] [SOLVE]\n", op);
         break;
     }
     return false; // may be uninitialized result

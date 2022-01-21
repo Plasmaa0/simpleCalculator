@@ -62,21 +62,23 @@ void print(const BETNode *root)
 
 void print(Dictionary *dict)
 {
-    printf("> VARIABLES:\n");
+    printf("VARIABLES:\n");
     if (dict->freeIndex > 0)
     {
         for (unsigned int i = 0; i < dict->size; i++)
         {
-            if (dict->values[i] != UNINITIALIZED_VARIABLE)
+            if (dict->values[i].type != NAN)
             {
-                printf(">> %s = %.2f\n", dict->keys[i], dict->values[i]);
+                printf("   %s = ", dict->keys[i]);
+                print(dict->values[i], true);
+                printf("\n");
             }
         }
-        printf("> END\n");
+        printf("END\n");
     }
     else
     {
-        printf("> NONE\n");
+        printf("NONE\n");
     }
 }
 
@@ -233,17 +235,28 @@ void saveDictionary(Dictionary *dict, bool asBinary)
     {
         for (unsigned int i = 0; i < dict->size; i++)
         {
-            if (dict->values[i] != UNINITIALIZED_VARIABLE)
+            if (dict->values[i].type != NAN)
             {
                 // printf(">> %s = %.2f\n", dict->keys[i], dict->values[i]);
                 if (asBinary)
                 {
                     fwrite(dict->keys[i], MAX_VARIABLE_NAME_LEN, sizeof(char), f);
-                    fwrite(&dict->values[i], 1, sizeof(double), f);
+                    fwrite(&dict->values[i], 1, sizeof(Number), f);
                 }
                 else
                 {
-                    fprintf(f, "%s=%f\n", dict->keys[i], dict->values[i]);
+                    switch (dict->values[i].type)
+                    {
+                    case INTEGER:
+                        fprintf(f, "%s = %d\n", dict->keys[i], dict->values[i].value.integer);
+                        break;
+                    case FLOATING_POINT:
+                        fprintf(f, "%s = %.2f\n", dict->keys[i], dict->values[i].value.decimal);
+                        break;
+                    default:
+                        break;
+                    }
+                    // fprintf(f, "%s=%f\n", dict->keys[i], dict->values[i]);
                 }
                 savedSuccesfullyCounter++;
             }

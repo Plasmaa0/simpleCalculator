@@ -5,7 +5,7 @@ Dictionary *loadDictionary(unsigned int maxSize)
     FILE *f = fopen("variables", "rb");
     if (f == NULL)
     {
-        printf("> nothing to load\n");
+        printf("nothing to load\n");
         fclose(f);
         return nullptr;
     }
@@ -27,10 +27,10 @@ Dictionary *loadDictionary(unsigned int maxSize)
             // printf("%s = %f\n", key, number);
         }
         fclose(f);
-        printf("> successfully loaded %d variables\n", size);
+        printf("successfully loaded %d variables\n", size);
         return result;
     }
     fclose(f);
-    printf("> null\n");
+    printf("null\n");
     return nullptr;
 }
