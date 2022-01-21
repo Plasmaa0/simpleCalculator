@@ -1,8 +1,6 @@
 #ifndef __CONSTANTS_H__
 #define __CONSTANTS_H__
 
-#include <iostream>
-
 const int PRIORITIZED_OPERATOR_NOT_FOUND = -1;
 
 const int EXPR_MAX_LEN = 100;

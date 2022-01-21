@@ -1,6 +1,8 @@
 #ifndef __SYMBOL_H__
 #define __SYMBOL_H__
 
+#include <iostream>
+
 #include "constants.h"
 #include "number.h"
 
