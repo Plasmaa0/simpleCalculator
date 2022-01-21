@@ -185,15 +185,19 @@ void print(Expression *expr)
     printf("\n");
 }
 
-void print(Number n)
+void print(Number n, bool printType)
 {
     switch (n.type)
     {
     case INTEGER:
-        printf("i%d", n.value.integer);
+        if (printType)
+            printf("i");
+        printf("%d", n.value.integer);
         break;
     case FLOATING_POINT:
-        printf("f%.2f", n.value.decimal);
+        if (printType)
+            printf("f");
+        printf("%.2f", n.value.decimal);
         break;
     default:
         break;

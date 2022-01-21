@@ -20,9 +20,8 @@ void prettyPrint(BETNode *node);
 void print(const BETNode *root);
 void print(Symbol symb, bool brackets = false);
 void print(Dictionary *dict);
-void print(Number n);
+void print(Number n, bool printType = false);
 
 void saveDictionary(Dictionary *dict, bool asBinary = false);
-
 
 #endif // __OUTPUT_H__
