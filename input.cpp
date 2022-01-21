@@ -16,13 +16,12 @@ Dictionary *loadDictionary(unsigned int maxSize)
         Dictionary *result = createDictionary(maxSize);
         for (int i = 0; i < size; i++)
         {
-            double number;
+            Number n;
             char key[MAX_VARIABLE_NAME_LEN];
             fread(&key, sizeof(char), MAX_VARIABLE_NAME_LEN, f);
-            fread(&number, 1, sizeof(double), f);
-            Number n;
-            n.type = FLOATING_POINT;
-            n.value.decimal = number;
+            fread(&n, 1, sizeof(Number), f);
+            // n.type = FLOATING_POINT;
+            // n.value.decimal = number;
             setVariable(key, n, result);
             // printf("%s = %f\n", key, number);
         }
