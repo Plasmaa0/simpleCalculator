@@ -9,7 +9,7 @@ run.bat
 ```
 
 ## Demo
-<img src="example1.gif" alt="example1" width="300" height="500"/>
+<img src="docs/example1.gif" alt="example1" width="300" height="500"/>
 
 ## Algorithm
 1. Get the expression as a string.
@@ -18,7 +18,7 @@ run.bat
    1. Handle sequences of numbers to get numbers with multiple digits and number with floating point.
    2. Handle sequences of letters to get variables with multiple digits including numbers (like 'var1').
    3. Handle unary operators by converting them to binary operators (replace '-x' with '(-1)*x').
-3. Convert array of special symbols to BET (binary expression tree) ![BET](example2.png)
+3. Convert array of special symbols to BET (binary expression tree) ![BET](docs/example2.png)
    - If current expression is length of 1, then add it to root.
    - Else find the last operator with the minimum priority and add it to root. Then add to root the result of recursive call of the same function on the expression on the left and right side of this operator.
 4. Evaluate binary BET from bottom to top.
@@ -26,6 +26,7 @@ run.bat
    - Else (the node is operator) return the result of recursive call of the same function on the right and left child.
 
 ## Main features
+- Types: floating point, integer
 - Basic binary operations: - + * /
 - Unary minus
 - Multiple digits numbers. ex: 123
