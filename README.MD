@@ -26,14 +26,16 @@ run.bat
    - Else (the node is operator) return the result of recursive call of the same function on the right and left child.
 
 ## Main features
-- Types: floating point, integer
+- Types: floating point, integer, nan
 - Basic binary operations: - + * /
-- Unary minus
+- Unary + and -
 - Multiple digits numbers. ex: 123
 - Multiple digits variables (including numbers on non-first position). ex: length1
 - Floating point number. 3.14 or .15
 - Positive integer powers: 2^3 -> 8
 - Space ignoring in expressions for better user experience.
+- Invalid result handling
+- Syntax errors handling
 
 ## Other features
 
