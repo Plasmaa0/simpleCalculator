@@ -1,12 +1,12 @@
 #include "util.h"
 
-Number solve(Number a, Number b, char op)
+bool solve(Number a, Number b, char op, Number &result)
 {
     bool modulusAvailable = (a.type == INTEGER and b.type == INTEGER);
     auto aValue = (a.type == INTEGER ? a.value.integer : a.value.decimal);
     auto bValue = (b.type == INTEGER ? b.value.integer : b.value.decimal);
     bool isResultTypeInteger = ((a.type == FLOATING_POINT or b.type == FLOATING_POINT) ? false : true);
-    Number result;
+    // Number result;
     result.type = (isResultTypeInteger ? INTEGER : FLOATING_POINT);
 
     switch (op)
@@ -16,28 +16,28 @@ Number solve(Number a, Number b, char op)
             result.value.integer = aValue + bValue;
         else
             result.value.decimal = aValue + bValue;
-        return result;
+        return true;
         break;
     case '-':
         if (isResultTypeInteger)
             result.value.integer = aValue - bValue;
         else
             result.value.decimal = aValue - bValue;
-        return result;
+        return true;
         break;
     case '*':
         if (isResultTypeInteger)
             result.value.integer = aValue * bValue;
         else
             result.value.decimal = aValue * bValue;
-        return result;
+        return true;
         break;
     case '/':
         if (isResultTypeInteger)
             result.value.integer = aValue / bValue; // integer division
         else
             result.value.decimal = aValue / bValue;
-        return result;
+        return true;
         break;
     case '^':
         if (b.type == INTEGER)
@@ -46,32 +46,31 @@ Number solve(Number a, Number b, char op)
                 result.value.integer = naturalPow(aValue, bValue); // integer division
             else
                 result.value.decimal = naturalPow(aValue, bValue);
+            return true;
         }
         else
         {
             printf("> unavailable natural power due to operand types\n");
+            return false;
         }
-        return result;
         break;
     case '%':
         if (modulusAvailable)
         {
             result.value.integer = a.value.integer % b.value.integer;
+            return true;
         }
         else
         {
-            result.value.integer = 0;
-            result.value.decimal = 0.0;
             printf("> modulus operation not available due to operand types\n");
+            return false;
         }
-
-        return result;
         break;
     default:
         printf("> invalid operator [%c] [SOLVE]\n", op);
         break;
     }
-    return result; // may be uninitialized result
+    return false; // may be uninitialized result
 }
 
 double naturalPow(double a, int b)

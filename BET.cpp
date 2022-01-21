@@ -34,18 +34,24 @@ void insert(BETNode *root, Symbol *s)
     }
 }
 
-Number eval(BETNode *root, Dictionary *dict)
+bool eval(BETNode *root, Dictionary *dict, Number &result)
 {
     if (root->s->type == NUMBER)
     {
-        return root->s->entity.number;
+        result = root->s->entity.number;
+        return true;
     }
     if (root->s->type == VARIABLE)
     {
-        Number n;
-        n.type = FLOATING_POINT;
-        n.value.decimal = getVariable(root->s->entity.variable, dict);
-        return n;
+        result.type = FLOATING_POINT;
+        result.value.decimal = getVariable(root->s->entity.variable, dict);
+        return true;
     }
-    return solve(eval(root->left, dict), eval(root->right, dict), root->s->entity.operator_);
+    Number a;
+    bool aSuccess = eval(root->left, dict, a);
+    Number b;
+    bool bSuccess = eval(root->right, dict, b);
+    bool solveSuccess = solve(a, b, root->s->entity.operator_, result);
+    bool totalSuccess = (aSuccess && bSuccess && solveSuccess);
+    return totalSuccess;
 }

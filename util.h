@@ -6,7 +6,7 @@
 
 //UTIL
 
-Number solve(Number a, Number b, char op);
+bool solve(Number a, Number b, char op, Number &result);
 double naturalPow(double a, int b);
 Number numberFromDigits(int *digitsArray, int digitsN, int *decimalPart, int decimalPartLength);
 

@@ -45,7 +45,7 @@ BETNode *exprToAET(Expression *expr)
     return exprToAET(expr, 0);
 }
 
-Number eval(char *str, Dictionary *dict)
+bool eval(char *str, Dictionary *dict, Number &result)
 {
     Expression *e = strToExpr(str);
     // printf("strToExpr success: ");
@@ -53,7 +53,8 @@ Number eval(char *str, Dictionary *dict)
     // printf("\n");
     BETNode *root = exprToAET(e);
     // printf("exprToAET success\n");
-    Number value = eval(root, dict);
+    bool evalSuccess = eval(root, dict, result);
+    // printf("|%d|\n", (evalSuccess ? 111111 : 999999));
     // printf("eval success\n");
     // printf("pre-order: ");
     // pre_order(root);
@@ -67,7 +68,7 @@ Number eval(char *str, Dictionary *dict)
     // prettyPrint(root);
     // print(root);
 
-    return value;
+    return evalSuccess;
 }
 
 void consoleModeStart(unsigned int dictionarySize)
@@ -108,7 +109,6 @@ void consoleModeStart(unsigned int dictionarySize)
             {
                 dict = newDict;
             }
-
             continue;
         }
 
@@ -121,14 +121,18 @@ void consoleModeStart(unsigned int dictionarySize)
             resultToVariable = true;
         }
         // printf("expr: %s\n", expr);
-        Number result = eval(expr, dict);
-        setVariable("_", result, dict);
-        printf("> ");
-        print(result);
-        printf("\n");
-        if (resultToVariable)
+        Number result;
+        bool evalSuccess = eval(expr, dict, result);
+        if (evalSuccess)
         {
-            setVariable(var, result, dict);
+            setVariable("_", result, dict);
+            printf("> ");
+            print(result, true);
+            printf("\n");
+            if (resultToVariable)
+            {
+                setVariable(var, result, dict);
+            }
         }
     }
     printf("> bye\n");
