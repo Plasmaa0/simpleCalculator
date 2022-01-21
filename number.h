@@ -12,6 +12,7 @@ typedef enum EnumberType
     ENUMBER_TYPE_FIRST = 0,
     INTEGER = 0,
     FLOATING_POINT,
+    NAN,
     ENUMBER_TYPE_LAST
 } EnumberType;
 
