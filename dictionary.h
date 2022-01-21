@@ -11,13 +11,13 @@ typedef struct Dictionary
     unsigned int size;
     unsigned int freeIndex;
     char **keys;
-    double *values;
+    Number *values;
 } Dictionary;
 
 //DICTIONARY
 
 Dictionary *createDictionary(unsigned int size);
 void setVariable(char *variableName, Number number, Dictionary *dict);
-double getVariable(char *variableName, Dictionary *dict);
+Number getVariable(char *variableName, Dictionary *dict);
 
 #endif // __DICTIONARY_H__

@@ -5,13 +5,13 @@ Dictionary *createDictionary(unsigned int size)
     Dictionary *dict = new Dictionary;
     dict->size = size;
     dict->freeIndex = 0;
-    dict->values = new double[size];
+    dict->values = new Number[size];
     dict->keys = new char *[size];
     for (unsigned int i = 0; i < size; i++)
     {
         dict->keys[i] = new char[MAX_VARIABLE_NAME_LEN];
         memset(dict->keys[i], 0, MAX_VARIABLE_NAME_LEN);
-        dict->values[i] = UNINITIALIZED_VARIABLE;
+        dict->values[i].type = NAN;
     }
     return dict;
 }
@@ -25,7 +25,7 @@ void setVariable(char *variableName, Number number, Dictionary *dict)
         if (strncmp(dict->keys[i], variableName, MAX_VARIABLE_NAME_LEN) == 0)
         {
             // printf("reset %s from %f to %f\n", variableName, dict->values[i], value);
-            dict->values[i] = val;
+            dict->values[i] = number;
             alreadyExist = true;
             break;
         }
@@ -35,7 +35,7 @@ void setVariable(char *variableName, Number number, Dictionary *dict)
         // if (not alreadyExist)
         // {
         strncpy(dict->keys[dict->freeIndex], variableName, MAX_NUMBER_LENGTH);
-        dict->values[dict->freeIndex] = val;
+        dict->values[dict->freeIndex] = number;
         dict->freeIndex++;
         // }
     }
@@ -45,15 +45,16 @@ void setVariable(char *variableName, Number number, Dictionary *dict)
     }
 }
 
-double getVariable(char *variableName, Dictionary *dict)
+Number getVariable(char *variableName, Dictionary *dict)
 {
-    double value = 0;
+    Number result;
+    result.type = NAN;
     bool found = false;
     for (unsigned int i = 0; i < dict->size; i++)
     {
         if (strncmp(dict->keys[i], variableName, MAX_VARIABLE_NAME_LEN) == 0)
         {
-            value = dict->values[i];
+            result = dict->values[i];
             found = true;
             // printf("found %s=%d\n", variableName, value);
             break;
@@ -64,9 +65,9 @@ double getVariable(char *variableName, Dictionary *dict)
         printf("VARIABLE %s NOT FOUND\n", variableName);
     }
 
-    if (value == UNINITIALIZED_VARIABLE)
+    if (result.type == NAN)
     {
         printf("GOT ACCESS TO UNINITIALIZED VARIABLE. %s\n", variableName);
     }
-    return value;
+    return result;
 }
