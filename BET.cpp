@@ -48,8 +48,7 @@ bool eval(BETNode *root, Dictionary *dict, Number &result)
     }
     if (root->s->type == VARIABLE)
     {
-        result = getVariable(root->s->entity.variable, dict);
-        return true;
+        return getVariable(root->s->entity.variable, dict, result);
     }
     if (root->left == nullptr or root->right == nullptr)
     {

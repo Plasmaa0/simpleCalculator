@@ -1,6 +1,7 @@
 #ifndef __DICTIONARY_H__
 #define __DICTIONARY_H__
 
+#include <iostream>
 #include <string.h>
 
 #include "constants.h"
@@ -18,6 +19,6 @@ typedef struct Dictionary
 
 Dictionary *createDictionary(unsigned int size);
 void setVariable(char *variableName, Number number, Dictionary *dict);
-Number getVariable(char *variableName, Dictionary *dict);
+bool getVariable(char *variableName, Dictionary *dict, Number &num);
 
 #endif // __DICTIONARY_H__

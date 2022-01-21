@@ -45,29 +45,17 @@ void setVariable(char *variableName, Number number, Dictionary *dict)
     }
 }
 
-Number getVariable(char *variableName, Dictionary *dict)
+bool getVariable(char *variableName, Dictionary *dict, Number &num)
 {
-    Number result;
-    result.type = NAN;
-    bool found = false;
     for (unsigned int i = 0; i < dict->size; i++)
     {
         if (strncmp(dict->keys[i], variableName, MAX_VARIABLE_NAME_LEN) == 0)
         {
-            result = dict->values[i];
-            found = true;
+            num = dict->values[i];
             // printf("found %s=%d\n", variableName, value);
-            break;
+            return true;
         }
     }
-    if (not found)
-    {
-        printf("VARIABLE %s NOT FOUND\n", variableName);
-    }
-
-    if (result.type == NAN)
-    {
-        printf("GOT ACCESS TO UNINITIALIZED VARIABLE. %s\n", variableName);
-    }
-    return result;
+    printf("VARIABLE %s NOT EXIST\n", variableName);
+    return false;
 }
