@@ -34,7 +34,7 @@ void insert(BETNode *root, Symbol *s)
     }
 }
 
-double eval(BETNode *root, Dictionary *dict)
+Number eval(BETNode *root, Dictionary *dict)
 {
     if (root->s->type == NUMBER)
     {
@@ -42,7 +42,10 @@ double eval(BETNode *root, Dictionary *dict)
     }
     if (root->s->type == VARIABLE)
     {
-        return getVariable(root->s->entity.variable, dict);
+        Number n;
+        n.type = FLOATING_POINT;
+        n.value.decimal = getVariable(root->s->entity.variable, dict);
+        return n;
     }
     return solve(eval(root->left, dict), eval(root->right, dict), root->s->entity.operator_);
 }

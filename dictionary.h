@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "constants.h"
+#include "number.h"
 
 typedef struct Dictionary
 {
@@ -16,7 +17,7 @@ typedef struct Dictionary
 //DICTIONARY
 
 Dictionary *createDictionary(unsigned int size);
-void setVariable(char *variableName, double value, Dictionary *dict);
+void setVariable(char *variableName, Number number, Dictionary *dict);
 double getVariable(char *variableName, Dictionary *dict);
 
 #endif // __DICTIONARY_H__

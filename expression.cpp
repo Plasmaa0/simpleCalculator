@@ -34,13 +34,13 @@ Expression *handleNumberSequences(Expression *expr)
             {
                 if (decimalPart)
                 {
-                    decimalPartBuffer[decimalPartLength] = expr->symbols[symbolIndex].entity.number;
+                    decimalPartBuffer[decimalPartLength] = expr->symbols[symbolIndex].entity.number.value.integer;
                     // printf("|%d|", decimalPartBuffer[decimalPartLength]);
                     decimalPartLength++;
                 }
                 else
                 {
-                    digitsBuffer[currentNumberLength] = expr->symbols[symbolIndex].entity.number;
+                    digitsBuffer[currentNumberLength] = expr->symbols[symbolIndex].entity.number.value.integer;
                     currentNumberLength++;
                 }
             }
@@ -57,7 +57,7 @@ Expression *handleNumberSequences(Expression *expr)
             {
                 //number finished construction
                 // print(digitsBuffer, currentNumberLength);
-                double number = numberFromDigits(digitsBuffer, currentNumberLength, decimalPartBuffer, decimalPartLength);
+                Number number = numberFromDigits(digitsBuffer, currentNumberLength, decimalPartBuffer, decimalPartLength);
                 // printf("%d", number);
 
                 //create symbol
@@ -88,7 +88,7 @@ Expression *handleNumberSequences(Expression *expr)
         Symbol newSymbol;
         //number finished construction
         // print(digitsBuffer, currentNumberLength);
-        double number = numberFromDigits(digitsBuffer, currentNumberLength, decimalPartBuffer, decimalPartLength);
+        Number number = numberFromDigits(digitsBuffer, currentNumberLength, decimalPartBuffer, decimalPartLength);
         // printf("%d", number);
 
         //create symbol
@@ -140,7 +140,7 @@ Expression *handleLetterSequences(Expression *expr)
                 if (expr->symbols[symbolIndex].type == VARIABLE)
                     digitsBuffer[currentVariableLength] = expr->symbols[symbolIndex].entity.variable[0];
                 if (expr->symbols[symbolIndex].type == NUMBER)
-                    digitsBuffer[currentVariableLength] = expr->symbols[symbolIndex].entity.number + '0';
+                    digitsBuffer[currentVariableLength] = expr->symbols[symbolIndex].entity.number.value.integer + '0';
                 currentVariableLength++;
             }
             else
@@ -244,7 +244,8 @@ Expression *handleUnaryMinus(Expression *expr)
             withUnary[writeIndex].entity.bracket = '(';
 
             withUnary[writeIndex + 1].type = NUMBER;
-            withUnary[writeIndex + 1].entity.number = -1;
+            withUnary[writeIndex + 1].entity.number.type = INTEGER;
+            withUnary[writeIndex + 1].entity.number.value.integer = -1;
 
             withUnary[writeIndex + 2].type = CLOSING_BRACKET;
             withUnary[writeIndex + 2].entity.bracket = ')';

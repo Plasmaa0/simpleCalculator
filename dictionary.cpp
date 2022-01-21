@@ -16,15 +16,16 @@ Dictionary *createDictionary(unsigned int size)
     return dict;
 }
 
-void setVariable(char *variableName, double value, Dictionary *dict)
+void setVariable(char *variableName, Number number, Dictionary *dict)
 {
+    auto val = (number.type == INTEGER ? number.value.integer : number.value.decimal);
     bool alreadyExist = false;
     for (unsigned int i = 0; i < dict->freeIndex; i++)
     {
         if (strncmp(dict->keys[i], variableName, MAX_VARIABLE_NAME_LEN) == 0)
         {
             // printf("reset %s from %f to %f\n", variableName, dict->values[i], value);
-            dict->values[i] = value;
+            dict->values[i] = val;
             alreadyExist = true;
             break;
         }
@@ -34,19 +35,19 @@ void setVariable(char *variableName, double value, Dictionary *dict)
         // if (not alreadyExist)
         // {
         strncpy(dict->keys[dict->freeIndex], variableName, MAX_NUMBER_LENGTH);
-        dict->values[dict->freeIndex] = value;
+        dict->values[dict->freeIndex] = val;
         dict->freeIndex++;
         // }
     }
     else if (not alreadyExist)
     {
-        printf("dictionary overflow, can't add variable %s = %f\n", variableName, value);
+        printf("dictionary overflow, can't add variable %s = %f\n", variableName, val);
     }
 }
 
 double getVariable(char *variableName, Dictionary *dict)
 {
-    double value;
+    double value = 0;
     bool found = false;
     for (unsigned int i = 0; i < dict->size; i++)
     {

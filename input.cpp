@@ -20,7 +20,10 @@ Dictionary *loadDictionary(unsigned int maxSize)
             char key[MAX_VARIABLE_NAME_LEN];
             fread(&key, sizeof(char), MAX_VARIABLE_NAME_LEN, f);
             fread(&number, 1, sizeof(double), f);
-            setVariable(key, number, result);
+            Number n;
+            n.type = FLOATING_POINT;
+            n.value.decimal = number;
+            setVariable(key, n, result);
             // printf("%s = %f\n", key, number);
         }
         fclose(f);

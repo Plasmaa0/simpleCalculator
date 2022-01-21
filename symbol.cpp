@@ -7,7 +7,8 @@ Symbol charToSymbol(char ch)
     switch (symb.type)
     {
     case NUMBER:
-        symb.entity.number = atoi(&ch);
+        symb.entity.number.type = INTEGER;
+        symb.entity.number.value.integer = atoi(&ch);
         break;
     case OPERATOR:
         symb.entity.operator_ = ch;
@@ -33,13 +34,13 @@ Symbol charToSymbol(char ch)
     return symb;
 }
 
-SymbolType recognizeSymbol(char symbol)
+ESymbolType recognizeSymbol(char symbol)
 {
     if ('0' <= symbol && symbol <= '9')
     {
         return NUMBER;
     }
-    else if (symbol == '+' || symbol == '-' || symbol == '*' || symbol == '/' || symbol == '^')
+    else if (symbol == '+' || symbol == '-' || symbol == '*' || symbol == '/' || symbol == '^' || symbol == '%')
     {
         return OPERATOR;
     }
@@ -70,12 +71,15 @@ unsigned int priority(char symb)
     case '-':
         return 1;
         break;
-    case '*':
-    case '/':
+    case '%':
         return 2;
         break;
-    case '^':
+    case '*':
+    case '/':
         return 3;
+        break;
+    case '^':
+        return 4;
         break;
     default:
         printf("invalid op - %c\n", symb);

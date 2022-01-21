@@ -45,7 +45,7 @@ BETNode *exprToAET(Expression *expr)
     return exprToAET(expr, 0);
 }
 
-double eval(char *str, Dictionary *dict)
+Number eval(char *str, Dictionary *dict)
 {
     Expression *e = strToExpr(str);
     // printf("strToExpr success: ");
@@ -53,7 +53,7 @@ double eval(char *str, Dictionary *dict)
     // printf("\n");
     BETNode *root = exprToAET(e);
     // printf("exprToAET success\n");
-    double value = eval(root, dict);
+    Number value = eval(root, dict);
     // printf("eval success\n");
     // printf("pre-order: ");
     // pre_order(root);
@@ -74,8 +74,8 @@ void consoleModeStart(unsigned int dictionarySize)
 {
     printf("> hello\n");
     Dictionary *dict = createDictionary(dictionarySize);
-    char expr[EXPR_MAX_LEN];
-    char var[MAX_VARIABLE_NAME_LEN];
+    char expr[EXPR_MAX_LEN + 1];
+    char var[MAX_VARIABLE_NAME_LEN + 1];
     while (1)
     {
         fgets(expr, EXPR_MAX_LEN, stdin);
@@ -121,9 +121,11 @@ void consoleModeStart(unsigned int dictionarySize)
             resultToVariable = true;
         }
         // printf("expr: %s\n", expr);
-        double result = eval(expr, dict);
+        Number result = eval(expr, dict);
         setVariable("_", result, dict);
-        printf("> %f\n", result);
+        printf("> ");
+        print(result);
+        printf("\n");
         if (resultToVariable)
         {
             setVariable(var, result, dict);

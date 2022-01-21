@@ -2,10 +2,11 @@
 #define __SYMBOL_H__
 
 #include "constants.h"
+#include "number.h"
 
-typedef enum SymbolType
+typedef enum ESymbolType
 {
-    SYMBOL_TYPE_FIRST = 0,
+    ESYMBOL_TYPE_FIRST = 0,
     NUMBER = 0,
     DECIMAL_COMMA,
     OPERATOR,
@@ -14,11 +15,11 @@ typedef enum SymbolType
     CLOSING_BRACKET,
     NOT_A_SYMBOL,
     SYMBOL_TYPE_LAST
-} SymbolType;
+} ESymbolType;
 
 typedef union SymbolContainer
 {
-    double number;
+    Number number;
     char operator_;
     char variable[MAX_VARIABLE_NAME_LEN + 1];
     char bracket;
@@ -27,14 +28,14 @@ typedef union SymbolContainer
 typedef struct Symbol
 {
     int priority;
-    SymbolType type;
+    ESymbolType type;
     SymbolContainer entity;
 } Symbol;
 
 //SYMBOL
 
 Symbol charToSymbol(char ch);
-SymbolType recognizeSymbol(char symbol);
+ESymbolType recognizeSymbol(char symbol);
 unsigned int priority(char symb);
 
 #endif // __SYMBOL_H__

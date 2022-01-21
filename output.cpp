@@ -147,7 +147,7 @@ void print(Symbol symb, bool brackets)
     switch (symb.type)
     {
     case NUMBER:
-        printf("%.2f", symb.entity.number);
+        print(symb.entity.number);
         break;
     case OPERATOR:
         printf("%c", symb.entity.operator_);
@@ -183,6 +183,21 @@ void print(Expression *expr)
         // printf("%d ", expr->symbols[i].priority);
     }
     printf("\n");
+}
+
+void print(Number n)
+{
+    switch (n.type)
+    {
+    case INTEGER:
+        printf("i%d", n.value.integer);
+        break;
+    case FLOATING_POINT:
+        printf("f%.2f", n.value.decimal);
+        break;
+    default:
+        break;
+    }
 }
 
 void saveDictionary(Dictionary *dict, bool asBinary)

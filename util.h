@@ -2,11 +2,12 @@
 #define __UTIL_H__
 
 #include <iostream>
+#include "number.h"
 
 //UTIL
 
-double solve(double a, double b, char op);
+Number solve(Number a, Number b, char op);
 double naturalPow(double a, int b);
-double numberFromDigits(int *digitsArray, int digitsN, int *decimalPart, int decimalPartLength);
+Number numberFromDigits(int *digitsArray, int digitsN, int *decimalPart, int decimalPartLength);
 
 #endif // __UTIL_H__

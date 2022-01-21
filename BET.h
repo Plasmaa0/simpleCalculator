@@ -4,6 +4,7 @@
 #include "symbol.h"
 #include "dictionary.h"
 #include "util.h"
+#include "number.h"
 
 //Binary Expression Tree Node
 typedef struct BETNode
@@ -17,6 +18,6 @@ typedef struct BETNode
 
 BETNode *createNode();
 void insert(BETNode *root, Symbol *s);
-double eval(BETNode *root, Dictionary *dict);
+Number eval(BETNode *root, Dictionary *dict);
 
 #endif // __BET_H__
