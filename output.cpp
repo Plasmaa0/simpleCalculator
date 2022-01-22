@@ -67,7 +67,7 @@ void print(Dictionary *dict)
     {
         for (unsigned int i = 0; i < dict->size; i++)
         {
-            if (dict->values[i].type != NAN)
+            if (dict->values[i].type != EnumberType::NAN)
             {
                 printf("   %s = ", dict->keys[i]);
                 print(dict->values[i], true);
@@ -148,25 +148,25 @@ void print(Symbol symb, bool brackets)
         printf("{");
     switch (symb.type)
     {
-    case NUMBER:
+    case ESymbolType::NUMBER:
         print(symb.entity.number);
         break;
-    case OPERATOR:
+    case ESymbolType::OPERATOR:
         printf("%c", symb.entity.operator_);
         break;
-    case OPENING_BRACKET:
+    case ESymbolType::OPENING_BRACKET:
         printf("%c", symb.entity.bracket);
         break;
-    case CLOSING_BRACKET:
+    case ESymbolType::CLOSING_BRACKET:
         printf("%c", symb.entity.bracket);
         break;
-    case VARIABLE:
+    case ESymbolType::VARIABLE:
         printf("%s", symb.entity.variable);
         break;
-    case DECIMAL_COMMA:
+    case ESymbolType::DECIMAL_COMMA:
         printf(".");
         break;
-    case NOT_A_SYMBOL:
+    case ESymbolType::NOT_A_SYMBOL:
     //проваливаемся в общий случай
     default:
         printf("NAS"); //Not A Symbol
@@ -191,12 +191,12 @@ void print(Number n, bool printType)
 {
     switch (n.type)
     {
-    case INTEGER:
+    case EnumberType::INTEGER:
         if (printType)
             printf("i");
         printf("%d", n.value.integer);
         break;
-    case FLOATING_POINT:
+    case EnumberType::FLOATING_POINT:
         if (printType)
             printf("f");
         printf("%.2f", n.value.decimal);
@@ -235,7 +235,7 @@ void saveDictionary(Dictionary *dict, bool asBinary)
     {
         for (unsigned int i = 0; i < dict->size; i++)
         {
-            if (dict->values[i].type != NAN)
+            if (dict->values[i].type != EnumberType::NAN)
             {
                 // printf(">> %s = %.2f\n", dict->keys[i], dict->values[i]);
                 if (asBinary)
@@ -247,10 +247,10 @@ void saveDictionary(Dictionary *dict, bool asBinary)
                 {
                     switch (dict->values[i].type)
                     {
-                    case INTEGER:
+                    case EnumberType::INTEGER:
                         fprintf(f, "%s = %d\n", dict->keys[i], dict->values[i].value.integer);
                         break;
-                    case FLOATING_POINT:
+                    case EnumberType::FLOATING_POINT:
                         fprintf(f, "%s = %.2f\n", dict->keys[i], dict->values[i].value.decimal);
                         break;
                     default:

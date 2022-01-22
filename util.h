@@ -2,6 +2,8 @@
 #define __UTIL_H__
 
 #include <iostream>
+
+#include "constants.h"
 #include "number.h"
 
 //UTIL

@@ -6,26 +6,26 @@ Symbol charToSymbol(char ch)
     symb.type = recognizeSymbol(ch);
     switch (symb.type)
     {
-    case NUMBER:
-        symb.entity.number.type = INTEGER;
+    case ESymbolType::NUMBER:
+        symb.entity.number.type = EnumberType::INTEGER;
         symb.entity.number.value.integer = atoi(&ch);
         break;
-    case OPERATOR:
+    case ESymbolType::OPERATOR:
         symb.entity.operator_ = ch;
         break;
-    case OPENING_BRACKET:
+    case ESymbolType::OPENING_BRACKET:
         symb.entity.bracket = ch;
         break;
-    case CLOSING_BRACKET:
+    case ESymbolType::CLOSING_BRACKET:
         symb.entity.bracket = ch;
         break;
-    case VARIABLE:
+    case ESymbolType::VARIABLE:
         symb.entity.variable[0] = ch;
         symb.entity.variable[1] = '\0';
         break;
-    case DECIMAL_COMMA:
+    case ESymbolType::DECIMAL_COMMA:
         break;
-    case NOT_A_SYMBOL:
+    case ESymbolType::NOT_A_SYMBOL:
     //проваливаемся в общий случай
     default:
         printf("%c is not a symbol\n", ch);
@@ -38,29 +38,29 @@ ESymbolType recognizeSymbol(char symbol)
 {
     if ('0' <= symbol && symbol <= '9')
     {
-        return NUMBER;
+        return ESymbolType::NUMBER;
     }
     else if (symbol == '+' || symbol == '-' || symbol == '*' || symbol == '/' || symbol == '^' || symbol == '%')
     {
-        return OPERATOR;
+        return ESymbolType::OPERATOR;
     }
     else if (symbol == '(')
     {
-        return OPENING_BRACKET;
+        return ESymbolType::OPENING_BRACKET;
     }
     else if (symbol == ')')
     {
-        return CLOSING_BRACKET;
+        return ESymbolType::CLOSING_BRACKET;
     }
     else if (('a' <= symbol && symbol <= 'z') || symbol == '_')
     {
-        return VARIABLE;
+        return ESymbolType::VARIABLE;
     }
     else if (symbol == '.')
     {
-        return DECIMAL_COMMA;
+        return ESymbolType::DECIMAL_COMMA;
     }
-    return NOT_A_SYMBOL;
+    return ESymbolType::NOT_A_SYMBOL;
 }
 
 unsigned int priority(char symb)

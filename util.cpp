@@ -2,12 +2,12 @@
 
 bool solve(Number a, Number b, char op, Number &result)
 {
-    bool modulusAvailable = (a.type == INTEGER and b.type == INTEGER);
-    auto aValue = (a.type == INTEGER ? a.value.integer : a.value.decimal);
-    auto bValue = (b.type == INTEGER ? b.value.integer : b.value.decimal);
-    bool isResultTypeInteger = ((a.type == FLOATING_POINT or b.type == FLOATING_POINT) ? false : true);
+    bool modulusAvailable = (a.type == EnumberType::INTEGER and b.type == EnumberType::INTEGER);
+    auto aValue = (a.type == EnumberType::INTEGER ? a.value.integer : a.value.decimal);
+    auto bValue = (b.type == EnumberType::INTEGER ? b.value.integer : b.value.decimal);
+    bool isResultTypeInteger = ((a.type == EnumberType::FLOATING_POINT or b.type == EnumberType::FLOATING_POINT) ? false : true);
     // Number result;
-    result.type = (isResultTypeInteger ? INTEGER : FLOATING_POINT);
+    result.type = (isResultTypeInteger ? EnumberType::INTEGER : EnumberType::FLOATING_POINT);
 
     switch (op)
     {
@@ -33,6 +33,12 @@ bool solve(Number a, Number b, char op, Number &result)
         return true;
         break;
     case '/':
+        if (bValue == 0)
+        {
+            printf("zero division error\n");
+            return false;
+        }
+
         if (isResultTypeInteger)
             result.value.integer = aValue / bValue; // integer division
         else
@@ -40,7 +46,7 @@ bool solve(Number a, Number b, char op, Number &result)
         return true;
         break;
     case '^':
-        if (b.type == INTEGER)
+        if (b.type == EnumberType::INTEGER)
         {
             if (isResultTypeInteger)
                 result.value.integer = naturalPow(aValue, bValue); // integer division
@@ -93,14 +99,19 @@ double naturalPow(double a, int b)
 
 Number numberFromDigits(int *digitsArray, int digitsN, int *decimalPart, int decimalPartLength)
 {
+    if (digitsN + decimalPartLength > (decimalPartLength > 0 ? MAX_FLOAT_LENGTH : MAX_INT_LENGTH))
+    {
+        printf("too long number\n");
+    }
+
     Number resultNumber;
     if (decimalPartLength > 0)
     {
-        resultNumber.type = FLOATING_POINT;
+        resultNumber.type = EnumberType::FLOATING_POINT;
     }
     else
     {
-        resultNumber.type = INTEGER;
+        resultNumber.type = EnumberType::INTEGER;
     }
 
     int integer = 0;
@@ -113,7 +124,7 @@ Number numberFromDigits(int *digitsArray, int digitsN, int *decimalPart, int dec
         }
     }
     double decimal = 0.0;
-    if (resultNumber.type == FLOATING_POINT)
+    if (resultNumber.type == EnumberType::FLOATING_POINT)
     {
         double decimalMultiplier = 0.1;
         for (int i = 0; i < decimalPartLength; i++)

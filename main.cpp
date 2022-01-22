@@ -1,11 +1,12 @@
 #include <iostream>
-// #include "windows.h"
 #include "calculator.h"
 
 using namespace std;
 
 int main()
 {
+    char *a = new char;
+    *a = '2';
     unsigned int dictionarySize = 100;
     consoleModeStart(dictionarySize);
     // Dictionary *dict = createDictionary(3);

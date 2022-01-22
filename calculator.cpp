@@ -79,7 +79,7 @@ bool eval(char *str, Dictionary *dict, Number &result)
 
 void consoleModeStart(unsigned int dictionarySize)
 {
-    printf("hello\n");
+    printf("\nsimpleCalculator version %d.%d\n", MAJOR_VERSION, MINOR_VERSION);
     Dictionary *dict = createDictionary(dictionarySize);
     char expr[EXPR_MAX_LEN + 1];
     char var[MAX_VARIABLE_NAME_LEN + 1];

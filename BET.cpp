@@ -41,12 +41,12 @@ bool eval(BETNode *root, Dictionary *dict, Number &result)
         printf("syntax error\n");
         return false;
     }
-    if (root->s->type == NUMBER)
+    if (root->s->type == ESymbolType::NUMBER)
     {
         result = root->s->entity.number;
         return true;
     }
-    if (root->s->type == VARIABLE)
+    if (root->s->type == ESymbolType::VARIABLE)
     {
         return getVariable(root->s->entity.variable, dict, result);
     }

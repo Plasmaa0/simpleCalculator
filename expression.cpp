@@ -15,12 +15,7 @@ Expression *handleNumberSequences(Expression *expr)
     int decimalPartLength = 0;
     for (int symbolIndex = 0; symbolIndex < expr->length; symbolIndex++)
     {
-        if (currentNumberLength > MAX_NUMBER_LENGTH or decimalPartLength > MAX_NUMBER_LENGTH)
-        {
-            printf("expression has too long numbers\n");
-        }
-
-        if (expr->symbols[symbolIndex].type == DECIMAL_COMMA)
+        if (expr->symbols[symbolIndex].type == ESymbolType::DECIMAL_COMMA)
         {
             // printf("comma index: %d\n", symbolIndex);
             decimalPart = true;
@@ -28,7 +23,7 @@ Expression *handleNumberSequences(Expression *expr)
             continue;
         }
 
-        if (expr->symbols[symbolIndex].type == NUMBER)
+        if (expr->symbols[symbolIndex].type == ESymbolType::NUMBER)
         {
             if (currentIsNumber)
             {
@@ -61,7 +56,7 @@ Expression *handleNumberSequences(Expression *expr)
                 // printf("%d", number);
 
                 //create symbol
-                newSymbol.type = NUMBER;
+                newSymbol.type = ESymbolType::NUMBER;
                 newSymbol.entity.number = number;
 
                 //reset cycle
@@ -92,7 +87,7 @@ Expression *handleNumberSequences(Expression *expr)
         // printf("%d", number);
 
         //create symbol
-        newSymbol.type = NUMBER;
+        newSymbol.type = ESymbolType::NUMBER;
         newSymbol.entity.number = number;
 
         //add to array
@@ -133,13 +128,13 @@ Expression *handleLetterSequences(Expression *expr)
             printf("too long variable name\n");
         }
 
-        if (expr->symbols[symbolIndex].type == VARIABLE or (expr->symbols[symbolIndex].type == NUMBER and currentIsLetter))
+        if (expr->symbols[symbolIndex].type == ESymbolType::VARIABLE or (expr->symbols[symbolIndex].type == ESymbolType::NUMBER and currentIsLetter))
         {
             if (currentIsLetter)
             {
-                if (expr->symbols[symbolIndex].type == VARIABLE)
+                if (expr->symbols[symbolIndex].type == ESymbolType::VARIABLE)
                     digitsBuffer[currentVariableLength] = expr->symbols[symbolIndex].entity.variable[0];
-                if (expr->symbols[symbolIndex].type == NUMBER)
+                if (expr->symbols[symbolIndex].type == ESymbolType::NUMBER)
                     digitsBuffer[currentVariableLength] = expr->symbols[symbolIndex].entity.number.value.integer + '0';
                 currentVariableLength++;
             }
@@ -152,10 +147,11 @@ Expression *handleLetterSequences(Expression *expr)
         else
         {
             Symbol newSymbol;
+            //must match start
             if (currentVariableLength > 0)
             {
                 //create symbol
-                newSymbol.type = VARIABLE;
+                newSymbol.type = ESymbolType::VARIABLE;
                 strncpy(newSymbol.entity.variable, digitsBuffer, currentVariableLength);
                 newSymbol.entity.variable[currentVariableLength] = '\0';
                 // print(newSymbol);
@@ -168,18 +164,20 @@ Expression *handleLetterSequences(Expression *expr)
                 oversizedSymbolArray[resultLength] = newSymbol;
                 resultLength++;
             }
+            //must match end
             newSymbol = expr->symbols[symbolIndex];
             oversizedSymbolArray[resultLength] = newSymbol;
             resultLength++;
         }
     }
 
+    //must match start
     if (currentVariableLength > 0)
     {
         Symbol newSymbol;
 
         //create symbol
-        newSymbol.type = VARIABLE;
+        newSymbol.type = ESymbolType::VARIABLE;
         strncpy(newSymbol.entity.variable, digitsBuffer, currentVariableLength);
         newSymbol.entity.variable[currentVariableLength] = '\0';
 
@@ -187,6 +185,7 @@ Expression *handleLetterSequences(Expression *expr)
         oversizedSymbolArray[resultLength] = newSymbol;
         resultLength++;
     }
+    //must match end
 
     Expression *result = new Expression;
     result->length = resultLength;
@@ -205,11 +204,11 @@ Expression *handleUnaryMinus(Expression *expr)
     for (int i = 0; i < expr->length; i++)
     {
         bool isUnary = false;
-        if (expr->symbols[i].type == OPERATOR && (expr->symbols[i].entity.operator_ == '-' || expr->symbols[i].entity.operator_ == '+'))
+        if (expr->symbols[i].type == ESymbolType::OPERATOR && (expr->symbols[i].entity.operator_ == '-' || expr->symbols[i].entity.operator_ == '+'))
         {
             if (i > 0)
             {
-                if (expr->symbols[i - 1].type != NUMBER and expr->symbols[i - 1].type != VARIABLE and expr->symbols[i - 1].type != CLOSING_BRACKET)
+                if (expr->symbols[i - 1].type != ESymbolType::NUMBER and expr->symbols[i - 1].type != ESymbolType::VARIABLE and expr->symbols[i - 1].type != ESymbolType::CLOSING_BRACKET)
                 {
                     isUnary = true;
                 }
@@ -240,11 +239,11 @@ Expression *handleUnaryMinus(Expression *expr)
     {
         if (isUnaryOperatorLUT[i])
         {
-            withUnary[writeIndex].type = OPENING_BRACKET;
+            withUnary[writeIndex].type = ESymbolType::OPENING_BRACKET;
             withUnary[writeIndex].entity.bracket = '(';
 
-            withUnary[writeIndex + 1].type = NUMBER;
-            withUnary[writeIndex + 1].entity.number.type = INTEGER;
+            withUnary[writeIndex + 1].type = ESymbolType::NUMBER;
+            withUnary[writeIndex + 1].entity.number.type = EnumberType::INTEGER;
             if (expr->symbols[i].entity.operator_ == '-')
             {
                 //unary minus
@@ -256,10 +255,10 @@ Expression *handleUnaryMinus(Expression *expr)
                 withUnary[writeIndex + 1].entity.number.value.integer = 1;
             }
 
-            withUnary[writeIndex + 2].type = CLOSING_BRACKET;
+            withUnary[writeIndex + 2].type = ESymbolType::CLOSING_BRACKET;
             withUnary[writeIndex + 2].entity.bracket = ')';
 
-            withUnary[writeIndex + 3].type = OPERATOR;
+            withUnary[writeIndex + 3].type = ESymbolType::OPERATOR;
             withUnary[writeIndex + 3].entity.operator_ = '*';
 
             writeIndex += 4;
@@ -306,7 +305,7 @@ Expression *strToExpr(char *str)
         if (str[symbolIndex] != ' ')
         {
             expr->symbols[writeIndex] = charToSymbol(str[symbolIndex]);
-            if (expr->symbols[writeIndex].type == NOT_A_SYMBOL)
+            if (expr->symbols[writeIndex].type == ESymbolType::NOT_A_SYMBOL)
             {
                 printf("%c is unknown symbol. it may cause problems.\n", str[symbolIndex]);
             }
@@ -350,17 +349,17 @@ void setPriorities(Expression *expr)
     unsigned int nestLevel = 0;
     for (int i = 0; i < expr->length; i++)
     {
-        if (expr->symbols[i].type == OPENING_BRACKET)
+        if (expr->symbols[i].type == ESymbolType::OPENING_BRACKET)
         {
             nestLevel += 10;
             expr->symbols[i].priority = -nestLevel;
         }
-        else if (expr->symbols[i].type == CLOSING_BRACKET)
+        else if (expr->symbols[i].type == ESymbolType::CLOSING_BRACKET)
         {
             nestLevel -= 10;
             expr->symbols[i].priority = -nestLevel;
         }
-        else if (expr->symbols[i].type == OPERATOR)
+        else if (expr->symbols[i].type == ESymbolType::OPERATOR)
         {
             expr->symbols[i].priority = nestLevel + priority(expr->symbols[i].entity.operator_);
         }
@@ -380,15 +379,15 @@ unsigned int prioritizedOperatorIndex(Expression *expr)
     for (int i = 0; i < expr->length; i++)
     {
 
-        if (expr->symbols[i].type == OPENING_BRACKET)
+        if (expr->symbols[i].type == ESymbolType::OPENING_BRACKET)
         {
             nestLevel++;
         }
-        else if (expr->symbols[i].type == CLOSING_BRACKET)
+        else if (expr->symbols[i].type == ESymbolType::CLOSING_BRACKET)
         {
             nestLevel--;
         }
-        if (expr->symbols[i].type == OPERATOR && expr->symbols[i].priority <= minPriority && nestLevel == 0)
+        if (expr->symbols[i].type == ESymbolType::OPERATOR && expr->symbols[i].priority <= minPriority && nestLevel == 0)
         {
             minPriority = expr->symbols[i].priority;
             priorOpIndex = i;
@@ -400,13 +399,13 @@ unsigned int prioritizedOperatorIndex(Expression *expr)
 Expression *strip(Expression *expr)
 {
     bool stripLeft = false;
-    if (expr->symbols[0].type == OPENING_BRACKET || expr->symbols[0].type == CLOSING_BRACKET)
+    if (expr->symbols[0].type == ESymbolType::OPENING_BRACKET || expr->symbols[0].type == ESymbolType::CLOSING_BRACKET)
     {
         stripLeft = true;
     }
 
     bool stripRight = false;
-    if (expr->symbols[expr->length - 1].type == OPENING_BRACKET || expr->symbols[expr->length - 1].type == CLOSING_BRACKET)
+    if (expr->symbols[expr->length - 1].type == ESymbolType::OPENING_BRACKET || expr->symbols[expr->length - 1].type == ESymbolType::CLOSING_BRACKET)
     {
         stripRight = true;
     }

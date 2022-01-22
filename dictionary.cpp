@@ -11,14 +11,14 @@ Dictionary *createDictionary(unsigned int size)
     {
         dict->keys[i] = new char[MAX_VARIABLE_NAME_LEN];
         memset(dict->keys[i], 0, MAX_VARIABLE_NAME_LEN);
-        dict->values[i].type = NAN;
+        dict->values[i].type = EnumberType::NAN;
     }
     return dict;
 }
 
 void setVariable(char *variableName, Number number, Dictionary *dict)
 {
-    auto val = (number.type == INTEGER ? number.value.integer : number.value.decimal);
+    auto val = (number.type == EnumberType::INTEGER ? number.value.integer : number.value.decimal);
     bool alreadyExist = false;
     for (unsigned int i = 0; i < dict->freeIndex; i++)
     {
