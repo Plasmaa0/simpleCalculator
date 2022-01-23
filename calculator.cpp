@@ -77,73 +77,215 @@ bool eval(char *str, Dictionary *dict, Number &result)
     return evalSuccess;
 }
 
+EExpressionType recognizeExpressionType(char *expr)
+{
+    if (expr[0] == '\0')
+    {
+        return EExpressionType::DO_NOTHING;
+    }
+    if (strcmp(expr, "exit") == 0)
+    {
+        return EExpressionType::EXIT;
+    }
+    if (strcmp(expr, "vars") == 0)
+    {
+        return EExpressionType::SHOW_VARIABLES;
+    }
+    if (strcmp(expr, "saveB") == 0)
+    {
+        return EExpressionType::SAVE_VARIABLES_BIN;
+    }
+    if (strcmp(expr, "save") == 0)
+    {
+        return EExpressionType::SAVE_VARIABLES_TXT;
+    }
+    if (strcmp(expr, "load") == 0)
+    {
+        return EExpressionType::LOAD_VARIABLES;
+    }
+    if (strchr(expr, '='))
+    {
+        return EExpressionType::EVALUATE_AND_ASSIGN;
+    }
+    else
+    {
+        return EExpressionType::EVALUATE;
+    }
+
+    printf("unrecognized expression\n");
+    return EExpressionType::DO_NOTHING;
+}
+
+int equalsSignIndex(char *expr)
+{
+    return strchr(expr, '=') - expr;
+}
+
+bool hasCompoundAssignment(char *expr)
+{
+    return recognizeSymbol(expr[equalsSignIndex(expr) - 1]) == ESymbolType::OPERATOR;
+}
+
+char getCompoundOperator(char *expr)
+{
+    return expr[equalsSignIndex(expr) - 1];
+}
+
+bool isCorrectVariableName(char *var)
+{
+    // printf("var: %s\n", var);
+    for (int i = 0; i < strlen(var); i++)
+    {
+        ESymbolType t = recognizeSymbol(var[i]);
+        if (not(t == ESymbolType::NUMBER or t == ESymbolType::VARIABLE or var[i] == ' '))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+void deleteSpaces(char *expr)
+{
+    char result[EXPR_MAX_LEN + 1];
+    int resultLength = 0;
+    for (int i = 0; i < strlen(expr) - 1; i++)
+    {
+        if (expr[i] != ' ')
+        {
+            result[resultLength] = expr[i];
+            resultLength++;
+        }
+    }
+    result[resultLength] = '\0';
+    strncpy(expr, result, EXPR_MAX_LEN);
+}
+
 void consoleModeStart(unsigned int dictionarySize)
 {
     printf("\nsimpleCalculator version %d.%d\n", MAJOR_VERSION, MINOR_VERSION);
     Dictionary *dict = createDictionary(dictionarySize);
     char expr[EXPR_MAX_LEN + 1];
-    char var[MAX_VARIABLE_NAME_LEN + 1];
-    while (1)
+    bool running = true;
+    while (running)
     {
         printf(">>> ");
         fgets(expr, EXPR_MAX_LEN, stdin);
-
-        expr[strlen(expr) - 1] = '\0';
-        if (expr[0] == '\0')
+        deleteSpaces(expr);
+        
+        switch (recognizeExpressionType(expr))
         {
-            continue;
-        }
-
-        // printf("%s\n%s\n", expr, "exit");
-        if (strcmp(expr, "exit") == 0)
+        case EExpressionType::DO_NOTHING:
         {
+            //doing nothing
             break;
         }
-        if (strcmp(expr, "vars") == 0)
+
+        case EExpressionType::EXIT:
+        {
+            running = false;
+            break;
+        }
+
+        case EExpressionType::SHOW_VARIABLES:
         {
             print(dict);
-            continue;
+            break;
         }
-        if (strcmp(expr, "saveB") == 0)
+
+        case EExpressionType::SAVE_VARIABLES_BIN:
         {
             saveDictionary(dict, true);
-            continue;
+            break;
         }
-        if (strcmp(expr, "save") == 0)
+
+        case EExpressionType::SAVE_VARIABLES_TXT:
         {
             saveDictionary(dict);
-            continue;
+            break;
         }
-        if (strcmp(expr, "load") == 0)
+
+        case EExpressionType::LOAD_VARIABLES:
         {
             Dictionary *newDict = loadDictionary(dictionarySize);
             if (newDict != nullptr)
             {
                 dict = newDict;
             }
-            continue;
+            break;
         }
 
-        bool resultToVariable = false;
-        if (strchr(expr, '='))
+        case EExpressionType::EVALUATE:
         {
-            strncpy(var, strtok(expr, " ="), MAX_VARIABLE_NAME_LEN);
-            strncpy(expr, strtok(NULL, "="), EXPR_MAX_LEN);
-            // printf("var: |%s|\nexpr:|%s|\n", var, expr);
-            resultToVariable = true;
-        }
-        // printf("expr: %s\n", expr);
-        Number result;
-        bool evalSuccess = eval(expr, dict, result);
-        if (evalSuccess)
-        {
-            setVariable("_", result, dict);
-            print(result);
-            printf("\n");
-            if (resultToVariable)
+            Number evaluationResult;
+            bool evalSuccess = eval(expr, dict, evaluationResult);
+            if (evalSuccess)
             {
-                setVariable(var, result, dict);
+                setVariable("_", evaluationResult, dict);
+                print(evaluationResult);
+                printf("\n");
             }
+            break;
+        }
+
+        case EExpressionType::EVALUATE_AND_ASSIGN:
+        {
+            char var[MAX_VARIABLE_NAME_LEN + 1];
+            bool isCompound = hasCompoundAssignment(expr);
+            char op;
+            if (isCompound)
+            {
+                op = getCompoundOperator(expr);
+                // printf("op: %c\n", op);
+                char opDivider[2];
+                opDivider[0] = op;
+                opDivider[1] = ' ';
+                strncpy(var, strtok(expr, opDivider), MAX_VARIABLE_NAME_LEN);
+                // if (strchr(var, ' ') != nullptr) //strip trailing whitespace if exist
+                //     var[var - strchr(var, ' ') - 1] = '\0';
+                // strtok(NULL, "="); //skip the '='
+            }
+            else
+            {
+                strncpy(var, strtok(expr, " ="), MAX_VARIABLE_NAME_LEN);
+            }
+
+            if (not isCorrectVariableName(var))
+            {
+                printf("invalid variable name\n");
+                break;
+            }
+
+            strncpy(expr, strtok(NULL, "="), EXPR_MAX_LEN);
+            // printf("var: |%s|\nexpr: %s\n", var, expr);
+            Number evaluationResult;
+            bool evalSuccess = eval(expr, dict, evaluationResult);
+            if (evalSuccess)
+            {
+                if (isCompound)
+                {
+                    Number oldVariableValue;
+                    Number newVariableValue;
+                    getVariable(var, dict, oldVariableValue);
+                    solve(oldVariableValue, evaluationResult, op, newVariableValue);
+                    setVariable(var, newVariableValue, dict);
+                }
+                else
+                {
+                    setVariable("_", evaluationResult, dict);
+                    print(evaluationResult);
+                    printf("\n");
+                    setVariable(var, evaluationResult, dict);
+                }
+            }
+            break;
+        }
+
+        default:
+        {
+            printf("expression recognition error\n");
+            break;
+        }
         }
     }
     printf("bye\n");

@@ -193,12 +193,12 @@ void print(Number n, bool printType)
     {
     case EnumberType::INTEGER:
         if (printType)
-            printf("i");
+            printf("int ");
         printf("%d", n.value.integer);
         break;
     case EnumberType::FLOATING_POINT:
         if (printType)
-            printf("f");
+            printf("float ");
         printf("%.2f", n.value.decimal);
         break;
     default:
@@ -263,5 +263,5 @@ void saveDictionary(Dictionary *dict, bool asBinary)
         }
     }
     fclose(f);
-    printf("> successfully saved %d variables\n", savedSuccesfullyCounter);
+    printf("successfully saved %d variables\n", savedSuccesfullyCounter);
 }

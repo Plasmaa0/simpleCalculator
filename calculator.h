@@ -7,18 +7,33 @@
 #include "BET.h"
 #include "number.h"
 
-typedef enum ECommandType
+typedef enum EExpressionType
 {
     E_COMMAND_TYPE_FIRST = 0,
-    E_COMAND_TYPE_BREAK = 0,
+    EXIT = 0,
+    DO_NOTHING,
+    SHOW_VARIABLES,
+    SAVE_VARIABLES_TXT,
+    SAVE_VARIABLES_BIN,
+    LOAD_VARIABLES,
+    EVALUATE,
+    EVALUATE_AND_ASSIGN,
     E_COMMAND_TYPE_LAST
-} ECommandType;
+} EExpressionType;
 
 BETNode *exprToAET(Expression *expr, int nestLevel);
 BETNode *exprToAET(Expression *expr);
 
 //THE MAIN PURPOSE OF ALL THIS SHIT
 bool eval(char *str, Dictionary *dict, Number &result);
+
+EExpressionType recognizeExpressionType(char *expr);
+
+void deleteSpaces(char *expr);
+int equalsSignIndex(char *expr);
+bool hasCompoundAssignment(char *expr);
+bool isCorrectVariableName(char *var);
+char getCompoundOperator(char *expr);
 
 void consoleModeStart(unsigned int dictionarySize);
 #endif // __CALCULATOR_H__
