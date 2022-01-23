@@ -34,7 +34,7 @@ void insert(BETNode *root, Symbol *s)
     }
 }
 
-bool eval(BETNode *root, Dictionary *dict, Number &result)
+bool eval(BETNode *root, VariableDictionary *dict, Number &result)
 {
     if (root == nullptr)
     {

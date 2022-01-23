@@ -284,6 +284,7 @@ Expression *strToExpr(char *str)
 {
     Expression *expr = new Expression;
     expr->length = strlen(str);
+    // printf("len: %d\n", expr->length);
     if (expr->length > EXPR_MAX_LEN)
     {
         printf("expression is longer than it can be\n");
@@ -297,8 +298,10 @@ Expression *strToExpr(char *str)
             spacesCounter++;
         }
     }
+    // printf("spcs: %d\n", spacesCounter);
 
     expr->symbols = new Symbol[expr->length - spacesCounter];
+    // printf("creating..\n");
     int writeIndex = 0;
     for (int symbolIndex = 0; symbolIndex < expr->length; symbolIndex++)
     {

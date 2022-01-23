@@ -1,8 +1,8 @@
 #include "dictionary.h"
 
-Dictionary *createDictionary(unsigned int size)
+VariableDictionary *createVariableDictionary(unsigned int size)
 {
-    Dictionary *dict = new Dictionary;
+    VariableDictionary *dict = new VariableDictionary;
     dict->size = size;
     dict->freeIndex = 0;
     dict->values = new Number[size];
@@ -16,7 +16,7 @@ Dictionary *createDictionary(unsigned int size)
     return dict;
 }
 
-void setVariable(char *variableName, Number number, Dictionary *dict)
+void setVariable(char *variableName, Number number, VariableDictionary *dict)
 {
     auto val = (number.type == EnumberType::INTEGER ? number.value.integer : number.value.decimal);
     bool alreadyExist = false;
@@ -45,7 +45,7 @@ void setVariable(char *variableName, Number number, Dictionary *dict)
     }
 }
 
-bool getVariable(char *variableName, Dictionary *dict, Number &num)
+bool getVariable(char *variableName, VariableDictionary *dict, Number &num)
 {
     for (unsigned int i = 0; i < dict->size; i++)
     {

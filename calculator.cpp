@@ -51,7 +51,7 @@ BETNode *exprToAET(Expression *expr)
     return exprToAET(expr, 0);
 }
 
-bool eval(char *str, Dictionary *dict, Number &result)
+bool eval(char *str, VariableDictionary *dict, Number &result)
 {
     Expression *e = strToExpr(str);
     // printf("strToExpr success: ");
@@ -90,6 +90,10 @@ EExpressionType recognizeExpressionType(char *expr)
     if (strcmp(expr, "vars") == 0)
     {
         return EExpressionType::SHOW_VARIABLES;
+    }
+    if (strcmp(expr, "funcs") == 0)
+    {
+        return EExpressionType::SHOW_FUNCTIONS;
     }
     if (strcmp(expr, "saveB") == 0)
     {
@@ -148,7 +152,7 @@ bool isCorrectVariableName(char *var)
         return false;
     }
 
-    for (int i = 0; i < strlen(var); i++)
+    for (unsigned int i = 0; i < strlen(var); i++)
     {
         ESymbolType t = recognizeSymbol(var[i]);
         if (not(t == ESymbolType::NUMBER or t == ESymbolType::VARIABLE or var[i] == ' '))
@@ -163,7 +167,7 @@ void deleteSpaces(char *expr)
 {
     char result[EXPR_MAX_LEN + 1];
     int resultLength = 0;
-    for (int i = 0; i < strlen(expr) - 1; i++)
+    for (unsigned int i = 0; i < strlen(expr) - 1; i++)
     {
         if (expr[i] != ' ')
         {
@@ -172,17 +176,19 @@ void deleteSpaces(char *expr)
         }
     }
     result[resultLength] = '\0';
-    strncpy(expr, result, EXPR_MAX_LEN);
+    strncpy(expr, result, EXPR_MAX_LEN + 1);
 }
 
 void consoleModeStart(unsigned int dictionarySize)
 {
     printf("\nsimpleCalculator version %d.%d\n", MAJOR_VERSION, MINOR_VERSION);
-    Dictionary *dict = createDictionary(dictionarySize);
+    VariableDictionary *dict = createVariableDictionary(dictionarySize);
+    FunctionDictionary *functions = createFunctionDictionary(dictionarySize);
     char expr[EXPR_MAX_LEN + 1];
     bool running = true;
     while (running)
     {
+        memset(expr, 0, EXPR_MAX_LEN + 1);
         printf(">>> ");
         fgets(expr, EXPR_MAX_LEN, stdin);
 
@@ -222,7 +228,7 @@ void consoleModeStart(unsigned int dictionarySize)
 
         case EExpressionType::LOAD_VARIABLES:
         {
-            Dictionary *newDict = loadDictionary(dictionarySize);
+            VariableDictionary *newDict = loadDictionary(dictionarySize);
             if (newDict != nullptr)
             {
                 dict = newDict;
@@ -299,15 +305,24 @@ void consoleModeStart(unsigned int dictionarySize)
 
         case EExpressionType::CREATE_FUNCTION:
         {
-            printf("creating function is not released yet\n");
-            break;
             char *functionDeclaration = expr + 4; //strip function declaration keyword
             printf("|%s|\n", functionDeclaration);
             char *functionName = strtok(functionDeclaration, "(");
             char *variablesList = strtok(NULL, ")=");
             char *functionBody = strtok(NULL, "=");
+            // printf("b:");
+            // print(strToExpr(functionBody));
+            // printf("\n");
+            printf("name: |%s|\nargs: |%s|\nbody: |%s|\n", functionName, variablesList, functionBody);
             Function *func = createFunction(variablesList, functionBody);
-            // printf("|%s|\n|%s|\n|%s|\n", functionName, variablesList, functionBody);
+            printf("func entity created\n");
+            addFunction(functionName, *func, functions);
+            break;
+        }
+
+        case EExpressionType::SHOW_FUNCTIONS:
+        {
+            print(functions);
             break;
         }
 

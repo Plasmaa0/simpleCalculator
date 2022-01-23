@@ -1,12 +1,12 @@
 #ifndef __CALCULATOR_H__
 #define __CALCULATOR_H__
 
+#include "function.h"
 #include "io.h"
 #include "expression.h"
 #include "dictionary.h"
 #include "BET.h"
 #include "number.h"
-#include "function.h"
 
 typedef enum EExpressionType
 {
@@ -20,6 +20,7 @@ typedef enum EExpressionType
     EVALUATE,
     EVALUATE_AND_ASSIGN,
     CREATE_FUNCTION,
+    SHOW_FUNCTIONS,
     E_COMMAND_TYPE_LAST
 } EExpressionType;
 
@@ -27,7 +28,7 @@ BETNode *exprToAET(Expression *expr, int nestLevel);
 BETNode *exprToAET(Expression *expr);
 
 //THE MAIN PURPOSE OF ALL THIS SHIT
-bool eval(char *str, Dictionary *dict, Number &result);
+bool eval(char *str, VariableDictionary *dict, Number &result);
 
 EExpressionType recognizeExpressionType(char *expr);
 

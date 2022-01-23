@@ -7,9 +7,9 @@ int main()
 {
     char *a = new char;
     *a = '2';
-    unsigned int dictionarySize = 100;
+    unsigned int dictionarySize = 30;
     consoleModeStart(dictionarySize);
-    // Dictionary *dict = createDictionary(3);
+    // Dictionary *dict = createVariableDictionary(3);
     // setVariable("var1", 10, dict);
     // setVariable("per", 5, dict);
     // print(dict);

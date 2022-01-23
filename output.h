@@ -9,6 +9,7 @@
 #include "dictionary.h"
 #include "number.h"
 #include "BET.h"
+#include "function.h"
 
 //OUTPUT
 
@@ -19,9 +20,9 @@ void post_order(const BETNode *root);
 void prettyPrint(BETNode *node);
 void print(const BETNode *root);
 void print(Symbol symb, bool brackets = false);
-void print(Dictionary *dict);
+void print(VariableDictionary *dict);
 void print(Number n, bool printType = false);
 
-void saveDictionary(Dictionary *dict, bool asBinary = false);
+void saveDictionary(VariableDictionary *dict, bool asBinary = false);
 
 #endif // __OUTPUT_H__

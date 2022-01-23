@@ -60,19 +60,16 @@ void print(const BETNode *root)
     print(root, 1);
 }
 
-void print(Dictionary *dict)
+void print(VariableDictionary *dict)
 {
     printf("VARIABLES:\n");
     if (dict->freeIndex > 0)
     {
-        for (unsigned int i = 0; i < dict->size; i++)
+        for (unsigned int i = 0; i < dict->freeIndex; i++)
         {
-            if (dict->values[i].type != EnumberType::NAN)
-            {
-                printf("   %s = ", dict->keys[i]);
-                print(dict->values[i], true);
-                printf("\n");
-            }
+            printf("   %s = ", dict->keys[i]);
+            print(dict->values[i], true);
+            printf("\n");
         }
         printf("END\n");
     }
@@ -206,7 +203,7 @@ void print(Number n, bool printType)
     }
 }
 
-void saveDictionary(Dictionary *dict, bool asBinary)
+void saveDictionary(VariableDictionary *dict, bool asBinary)
 {
     if (dict == nullptr)
     {

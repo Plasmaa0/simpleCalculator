@@ -18,6 +18,6 @@ typedef struct BETNode
 
 BETNode *createNode();
 void insert(BETNode *root, Symbol *s);
-bool eval(BETNode *root, Dictionary *dict, Number &result);
+bool eval(BETNode *root, VariableDictionary *dict, Number &result);
 
 #endif // __BET_H__

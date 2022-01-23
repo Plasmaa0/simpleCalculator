@@ -1,6 +1,6 @@
 #include "input.h"
 
-Dictionary *loadDictionary(unsigned int maxSize)
+VariableDictionary *loadDictionary(unsigned int maxSize)
 {
     FILE *f = fopen("variables", "rb");
     if (f == NULL)
@@ -13,7 +13,7 @@ Dictionary *loadDictionary(unsigned int maxSize)
     {
         int size;
         fread(&size, 1, sizeof(int), f);
-        Dictionary *result = createDictionary(maxSize);
+        VariableDictionary *result = createVariableDictionary(maxSize);
         for (int i = 0; i < size; i++)
         {
             Number n;

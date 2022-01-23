@@ -7,18 +7,18 @@
 #include "constants.h"
 #include "number.h"
 
-typedef struct Dictionary
+typedef struct VariableDictionary
 {
     unsigned int size;
     unsigned int freeIndex;
     char **keys;
     Number *values;
-} Dictionary;
+} VariableDictionary;
 
-//DICTIONARY
+//VARIABLE DICTIONARY
 
-Dictionary *createDictionary(unsigned int size);
-void setVariable(char *variableName, Number number, Dictionary *dict);
-bool getVariable(char *variableName, Dictionary *dict, Number &num);
+VariableDictionary *createVariableDictionary(unsigned int size);
+void setVariable(char *variableName, Number number, VariableDictionary *dict);
+bool getVariable(char *variableName, VariableDictionary *dict, Number &num);
 
 #endif // __DICTIONARY_H__
