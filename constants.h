@@ -15,4 +15,6 @@ const int MAX_INT_LENGTH = 10;
 const int MAX_FLOAT_LENGTH = 307;
 const int MAX_NUMBER_LENGTH = MAX_FLOAT_LENGTH;
 
+const int FUNCTION_MAX_ARGS_N = 10;
+
 #endif // __CONSTANTS_H__

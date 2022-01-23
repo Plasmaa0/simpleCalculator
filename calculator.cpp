@@ -105,7 +105,16 @@ EExpressionType recognizeExpressionType(char *expr)
     }
     if (strchr(expr, '='))
     {
-        return EExpressionType::EVALUATE_AND_ASSIGN;
+        if (strncmp(expr, "def:", 4) == 0)
+        {
+            printf("f create\n");
+            return EExpressionType::CREATE_FUNCTION;
+        }
+        else
+        {
+            printf("not f\n");
+            return EExpressionType::EVALUATE_AND_ASSIGN;
+        }
     }
     else
     {
@@ -134,6 +143,11 @@ char getCompoundOperator(char *expr)
 bool isCorrectVariableName(char *var)
 {
     // printf("var: %s\n", var);
+    if (recognizeSymbol(var[0]) == ESymbolType::NUMBER)
+    {
+        return false;
+    }
+
     for (int i = 0; i < strlen(var); i++)
     {
         ESymbolType t = recognizeSymbol(var[i]);
@@ -171,8 +185,9 @@ void consoleModeStart(unsigned int dictionarySize)
     {
         printf(">>> ");
         fgets(expr, EXPR_MAX_LEN, stdin);
+
         deleteSpaces(expr);
-        
+
         switch (recognizeExpressionType(expr))
         {
         case EExpressionType::DO_NOTHING:
@@ -212,6 +227,7 @@ void consoleModeStart(unsigned int dictionarySize)
             {
                 dict = newDict;
             }
+
             break;
         }
 
@@ -278,6 +294,20 @@ void consoleModeStart(unsigned int dictionarySize)
                     setVariable(var, evaluationResult, dict);
                 }
             }
+            break;
+        }
+
+        case EExpressionType::CREATE_FUNCTION:
+        {
+            printf("creating function is not released yet\n");
+            break;
+            char *functionDeclaration = expr + 4; //strip function declaration keyword
+            printf("|%s|\n", functionDeclaration);
+            char *functionName = strtok(functionDeclaration, "(");
+            char *variablesList = strtok(NULL, ")=");
+            char *functionBody = strtok(NULL, "=");
+            Function *func = createFunction(variablesList, functionBody);
+            // printf("|%s|\n|%s|\n|%s|\n", functionName, variablesList, functionBody);
             break;
         }
 

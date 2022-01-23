@@ -6,6 +6,7 @@
 #include "dictionary.h"
 #include "BET.h"
 #include "number.h"
+#include "function.h"
 
 typedef enum EExpressionType
 {
@@ -18,6 +19,7 @@ typedef enum EExpressionType
     LOAD_VARIABLES,
     EVALUATE,
     EVALUATE_AND_ASSIGN,
+    CREATE_FUNCTION,
     E_COMMAND_TYPE_LAST
 } EExpressionType;
 
