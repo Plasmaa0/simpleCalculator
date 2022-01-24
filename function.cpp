@@ -22,7 +22,7 @@ Function *createFunction(char *paramsAsString, char *body)
             return nullptr;
         }
 
-        printf("arg %d: %s\n", result->argsNumber, argName);
+        // printf("arg %d: %s\n", result->argsNumber, argName);
         strncpy(result->argsNames[result->argsNumber], argName, MAX_VARIABLE_NAME_LEN);
         result->argsNumber++;
         argName = strtok(NULL, ",");
@@ -81,7 +81,7 @@ void addFunction(char *funcName, Function func, FunctionDictionary *dict)
             // printf("reset %s from %f to %f\n", variableName, dict->values[i], value);
             dict->functions[i] = func;
             alreadyExist = true;
-            printf("func redefinded\n");
+            printf("function '%s' redefinded\n", funcName);
             break;
         }
     }
@@ -92,12 +92,12 @@ void addFunction(char *funcName, Function func, FunctionDictionary *dict)
         strncpy(dict->names[dict->freeIndex], funcName, MAX_NUMBER_LENGTH);
         dict->functions[dict->freeIndex] = func;
         dict->freeIndex++;
-        printf("new func added\n");
+        printf("new function '%s' added\n", funcName);
         // }
     }
     else if (not alreadyExist)
     {
-        printf("dictionary overflow, can't add variable %s\n", funcName);
+        printf("dictionary overflow, can't add function %s\n", funcName);
     }
 }
 

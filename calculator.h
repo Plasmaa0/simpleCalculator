@@ -12,6 +12,7 @@ typedef enum EExpressionType
 {
     E_COMMAND_TYPE_FIRST = 0,
     EXIT = 0,
+    HELP,
     DO_NOTHING,
     SHOW_VARIABLES,
     SAVE_VARIABLES_TXT,

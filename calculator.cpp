@@ -51,6 +51,18 @@ BETNode *exprToAET(Expression *expr)
     return exprToAET(expr, 0);
 }
 
+void showHelp()
+{
+    printf("HELP:\n\
+    vars - show variables\n\
+    funcs - show functions\n\
+    save - save variables in text file\n\
+    saveB - save variables in binary file (for loading them in future)\n\
+    load - load variables from binary file\n\
+    define a function: 'def: name(arg1, arg2, ...) = expression'\n\
+    exit - close program\n");
+}
+
 bool eval(char *str, VariableDictionary *dict, Number &result)
 {
     Expression *e = strToExpr(str);
@@ -86,6 +98,10 @@ EExpressionType recognizeExpressionType(char *expr)
     if (strcmp(expr, "exit") == 0)
     {
         return EExpressionType::EXIT;
+    }
+    if (strcmp(expr, "help") == 0)
+    {
+        return EExpressionType::HELP;
     }
     if (strcmp(expr, "vars") == 0)
     {
@@ -181,7 +197,7 @@ void deleteSpaces(char *expr)
 
 void consoleModeStart(unsigned int dictionarySize)
 {
-    printf("\nsimpleCalculator version %d.%d\n", MAJOR_VERSION, MINOR_VERSION);
+    printf("\nsimpleCalculator version %d.%d\nType 'help' for help.\n", MAJOR_VERSION, MINOR_VERSION);
     VariableDictionary *dict = createVariableDictionary(dictionarySize);
     FunctionDictionary *functions = createFunctionDictionary(dictionarySize);
     char expr[EXPR_MAX_LEN + 1];
@@ -205,6 +221,12 @@ void consoleModeStart(unsigned int dictionarySize)
         case EExpressionType::EXIT:
         {
             running = false;
+            break;
+        }
+
+        case EExpressionType::HELP:
+        {
+            showHelp();
             break;
         }
 
@@ -306,16 +328,16 @@ void consoleModeStart(unsigned int dictionarySize)
         case EExpressionType::CREATE_FUNCTION:
         {
             char *functionDeclaration = expr + 4; //strip function declaration keyword
-            printf("|%s|\n", functionDeclaration);
+            // printf("|%s|\n", functionDeclaration);
             char *functionName = strtok(functionDeclaration, "(");
             char *variablesList = strtok(NULL, ")=");
             char *functionBody = strtok(NULL, "=");
             // printf("b:");
             // print(strToExpr(functionBody));
             // printf("\n");
-            printf("name: |%s|\nargs: |%s|\nbody: |%s|\n", functionName, variablesList, functionBody);
+            // printf("name: |%s|\nargs: |%s|\nbody: |%s|\n", functionName, variablesList, functionBody);
             Function *func = createFunction(variablesList, functionBody);
-            printf("func entity created\n");
+            // printf("func entity created\n");
             addFunction(functionName, *func, functions);
             break;
         }
