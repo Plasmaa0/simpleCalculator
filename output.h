@@ -19,9 +19,7 @@ void in_order(const BETNode *root);
 void post_order(const BETNode *root);
 void prettyPrint(BETNode *node);
 void print(const BETNode *root);
-void print(Symbol symb, bool brackets = false);
 void print(VariableDictionary *dict);
-void print(Number n, bool printType = false);
 
 void saveDictionary(VariableDictionary *dict, bool asBinary = false);
 

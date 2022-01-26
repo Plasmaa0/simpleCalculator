@@ -1,6 +1,8 @@
 #ifndef __NUMBER_H__
 #define __NUMBER_H__
 
+#include <iostream>
+
 typedef union NumberContainer
 {
     double decimal;
@@ -22,4 +24,5 @@ typedef struct Number
     NumberContainer value;
 } Number;
 
+void print(Number n, bool printType = false);
 #endif // __NUMBER_H__

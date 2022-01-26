@@ -67,7 +67,7 @@ void print(VariableDictionary *dict)
     {
         for (unsigned int i = 0; i < dict->freeIndex; i++)
         {
-            printf("   %s = ", dict->keys[i]);
+            printf("   |%s| = ", dict->keys[i]);
             print(dict->values[i], true);
             printf("\n");
         }
@@ -139,40 +139,6 @@ void prettyPrint(BETNode *node)
     prettyPrint("", node, false);
 }
 
-void print(Symbol symb, bool brackets)
-{
-    if (brackets)
-        printf("{");
-    switch (symb.type)
-    {
-    case ESymbolType::NUMBER:
-        print(symb.entity.number);
-        break;
-    case ESymbolType::OPERATOR:
-        printf("%c", symb.entity.operator_);
-        break;
-    case ESymbolType::OPENING_BRACKET:
-        printf("%c", symb.entity.bracket);
-        break;
-    case ESymbolType::CLOSING_BRACKET:
-        printf("%c", symb.entity.bracket);
-        break;
-    case ESymbolType::VARIABLE:
-        printf("%s", symb.entity.variable);
-        break;
-    case ESymbolType::DECIMAL_COMMA:
-        printf(".");
-        break;
-    case ESymbolType::NOT_A_SYMBOL:
-    //проваливаемся в общий случай
-    default:
-        printf("NAS"); //Not A Symbol
-        break;
-    }
-    if (brackets)
-        printf("}");
-}
-
 void print(Expression *expr)
 {
     // setPriorities(expr);
@@ -182,25 +148,6 @@ void print(Expression *expr)
         // printf("%d ", expr->symbols[i].priority);
     }
     printf("\n");
-}
-
-void print(Number n, bool printType)
-{
-    switch (n.type)
-    {
-    case EnumberType::INTEGER:
-        if (printType)
-            printf("int ");
-        printf("%d", n.value.integer);
-        break;
-    case EnumberType::FLOATING_POINT:
-        if (printType)
-            printf("float ");
-        printf("%.2f", n.value.decimal);
-        break;
-    default:
-        break;
-    }
 }
 
 void saveDictionary(VariableDictionary *dict, bool asBinary)

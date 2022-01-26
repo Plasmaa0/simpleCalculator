@@ -29,7 +29,7 @@ BETNode *exprToAET(Expression *expr, int nestLevel);
 BETNode *exprToAET(Expression *expr);
 
 //THE MAIN PURPOSE OF ALL THIS SHIT
-bool eval(char *str, VariableDictionary *dict, Number &result);
+bool eval(char *str, VariableDictionary *dict, FunctionDictionary *fdict, Number &result);
 
 EExpressionType recognizeExpressionType(char *expr);
 

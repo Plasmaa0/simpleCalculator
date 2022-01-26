@@ -4,6 +4,8 @@
 #include <iostream>
 #include <string.h>
 
+struct FunctionDictionary;
+
 #include "BET.h"
 #include "number.h"
 #include "expression.h"
@@ -17,9 +19,6 @@ typedef struct Function
     BETNode *body;
 } Function;
 
-Function *createFunction(char *paramsAsString, char *body);
-bool evaluateFunction(Number *args, unsigned int argsN, Function *func, Number &result);
-
 typedef struct FunctionDictionary
 {
     unsigned int size;
@@ -28,6 +27,27 @@ typedef struct FunctionDictionary
     Function *functions;
 } FunctionDictionary;
 
+Function *createFunction(char *paramsAsString, char *body);
+bool evaluateFunction(Number *args, unsigned int argsN, Function *func, FunctionDictionary *fdict, Number &result);
+
+// typedef enum EArgType
+// {
+//     VARIABLE,
+//     NUMBER,
+//     FUNCTION_CALL
+// }
+
+// typedef struct Arg
+// {
+
+// } Arg;
+
+// typedef struct functionCall
+// {
+//     int argsN;
+//     Arg args[FUNCTION_MAX_ARGS_N];
+//     char functionName[MAX_VARIABLE_NAME_LEN + 1];
+// } functionCall;
 //FUNCTION DICTIONARY
 
 void print(FunctionDictionary *dict);

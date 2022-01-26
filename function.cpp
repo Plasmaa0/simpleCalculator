@@ -40,7 +40,7 @@ void print(FunctionDictionary *dict)
             printf("   %s(", dict->names[i]);
             for (unsigned int argI = 0; argI < dict->functions[i].argsNumber; argI++)
             {
-                printf("%s", dict->functions[i].argsNames[argI]);
+                printf("%s(%d)", dict->functions[i].argsNames[argI], strlen(dict->functions[i].argsNames[argI]));
                 if (argI != dict->functions[i].argsNumber - 1)
                 {
                     printf(", ");
@@ -107,7 +107,8 @@ bool getFunction(char *funcName, FunctionDictionary *dict, Function &func)
     {
         if (strncmp(dict->names[i], funcName, MAX_VARIABLE_NAME_LEN) == 0)
         {
-            func = dict->functions[i];
+            // func = dict->functions[i];
+            memcpy(&func, dict->functions + i, sizeof(Function));
             // printf("found %s=%d\n", variableName, value);
             return true;
         }
@@ -116,17 +117,39 @@ bool getFunction(char *funcName, FunctionDictionary *dict, Function &func)
     return false;
 }
 
-bool evaluateFunction(Number *args, unsigned int argsN, Function *func, Number &result)
+bool evaluateFunction(Number *args, unsigned int argsN, Function *func, FunctionDictionary *fdict, Number &result)
 {
     if (func->argsNumber != argsN)
     {
         printf("incompatible argument number\n");
         return false;
     }
-    VariableDictionary *localVariables = createVariableDictionary(argsN);
+    VariableDictionary *localVariables = createVariableDictionary(argsN + 1);
     for (unsigned int i = 0; i < argsN; i++)
     {
+        printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>  %d  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n", i);
+        printf("                                   BEFORE PRINT THE VARIABLE\n");
+        printf("local vdict and fdict:\n");
+        print(localVariables);
+        print(fdict);
+
+        printf("%s on [%p] var set %s = ", func->asString, func, func->argsNames[i]);
+        print(args[i]);
+        printf("\n");
+
+        printf("                                   AFTER PRINT THE VARIABLE\n");
+        printf("local vdict and fdict:\n");
+        print(localVariables);
+        print(fdict);
+
         setVariable(func->argsNames[i], args[i], localVariables);
+
+        printf("                                   AFTER SETTING THE VARIABLE\n");
+        printf("local vdict and fdict:\n");
+        print(localVariables);
+        print(fdict);
     }
-    return eval(func->body, localVariables, result);
+
+    printf("                         EVALUATE FUNCTION --->>> EVAL\n");
+    return eval(func->body, localVariables, fdict, result);
 }

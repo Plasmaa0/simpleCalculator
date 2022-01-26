@@ -280,6 +280,144 @@ Expression *handleUnaryMinus(Expression *expr)
     return result;
 }
 
+Expression *deleteNAS(Expression *expr)
+{
+    int NASCount = 0;
+    for (int i = 0; i < expr->length; i++)
+    {
+        if (expr->symbols[i].type == ESymbolType::NOT_A_SYMBOL)
+        {
+            NASCount++;
+        }
+    }
+
+    Expression *result = new Expression;
+    result->length = expr->length - NASCount;
+    result->symbols = new Symbol[result->length];
+    int writeIndex = 0;
+    for (int i = 0; i < expr->length; i++)
+    {
+        if (expr->symbols[i].type != ESymbolType::NOT_A_SYMBOL)
+        {
+            result->symbols[writeIndex] = expr->symbols[i];
+            writeIndex++;
+        }
+    }
+    if (writeIndex != result->length)
+    {
+        printf("wrffdamfoga\n");
+    }
+    return result;
+}
+
+Expression *handleFunctions(Expression *expr)
+{
+    bool hasFunctionCalls = false;
+    //setting the priority of evaluating every function
+    int maxPriority = 0;
+    {
+        int priority = 0;
+        for (int symbolIndex = 0; symbolIndex < expr->length - 2; symbolIndex++)
+        {
+            if (expr->symbols[symbolIndex].type == ESymbolType::OPENING_BRACKET)
+            {
+                priority += 1;
+            }
+            if (expr->symbols[symbolIndex].type == ESymbolType::CLOSING_BRACKET)
+            {
+                priority -= 1;
+            }
+            if (expr->symbols[symbolIndex].type == ESymbolType::VARIABLE and expr->symbols[symbolIndex + 1].type == ESymbolType::OPENING_BRACKET)
+            {
+                if (priority > maxPriority)
+                {
+                    maxPriority = priority;
+                }
+                hasFunctionCalls = true;
+                expr->symbols[symbolIndex].priority = priority;
+                printf("function recognized: {%s}. priority=%d\n", expr->symbols[symbolIndex].entity.variable, priority);
+            }
+            else
+            {
+                expr->symbols[symbolIndex].priority = -1;
+            }
+        }
+    }
+
+    if (hasFunctionCalls)
+    {
+        //pick the function with max priority and parse it's parameters
+        printf("pr:\n");
+        for (int priority = maxPriority; priority >= 0; priority--)
+        {
+            int funcIndex;
+            Symbol func;
+            func.type = ESymbolType::FUNCTION_CALL;
+            // func.entity.functionCall = new struct functionCall;
+            // printf("1\n");
+            // printf("%d", func.entity.functionCall);
+            // func.entity.functionCall->argsN = 0;
+            // printf("!%d!\n", func.entity.functionCall->argsN);
+            bool lookingForArgs = false;
+            for (int symbolIndex = 0; symbolIndex < expr->length; symbolIndex++)
+            {
+                ESymbolType currentSymbolType = expr->symbols[symbolIndex].type;
+                if ((not lookingForArgs) and expr->symbols[symbolIndex].priority == priority)
+                {
+                    //reset funnctionCall
+                    func.entity.functionCall = new struct functionCall;
+                    func.entity.functionCall->argsN = 0;
+
+                    funcIndex = symbolIndex;
+                    lookingForArgs = true;
+                    strcpy(func.entity.functionCall->functionName, expr->symbols[symbolIndex].entity.variable);
+                    printf("started construction of %s on index %d\n", func.entity.functionCall->functionName, symbolIndex);
+                    continue;
+                }
+
+                if (lookingForArgs)
+                {
+                    if (currentSymbolType == ESymbolType::NUMBER or currentSymbolType == ESymbolType::VARIABLE or currentSymbolType == ESymbolType::FUNCTION_CALL)
+                    {
+                        printf("arg: ");
+                        print(expr->symbols[symbolIndex]);
+                        printf("\n");
+                        func.entity.functionCall->args[func.entity.functionCall->argsN] = expr->symbols[symbolIndex];
+                        func.entity.functionCall->argsN++;
+                    }
+                    else if (currentSymbolType == ESymbolType::CLOSING_BRACKET)
+                    {
+                        // printf(".\n");
+                        expr->symbols[funcIndex] = func;
+                        expr->symbols[funcIndex + 1].type = ESymbolType::NOT_A_SYMBOL; //opening bracket
+                        expr->symbols[symbolIndex].type = ESymbolType::NOT_A_SYMBOL;   //closing bracket
+
+                        printf("constructed function: ");
+                        print(func);
+                        printf("\n");
+                        // print(expr);
+                        lookingForArgs = false;
+                    }
+                    /**
+                     * 
+                     * TODO: сделать чтобы functionCall не менялся на Not_A_symbol
+                     * 
+                     */
+                    // if (currentSymbolType != ESymbolType::FUNCTION_CALL)
+                    print(expr->symbols[symbolIndex]);
+                    printf("-> NAS\n");
+                    expr->symbols[symbolIndex].type = ESymbolType::NOT_A_SYMBOL;
+                    continue;
+                }
+            }
+        }
+        expr = deleteNAS(expr);
+        printf("parsed function calls: ");
+        print(expr);
+    }
+    return expr;
+}
+
 Expression *strToExpr(char *str)
 {
     Expression *expr = new Expression;
@@ -308,10 +446,10 @@ Expression *strToExpr(char *str)
         if (str[symbolIndex] != ' ')
         {
             expr->symbols[writeIndex] = charToSymbol(str[symbolIndex]);
-            if (expr->symbols[writeIndex].type == ESymbolType::NOT_A_SYMBOL)
-            {
-                printf("%c is unknown symbol. it may cause problems.\n", str[symbolIndex]);
-            }
+            // if (expr->symbols[writeIndex].type == ESymbolType::NOT_A_SYMBOL)
+            // {
+            //     printf("%c is unknown symbol. it may cause problems.\n", str[symbolIndex]);
+            // }
             writeIndex++;
         }
     }
@@ -330,6 +468,8 @@ Expression *strToExpr(char *str)
     // print(expr);
     // printf("\n");
     expr = handleUnaryMinus(expr);
+
+    expr = handleFunctions(expr);
     return expr;
 }
 

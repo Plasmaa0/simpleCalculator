@@ -28,7 +28,7 @@ Symbol charToSymbol(char ch)
     case ESymbolType::NOT_A_SYMBOL:
     //проваливаемся в общий случай
     default:
-        printf("%c is not a symbol\n", ch);
+        // printf("%c is not a symbol\n", ch);
         break;
     }
     return symb;
@@ -60,6 +60,10 @@ ESymbolType recognizeSymbol(char symbol)
     {
         return ESymbolType::DECIMAL_COMMA;
     }
+    else if (symbol == ',')
+    {
+        return ESymbolType::COMMA;
+    }
     return ESymbolType::NOT_A_SYMBOL;
 }
 
@@ -86,4 +90,55 @@ unsigned int priority(char symb)
         return 0;
         break;
     }
+}
+
+void print(Symbol symb, bool brackets)
+{
+    // if (symb.type != ESymbolType::NOT_A_SYMBOL)
+    // {
+    if (brackets)
+        printf("{");
+    switch (symb.type)
+    {
+    case ESymbolType::NUMBER:
+        print(symb.entity.number);
+        break;
+    case ESymbolType::OPERATOR:
+        printf("%c", symb.entity.operator_);
+        break;
+    case ESymbolType::OPENING_BRACKET:
+        printf("%c", symb.entity.bracket);
+        break;
+    case ESymbolType::CLOSING_BRACKET:
+        printf("%c", symb.entity.bracket);
+        break;
+    case ESymbolType::VARIABLE:
+        printf("%s", symb.entity.variable);
+        break;
+    case ESymbolType::DECIMAL_COMMA:
+        printf(".");
+        break;
+    case ESymbolType::COMMA:
+        printf(",");
+        break;
+    case ESymbolType::FUNCTION_CALL:
+        printf("%s(", symb.entity.functionCall->functionName);
+        for (int i = 0; i < symb.entity.functionCall->argsN; i++)
+        {
+            print(symb.entity.functionCall->args[i], false);
+            if (i != symb.entity.functionCall->argsN - 1)
+                printf(",");
+        }
+        printf(")");
+
+        break;
+    case ESymbolType::NOT_A_SYMBOL:
+    //проваливаемся в общий случай
+    default:
+        printf("NAS"); //Not A Symbol
+        break;
+    }
+    if (brackets)
+        printf("}");
+    // }
 }

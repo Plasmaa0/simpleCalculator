@@ -4,6 +4,8 @@
 #include <string.h>
 #include "symbol.h"
 #include "util.h"
+// #include "function.h"
+// #include "output.h"
 
 typedef struct Expression
 {
@@ -24,5 +26,7 @@ void setPriorities(Expression *expr);
 Expression *handleNumberSequences(Expression *expr);
 Expression *handleLetterSequences(Expression *expr);
 Expression *handleUnaryMinus(Expression *expr);
+Expression *deleteNAS(Expression *expr);
+Expression *handleFunctions(Expression *expr);
 
 #endif // __TYPES_H__

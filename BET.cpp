@@ -34,12 +34,67 @@ void insert(BETNode *root, Symbol *s)
     }
 }
 
-bool eval(BETNode *root, VariableDictionary *dict, Number &result)
+bool evaluateFunctionCall(Symbol *functionCallSymbol, VariableDictionary *dict, FunctionDictionary *fdict, Number &result)
+{
+    bool success = true;
+    int argsN = functionCallSymbol->entity.functionCall->argsN;
+    Number argValues[argsN];
+    for (int i = 0; i < argsN; i++)
+    {
+        Symbol currentArg = functionCallSymbol->entity.functionCall->args[i];
+        if (currentArg.type == ESymbolType::VARIABLE)
+        {
+            //if single variable not exist, success->false
+            printf("got variable %s\n", currentArg.entity.variable);
+            success = (success && getVariable(currentArg.entity.variable, dict, argValues[i]));
+        }
+        else if (currentArg.type == ESymbolType::NUMBER)
+        {
+            printf("got number ");
+            print(currentArg);
+            printf("\n");
+            argValues[i] = currentArg.entity.number;
+        }
+        else if (currentArg.type == ESymbolType::FUNCTION_CALL)
+        {
+            printf("started evaluating %s\n", currentArg.entity.functionCall->functionName);
+            printf("                         EVALUATE FUNCTION CALL --->>> EVALUATE FUNCTION CALL\n");
+            success = (success && evaluateFunctionCall(&currentArg, dict, fdict, argValues[i]));
+        }
+        printf("%s arg %d = ", functionCallSymbol->entity.functionCall->functionName, i);
+        print(argValues[i]);
+        printf("\n");
+    }
+    Function func;
+    success = (success && getFunction(functionCallSymbol->entity.functionCall->functionName, fdict, func));
+    if (success)
+    {
+
+        printf("                EVALUATE FUNCTION CALL --->>> EVALUATE FUNCTION\n");
+        success = (success && evaluateFunction(argValues, argsN, &func, fdict, result));
+    }
+    printf("evaluated %s with args: ", functionCallSymbol->entity.functionCall->functionName);
+    for (int i = 0; i < argsN; i++)
+    {
+        print(functionCallSymbol->entity.functionCall->args[i]);
+        printf(" ");
+    }
+    printf("\n");
+
+    return success;
+}
+
+bool eval(BETNode *root, VariableDictionary *dict, FunctionDictionary *fdict, Number &result)
 {
     if (root == nullptr)
     {
         printf("syntax error\n");
         return false;
+    }
+    if (root->s->type == ESymbolType::FUNCTION_CALL)
+    {
+        printf("                         EVAL --->>> EVALUATE FUNCTION CALL\n");
+        return evaluateFunctionCall(root->s, dict, fdict, result);
     }
     if (root->s->type == ESymbolType::NUMBER)
     {
@@ -57,9 +112,9 @@ bool eval(BETNode *root, VariableDictionary *dict, Number &result)
     }
 
     Number a;
-    bool aSuccess = eval(root->left, dict, a);
+    bool aSuccess = eval(root->left, dict, fdict, a);
     Number b;
-    bool bSuccess = eval(root->right, dict, b);
+    bool bSuccess = eval(root->right, dict, fdict, b);
     bool solveSuccess = solve(a, b, root->s->entity.operator_, result);
     bool totalSuccess = (aSuccess && bSuccess && solveSuccess);
     return totalSuccess;

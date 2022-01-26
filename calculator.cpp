@@ -63,17 +63,23 @@ void showHelp()
     exit - close program\n");
 }
 
-bool eval(char *str, VariableDictionary *dict, Number &result)
+bool eval(char *str, VariableDictionary *dict, FunctionDictionary *fdict, Number &result)
 {
+    printf("######################################################\n");
     Expression *e = strToExpr(str);
     // printf("strToExpr success: ");
     // print(e);
     // printf("\n");
     BETNode *root = exprToAET(e);
-    // printf("exprToAET success\n");
+    printf("exprToAET success\n");
     // prettyPrint(root);
-    // print(root);
-    bool evalSuccess = eval(root, dict, result);
+    print(root);
+    bool evalSuccess = eval(root, dict, fdict, result);
+    if (evalSuccess)
+        printf("OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK \n");
+    else
+        printf("FAILURE FAILURE FAILURE FAILURE FAILURE FAILURE FAILURE FAILURE\n");
+
     // printf("|%d|\n", (evalSuccess ? 111111 : 999999));
     // printf("eval success\n");
     // printf("pre-order: ");
@@ -127,12 +133,12 @@ EExpressionType recognizeExpressionType(char *expr)
     {
         if (strncmp(expr, "def:", 4) == 0)
         {
-            printf("f create\n");
+            // printf("f create\n");
             return EExpressionType::CREATE_FUNCTION;
         }
         else
         {
-            printf("not f\n");
+            // printf("not f\n");
             return EExpressionType::EVALUATE_AND_ASSIGN;
         }
     }
@@ -200,6 +206,7 @@ void consoleModeStart(unsigned int dictionarySize)
     printf("\nsimpleCalculator version %d.%d\nType 'help' for help.\n", MAJOR_VERSION, MINOR_VERSION);
     VariableDictionary *dict = createVariableDictionary(dictionarySize);
     FunctionDictionary *functions = createFunctionDictionary(dictionarySize);
+    char lastResult[] = "_";
     char expr[EXPR_MAX_LEN + 1];
     bool running = true;
     while (running)
@@ -262,10 +269,10 @@ void consoleModeStart(unsigned int dictionarySize)
         case EExpressionType::EVALUATE:
         {
             Number evaluationResult;
-            bool evalSuccess = eval(expr, dict, evaluationResult);
+            bool evalSuccess = eval(expr, dict, functions, evaluationResult);
             if (evalSuccess)
             {
-                setVariable("_", evaluationResult, dict);
+                setVariable(lastResult, evaluationResult, dict);
                 print(evaluationResult);
                 printf("\n");
             }
@@ -303,7 +310,7 @@ void consoleModeStart(unsigned int dictionarySize)
             strncpy(expr, strtok(NULL, "="), EXPR_MAX_LEN);
             // printf("var: |%s|\nexpr: %s\n", var, expr);
             Number evaluationResult;
-            bool evalSuccess = eval(expr, dict, evaluationResult);
+            bool evalSuccess = eval(expr, dict, functions, evaluationResult);
             if (evalSuccess)
             {
                 if (isCompound)
@@ -316,7 +323,7 @@ void consoleModeStart(unsigned int dictionarySize)
                 }
                 else
                 {
-                    setVariable("_", evaluationResult, dict);
+                    setVariable(lastResult, evaluationResult, dict);
                     print(evaluationResult);
                     printf("\n");
                     setVariable(var, evaluationResult, dict);
