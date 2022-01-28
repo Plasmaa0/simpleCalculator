@@ -45,34 +45,38 @@ bool evaluateFunctionCall(Symbol *functionCallSymbol, VariableDictionary *dict, 
         if (currentArg.type == ESymbolType::VARIABLE)
         {
             //if single variable not exist, success->false
-            printf("got variable %s\n", currentArg.entity.variable);
+            // printf("got variable %s\n", currentArg.entity.variable);
             success = (success && getVariable(currentArg.entity.variable, dict, argValues[i]));
         }
         else if (currentArg.type == ESymbolType::NUMBER)
         {
-            printf("got number ");
-            print(currentArg);
-            printf("\n");
+            // printf("got number ");
+            // print(currentArg);
+            // printf("\n");
             argValues[i] = currentArg.entity.number;
         }
         else if (currentArg.type == ESymbolType::FUNCTION_CALL)
         {
-            printf("started evaluating %s\n", currentArg.entity.functionCall->functionName);
+// printf("started evaluating %s\n", currentArg.entity.functionCall->functionName);
+#ifdef DEBUF
             printf("                         EVALUATE FUNCTION CALL --->>> EVALUATE FUNCTION CALL\n");
+#endif
             success = (success && evaluateFunctionCall(&currentArg, dict, fdict, argValues[i]));
         }
-        printf("%s arg %d = ", functionCallSymbol->entity.functionCall->functionName, i);
-        print(argValues[i]);
-        printf("\n");
+        // printf("%s arg %d = ", functionCallSymbol->entity.functionCall->functionName, i);
+        // print(argValues[i]);
+        // printf("\n");
     }
     Function func;
     success = (success && getFunction(functionCallSymbol->entity.functionCall->functionName, fdict, func));
     if (success)
     {
-
+#ifdef DEBUF
         printf("                EVALUATE FUNCTION CALL --->>> EVALUATE FUNCTION\n");
+#endif
         success = (success && evaluateFunction(argValues, argsN, &func, fdict, result));
     }
+#ifdef DEBUF
     printf("evaluated %s with args: ", functionCallSymbol->entity.functionCall->functionName);
     for (int i = 0; i < argsN; i++)
     {
@@ -80,6 +84,7 @@ bool evaluateFunctionCall(Symbol *functionCallSymbol, VariableDictionary *dict, 
         printf(" ");
     }
     printf("\n");
+#endif
 
     return success;
 }
@@ -93,7 +98,9 @@ bool eval(BETNode *root, VariableDictionary *dict, FunctionDictionary *fdict, Nu
     }
     if (root->s->type == ESymbolType::FUNCTION_CALL)
     {
+#ifdef DEBUF
         printf("                         EVAL --->>> EVALUATE FUNCTION CALL\n");
+#endif
         return evaluateFunctionCall(root->s, dict, fdict, result);
     }
     if (root->s->type == ESymbolType::NUMBER)

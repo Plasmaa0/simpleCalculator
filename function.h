@@ -16,7 +16,6 @@ typedef struct Function
     char *asString;
     unsigned int argsNumber;
     char **argsNames;
-    BETNode *body;
 } Function;
 
 typedef struct FunctionDictionary

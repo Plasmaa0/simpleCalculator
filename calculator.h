@@ -39,5 +39,6 @@ bool hasCompoundAssignment(char *expr);
 bool isCorrectVariableName(char *var);
 char getCompoundOperator(char *expr);
 
-void consoleModeStart(unsigned int dictionarySize);
+void CalculatorInit(unsigned int dictionarySize, char *filename = nullptr);
+void smartLineNumberPrint(char *expr, int lineNumber);
 #endif // __CALCULATOR_H__

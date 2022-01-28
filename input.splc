@@ -1,0 +1,7 @@
+# .splc - SimPLe Calulator
+x = 3
+y = 2
+mult = x*y
+def: f(x,y) = x^2 + y
+f(mult, 4)
+(7*8-54)^3%3

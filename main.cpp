@@ -3,12 +3,30 @@
 
 using namespace std;
 
-int main()
+int main(int argc, char **argv)
 {
-    char *a = new char;
-    *a = '2';
+    // printf("argc = %d\n", argc);
+    // for (int i = 0; i < argc; i++)
+    // {
+    //     printf("%d = %s\n", i, argv[i]);
+    // }
     unsigned int dictionarySize = 30;
-    consoleModeStart(dictionarySize);
+    char filename[] = "input.splc";
+    CalculatorInit(dictionarySize, filename);
+
+    // if (argc == 2)
+    // {
+    //     char *filename = new char[FILENAME_MAX];
+    //     strcpy(filename, argv[1]);
+    //     deleteSpaces(filename);
+    //     printf("file: |%s|\n", filename);
+    //     CalculatorInit(dictionarySize, filename);
+    // }
+    // else
+    // {
+    // CalculatorInit(dictionarySize);
+    // }
+
     // Dictionary *dict = createVariableDictionary(3);
     // setVariable("var1", 10, dict);
     // setVariable("per", 5, dict);

@@ -24,7 +24,7 @@ void setVariable(char *variableName, Number number, VariableDictionary *dict)
     {
         if (strncmp(dict->keys[i], variableName, MAX_VARIABLE_NAME_LEN) == 0)
         {
-            printf("\t\t\t\t\tRESET %s\n", variableName);
+            // printf("\t\t\t\t\tRESET %s\n", variableName);
             dict->values[i] = number;
             alreadyExist = true;
             break;
@@ -34,7 +34,8 @@ void setVariable(char *variableName, Number number, VariableDictionary *dict)
     {
         // if (not alreadyExist)
         // {
-        printf("\t\t\t\tdict[FREE] = %s\n", dict->keys[dict->freeIndex]);
+        // printf("\t\t\t\tdict[FREE] = %s\n", dict->keys[dict->freeIndex]);
+        // printf("strncpy call\n");
         strncpy(dict->keys[dict->freeIndex], variableName, MAX_NUMBER_LENGTH);
         dict->values[dict->freeIndex] = number;
         dict->freeIndex++;

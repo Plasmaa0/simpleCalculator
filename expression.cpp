@@ -152,6 +152,7 @@ Expression *handleLetterSequences(Expression *expr)
             {
                 //create symbol
                 newSymbol.type = ESymbolType::VARIABLE;
+                // printf("2\n");
                 strncpy(newSymbol.entity.variable, digitsBuffer, currentVariableLength);
                 newSymbol.entity.variable[currentVariableLength] = '\0';
                 // print(newSymbol);
@@ -178,6 +179,7 @@ Expression *handleLetterSequences(Expression *expr)
 
         //create symbol
         newSymbol.type = ESymbolType::VARIABLE;
+        // printf("1\n");
         strncpy(newSymbol.entity.variable, digitsBuffer, currentVariableLength);
         newSymbol.entity.variable[currentVariableLength] = '\0';
 
@@ -303,10 +305,10 @@ Expression *deleteNAS(Expression *expr)
             writeIndex++;
         }
     }
-    if (writeIndex != result->length)
-    {
-        printf("wrffdamfoga\n");
-    }
+    // if (writeIndex != result->length)
+    // {
+    //     printf("wrffdamfoga\n");
+    // }
     return result;
 }
 
@@ -335,7 +337,7 @@ Expression *handleFunctions(Expression *expr)
                 }
                 hasFunctionCalls = true;
                 expr->symbols[symbolIndex].priority = priority;
-                printf("function recognized: {%s}. priority=%d\n", expr->symbols[symbolIndex].entity.variable, priority);
+                // printf("function recognized: {%s}. priority=%d\n", expr->symbols[symbolIndex].entity.variable, priority);
             }
             else
             {
@@ -347,7 +349,7 @@ Expression *handleFunctions(Expression *expr)
     if (hasFunctionCalls)
     {
         //pick the function with max priority and parse it's parameters
-        printf("pr:\n");
+        // printf("pr:\n");
         for (int priority = maxPriority; priority >= 0; priority--)
         {
             int funcIndex;
@@ -371,7 +373,7 @@ Expression *handleFunctions(Expression *expr)
                     funcIndex = symbolIndex;
                     lookingForArgs = true;
                     strcpy(func.entity.functionCall->functionName, expr->symbols[symbolIndex].entity.variable);
-                    printf("started construction of %s on index %d\n", func.entity.functionCall->functionName, symbolIndex);
+                    // printf("started construction of %s on index %d\n", func.entity.functionCall->functionName, symbolIndex);
                     continue;
                 }
 
@@ -379,9 +381,9 @@ Expression *handleFunctions(Expression *expr)
                 {
                     if (currentSymbolType == ESymbolType::NUMBER or currentSymbolType == ESymbolType::VARIABLE or currentSymbolType == ESymbolType::FUNCTION_CALL)
                     {
-                        printf("arg: ");
-                        print(expr->symbols[symbolIndex]);
-                        printf("\n");
+                        // printf("arg: ");
+                        // print(expr->symbols[symbolIndex]);
+                        // printf("\n");
                         func.entity.functionCall->args[func.entity.functionCall->argsN] = expr->symbols[symbolIndex];
                         func.entity.functionCall->argsN++;
                     }
@@ -392,9 +394,9 @@ Expression *handleFunctions(Expression *expr)
                         expr->symbols[funcIndex + 1].type = ESymbolType::NOT_A_SYMBOL; //opening bracket
                         expr->symbols[symbolIndex].type = ESymbolType::NOT_A_SYMBOL;   //closing bracket
 
-                        printf("constructed function: ");
-                        print(func);
-                        printf("\n");
+                        // printf("constructed function: ");
+                        // print(func);
+                        // printf("\n");
                         // print(expr);
                         lookingForArgs = false;
                     }
@@ -404,23 +406,38 @@ Expression *handleFunctions(Expression *expr)
                      * 
                      */
                     // if (currentSymbolType != ESymbolType::FUNCTION_CALL)
-                    print(expr->symbols[symbolIndex]);
-                    printf("-> NAS\n");
+                    // print(expr->symbols[symbolIndex]);
+                    // printf("-> NAS\n");
                     expr->symbols[symbolIndex].type = ESymbolType::NOT_A_SYMBOL;
                     continue;
                 }
             }
         }
         expr = deleteNAS(expr);
-        printf("parsed function calls: ");
-        print(expr);
+        // printf("parsed function calls: ");
+        // print(expr);
     }
     return expr;
 }
 
+Expression *createExpr()
+{
+    Expression *res = new Expression;
+    if (res == nullptr)
+    {
+        printf("WTF \nWTF \nWTF \nWTF \nWTF \nWTF \nWTF \nWTF \nWTF \n");
+    }
+    res->length = 0;
+    res->symbols = nullptr;
+    return res;
+}
+
 Expression *strToExpr(char *str)
 {
-    Expression *expr = new Expression;
+    // malloc();
+    Expression *expr = createExpr();
+    // Expression *expr = new Expression;
+
     expr->length = strlen(str);
     // printf("len: %d\n", expr->length);
     if (expr->length > EXPR_MAX_LEN)
@@ -470,6 +487,7 @@ Expression *strToExpr(char *str)
     expr = handleUnaryMinus(expr);
 
     expr = handleFunctions(expr);
+
     return expr;
 }
 

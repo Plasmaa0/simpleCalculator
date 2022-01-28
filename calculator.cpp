@@ -65,20 +65,20 @@ void showHelp()
 
 bool eval(char *str, VariableDictionary *dict, FunctionDictionary *fdict, Number &result)
 {
-    printf("######################################################\n");
+    // printf("######################################################\n");
     Expression *e = strToExpr(str);
     // printf("strToExpr success: ");
     // print(e);
     // printf("\n");
     BETNode *root = exprToAET(e);
-    printf("exprToAET success\n");
+    // printf("exprToAET success\n");
     // prettyPrint(root);
-    print(root);
+    // print(root);
     bool evalSuccess = eval(root, dict, fdict, result);
-    if (evalSuccess)
-        printf("OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK \n");
-    else
-        printf("FAILURE FAILURE FAILURE FAILURE FAILURE FAILURE FAILURE FAILURE\n");
+    // if (evalSuccess)
+    //     printf("OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK \n");
+    // else
+    //     printf("FAILURE FAILURE FAILURE FAILURE FAILURE FAILURE FAILURE FAILURE\n");
 
     // printf("|%d|\n", (evalSuccess ? 111111 : 999999));
     // printf("eval success\n");
@@ -97,7 +97,7 @@ bool eval(char *str, VariableDictionary *dict, FunctionDictionary *fdict, Number
 
 EExpressionType recognizeExpressionType(char *expr)
 {
-    if (expr[0] == '\0')
+    if (expr[0] == '\0' or expr[0] == '#')
     {
         return EExpressionType::DO_NOTHING;
     }
@@ -187,9 +187,10 @@ bool isCorrectVariableName(char *var)
 
 void deleteSpaces(char *expr)
 {
+    expr[strcspn(expr, "\n")] = '\0';
     char result[EXPR_MAX_LEN + 1];
     int resultLength = 0;
-    for (unsigned int i = 0; i < strlen(expr) - 1; i++)
+    for (unsigned int i = 0; i < strlen(expr); i++)
     {
         if (expr[i] != ' ')
         {
@@ -200,22 +201,93 @@ void deleteSpaces(char *expr)
     result[resultLength] = '\0';
     strncpy(expr, result, EXPR_MAX_LEN + 1);
 }
-
-void consoleModeStart(unsigned int dictionarySize)
+void smartLineNumberPrint(char *expr, int lineNumber)
 {
+    switch (recognizeExpressionType(expr))
+    {
+    case EExpressionType::HELP:
+    case EExpressionType::SHOW_VARIABLES:
+    case EExpressionType::SAVE_VARIABLES_BIN:
+    case EExpressionType::SAVE_VARIABLES_TXT:
+    case EExpressionType::EVALUATE:
+    case EExpressionType::EVALUATE_AND_ASSIGN:
+    case EExpressionType::LOAD_VARIABLES:
+    case EExpressionType::CREATE_FUNCTION:
+    case EExpressionType::SHOW_FUNCTIONS:
+    {
+        printf("[%d]: ", lineNumber);
+        break;
+    }
+    case EExpressionType::EXIT:
+        break;
+    case EExpressionType::DO_NOTHING:
+        break;
+    default:
+    {
+        break;
+    }
+    }
+}
+
+void CalculatorInit(unsigned int dictionarySize, char *filename)
+{
+    bool isFileModeOn = filename != nullptr;
+    FILE *sourceFile;
+    if (isFileModeOn)
+    {
+        sourceFile = fopen(filename, "r");
+        if (sourceFile == nullptr)
+        {
+            isFileModeOn = false;
+            printf("failed to open the file '%s'. file mode will not be enabled\n", filename);
+        }
+    }
+    else
+    {
+        printf("filemode off\n");
+    }
+
     printf("\nsimpleCalculator version %d.%d\nType 'help' for help.\n", MAJOR_VERSION, MINOR_VERSION);
+    if (isFileModeOn)
+    {
+        printf("Started in file mode. Reading file '%s'\n", filename);
+    }
     VariableDictionary *dict = createVariableDictionary(dictionarySize);
     FunctionDictionary *functions = createFunctionDictionary(dictionarySize);
-    char lastResult[] = "_";
-    char expr[EXPR_MAX_LEN + 1];
+    char *lastResult = new char[2];
+    lastResult[0] = '_';
+    lastResult[1] = '\0';
+    char *expr = new char[EXPR_MAX_LEN + 1];
     bool running = true;
+    int lineNumber = 0;
     while (running)
     {
-        memset(expr, 0, EXPR_MAX_LEN + 1);
-        printf(">>> ");
-        fgets(expr, EXPR_MAX_LEN, stdin);
+        lineNumber++;
+        // memset(expr, 0, EXPR_MAX_LEN + 1);
+        if (isFileModeOn)
+        {
+            // printf("reading..\n");
+            running = fgets(expr, EXPR_MAX_LEN, sourceFile) != nullptr;
+            if (not running)
+            {
+                break;
+            }
+
+            // printf("read |%s|\n", expr);
+            // fgetc(sourceFile);
+        }
+        else
+        {
+            printf(">>> ");
+            fgets(expr, EXPR_MAX_LEN, stdin);
+        }
 
         deleteSpaces(expr);
+        // printf("got |%s|\n", expr);
+        if (isFileModeOn)
+        {
+            smartLineNumberPrint(expr, lineNumber);
+        }
 
         switch (recognizeExpressionType(expr))
         {
@@ -273,6 +345,7 @@ void consoleModeStart(unsigned int dictionarySize)
             if (evalSuccess)
             {
                 setVariable(lastResult, evaluationResult, dict);
+                // std::cout << "res: ";
                 print(evaluationResult);
                 printf("\n");
             }
@@ -281,7 +354,7 @@ void consoleModeStart(unsigned int dictionarySize)
 
         case EExpressionType::EVALUATE_AND_ASSIGN:
         {
-            char var[MAX_VARIABLE_NAME_LEN + 1];
+            char *var = new char[MAX_VARIABLE_NAME_LEN + 1];
             bool isCompound = hasCompoundAssignment(expr);
             char op;
             if (isCompound)
