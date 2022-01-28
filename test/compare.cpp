@@ -54,7 +54,7 @@ int main()
         deleteSpaces(got);
         if (strcmp(expected, got) != 0)
         {
-            printf("\x1B[31m[%d] ERROR\nexpected: |%s|\ngot: |%s|\033[0m\n", lineNumber, expected, got);
+            printf("\x1B[31mERROR on line %d\nexpected: |%s|\ngot: |%s|\033[0m\n", lineNumber, expected, got);
             failed++;
         }
         else

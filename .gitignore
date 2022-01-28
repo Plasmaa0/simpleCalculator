@@ -4,3 +4,5 @@
 /lines.py
 /.gitignore
 /tests
+test/compare.exe
+test/build.exe
