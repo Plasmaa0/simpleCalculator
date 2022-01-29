@@ -368,14 +368,14 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
                 char opDivider[2];
                 opDivider[0] = op;
                 opDivider[1] = ' ';
-                strncpy(var, strtok(expr, opDivider), MAX_VARIABLE_NAME_LEN);
+                strncpy(var, strtok(expr, opDivider), constants::MAX_VARIABLE_NAME_LEN);
                 // if (strchr(var, ' ') != nullptr) //strip trailing whitespace if exist
                 //     var[var - strchr(var, ' ') - 1] = '\0';
                 // strtok(NULL, "="); //skip the '='
             }
             else
             {
-                strncpy(var, strtok(expr, " ="), MAX_VARIABLE_NAME_LEN);
+                strncpy(var, strtok(expr, " ="), constants::MAX_VARIABLE_NAME_LEN);
             }
 
             if (not isCorrectVariableName(var))
