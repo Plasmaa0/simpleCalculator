@@ -17,4 +17,6 @@ const int MAX_NUMBER_LENGTH = MAX_FLOAT_LENGTH;
 
 const int FUNCTION_MAX_ARGS_N = 10;
 
+const int PRIORITY_MAX = 10000000;
+
 #endif // __CONSTANTS_H__

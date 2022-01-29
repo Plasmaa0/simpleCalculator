@@ -534,7 +534,7 @@ void setPriorities(Expression *expr)
 unsigned int prioritizedOperatorIndex(Expression *expr)
 {
     setPriorities(expr);
-    int minPriority = 10000000;
+    int minPriority = PRIORITY_MAX;
     int priorOpIndex = PRIORITIZED_OPERATOR_NOT_FOUND;
     unsigned int nestLevel = 0;
     for (int i = 0; i < expr->length; i++)
