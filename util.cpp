@@ -99,7 +99,7 @@ double naturalPow(double a, int b)
 
 Number numberFromDigits(int *digitsArray, int digitsN, int *decimalPart, int decimalPartLength)
 {
-    if (digitsN + decimalPartLength > (decimalPartLength > 0 ? MAX_FLOAT_LENGTH : MAX_INT_LENGTH))
+    if (digitsN + decimalPartLength > (decimalPartLength > 0 ? constants::MAX_FLOAT_LENGTH : constants::MAX_INT_LENGTH))
     {
         printf("too long number\n");
     }

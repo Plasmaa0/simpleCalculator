@@ -8,10 +8,10 @@ Expression *handleNumberSequences(Expression *expr)
     bool currentIsNumber = false;
     bool decimalPart = false;
 
-    int digitsBuffer[MAX_NUMBER_LENGTH];
+    int digitsBuffer[constants::MAX_NUMBER_LENGTH];
     int currentNumberLength = 0;
 
-    int decimalPartBuffer[MAX_NUMBER_LENGTH];
+    int decimalPartBuffer[constants::MAX_NUMBER_LENGTH];
     int decimalPartLength = 0;
     for (int symbolIndex = 0; symbolIndex < expr->length; symbolIndex++)
     {
@@ -60,8 +60,8 @@ Expression *handleNumberSequences(Expression *expr)
                 newSymbol.entity.number = number;
 
                 //reset cycle
-                memset(digitsBuffer, 0, MAX_NUMBER_LENGTH * sizeof(int));
-                memset(decimalPartBuffer, 0, MAX_NUMBER_LENGTH * sizeof(int));
+                memset(digitsBuffer, 0, constants::MAX_NUMBER_LENGTH * sizeof(int));
+                memset(decimalPartBuffer, 0, constants::MAX_NUMBER_LENGTH * sizeof(int));
                 decimalPartLength = 0;
                 currentNumberLength = 0;
                 currentIsNumber = false;
@@ -119,11 +119,11 @@ Expression *handleLetterSequences(Expression *expr)
     int resultLength = 0;
 
     bool currentIsLetter = false;
-    char digitsBuffer[MAX_VARIABLE_NAME_LEN];
+    char digitsBuffer[constants::MAX_VARIABLE_NAME_LEN];
     int currentVariableLength = 0;
     for (int symbolIndex = 0; symbolIndex < expr->length; symbolIndex++)
     {
-        if (currentVariableLength > MAX_VARIABLE_NAME_LEN)
+        if (currentVariableLength > constants::MAX_VARIABLE_NAME_LEN)
         {
             printf("too long variable name\n");
         }
@@ -440,7 +440,7 @@ Expression *strToExpr(char *str)
 
     expr->length = strlen(str);
     // printf("len: %d\n", expr->length);
-    if (expr->length > EXPR_MAX_LEN)
+    if (expr->length > constants::EXPR_MAX_LEN)
     {
         printf("expression is longer than it can be\n");
     }
@@ -535,7 +535,7 @@ unsigned int prioritizedOperatorIndex(Expression *expr)
 {
     setPriorities(expr);
     int minPriority = 10000000;
-    int priorOpIndex = PRIORITIZED_OPERATOR_NOT_FOUND;
+    int priorOpIndex = constants::PRIORITIZED_OPERATOR_NOT_FOUND;
     unsigned int nestLevel = 0;
     for (int i = 0; i < expr->length; i++)
     {

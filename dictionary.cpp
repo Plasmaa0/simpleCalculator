@@ -9,7 +9,7 @@ VariableDictionary *createVariableDictionary(unsigned int size)
     dict->keys = new char *[size];
     for (unsigned int i = 0; i < size; i++)
     {
-        dict->keys[i] = new char[MAX_VARIABLE_NAME_LEN + 1];
+        dict->keys[i] = new char[constants::MAX_VARIABLE_NAME_LEN + 1];
         // memset(dict->keys[i], 0, MAX_VARIABLE_NAME_LEN);
         dict->values[i].type = EnumberType::NAN;
     }
@@ -22,7 +22,7 @@ void setVariable(char *variableName, Number number, VariableDictionary *dict)
     bool alreadyExist = false;
     for (unsigned int i = 0; i < dict->freeIndex; i++)
     {
-        if (strncmp(dict->keys[i], variableName, MAX_VARIABLE_NAME_LEN) == 0)
+        if (strncmp(dict->keys[i], variableName, constants::MAX_VARIABLE_NAME_LEN) == 0)
         {
             // printf("\t\t\t\t\tRESET %s\n", variableName);
             dict->values[i] = number;
@@ -36,7 +36,7 @@ void setVariable(char *variableName, Number number, VariableDictionary *dict)
         // {
         // printf("\t\t\t\tdict[FREE] = %s\n", dict->keys[dict->freeIndex]);
         // printf("strncpy call\n");
-        strncpy(dict->keys[dict->freeIndex], variableName, MAX_NUMBER_LENGTH);
+        strncpy(dict->keys[dict->freeIndex], variableName, constants::MAX_NUMBER_LENGTH);
         dict->values[dict->freeIndex] = number;
         dict->freeIndex++;
         // }
@@ -51,7 +51,7 @@ bool getVariable(char *variableName, VariableDictionary *dict, Number &num)
 {
     for (unsigned int i = 0; i < dict->size; i++)
     {
-        if (strncmp(dict->keys[i], variableName, MAX_VARIABLE_NAME_LEN) == 0)
+        if (strncmp(dict->keys[i], variableName, constants::MAX_VARIABLE_NAME_LEN) == 0)
         {
             num = dict->values[i];
             // printf("found %s=%d\n", variableName, value);

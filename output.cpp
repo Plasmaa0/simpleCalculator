@@ -184,7 +184,7 @@ void saveDictionary(VariableDictionary *dict, bool asBinary)
                 // printf(">> %s = %.2f\n", dict->keys[i], dict->values[i]);
                 if (asBinary)
                 {
-                    fwrite(dict->keys[i], MAX_VARIABLE_NAME_LEN, sizeof(char), f);
+                    fwrite(dict->keys[i], constants::MAX_VARIABLE_NAME_LEN, sizeof(char), f);
                     fwrite(&dict->values[i], 1, sizeof(Number), f);
                 }
                 else

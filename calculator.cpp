@@ -4,7 +4,7 @@ BETNode *exprToAET(Expression *expr, int nestLevel)
 {
     int priorOpIndex = prioritizedOperatorIndex(expr);
 
-    if (priorOpIndex == PRIORITIZED_OPERATOR_NOT_FOUND)
+    if (priorOpIndex == constants::PRIORITIZED_OPERATOR_NOT_FOUND)
     {
         expr = strip(expr);
     }
@@ -18,7 +18,7 @@ BETNode *exprToAET(Expression *expr, int nestLevel)
 
     priorOpIndex = prioritizedOperatorIndex(expr);
 
-    if (priorOpIndex == PRIORITIZED_OPERATOR_NOT_FOUND)
+    if (priorOpIndex == constants::PRIORITIZED_OPERATOR_NOT_FOUND)
     {
         return nullptr;
     }
@@ -191,7 +191,7 @@ bool isCorrectVariableName(char *var)
 void deleteSpaces(char *expr)
 {
     expr[strcspn(expr, "\n")] = '\0';
-    char *result = new char[EXPR_MAX_LEN + 1];
+    char *result = new char[constants::EXPR_MAX_LEN + 1];
     int resultLength = 0;
     for (unsigned int i = 0; i < strlen(expr); i++)
     {
@@ -202,7 +202,7 @@ void deleteSpaces(char *expr)
         }
     }
     result[resultLength] = '\0';
-    strncpy(expr, result, EXPR_MAX_LEN + 1);
+    strncpy(expr, result, constants::EXPR_MAX_LEN + 1);
 }
 
 void smartLineNumberPrint(char *expr, int lineNumber)
@@ -251,7 +251,7 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
         printf("filemode off\n");
     }
 
-    printf("\nsimpleCalculator version %d.%d\nType 'help' for help.\n", MAJOR_VERSION, MINOR_VERSION);
+    printf("\nsimpleCalculator version %d.%d\nType 'help' for help.\n", constants::MAJOR_VERSION, constants::MINOR_VERSION);
     if (isFileModeOn)
     {
         printf("Started in file mode. Reading file '%s'\n", filename);
@@ -261,7 +261,7 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
     char *lastResult = new char[2];
     lastResult[0] = '_';
     lastResult[1] = '\0';
-    char *expr = new char[EXPR_MAX_LEN + 1];
+    char *expr = new char[constants::EXPR_MAX_LEN + 1];
     bool running = true;
     int lineNumber = 0;
     while (running)
@@ -271,7 +271,7 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
         if (isFileModeOn)
         {
             // printf("reading..\n");
-            running = fgets(expr, EXPR_MAX_LEN, sourceFile) != nullptr;
+            running = fgets(expr, constants::EXPR_MAX_LEN, sourceFile) != nullptr;
             if (not running)
             {
                 break;
@@ -283,7 +283,7 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
         else
         {
             printf(">>> ");
-            fgets(expr, EXPR_MAX_LEN, stdin);
+            fgets(expr, constants::EXPR_MAX_LEN, stdin);
         }
 
         deleteSpaces(expr);
@@ -358,7 +358,7 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
 
         case EExpressionType::EVALUATE_AND_ASSIGN:
         {
-            char *var = new char[MAX_VARIABLE_NAME_LEN + 1];
+            char *var = new char[constants::MAX_VARIABLE_NAME_LEN + 1];
             bool isCompound = hasCompoundAssignment(expr);
             char op;
             if (isCompound)
@@ -384,7 +384,7 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
                 break;
             }
 
-            strncpy(expr, strtok(NULL, "="), EXPR_MAX_LEN);
+            strncpy(expr, strtok(NULL, "="), constants::EXPR_MAX_LEN);
             // printf("var: |%s|\nexpr: %s\n", var, expr);
             Number evaluationResult;
             bool evalSuccess = eval(expr, dict, functions, evaluationResult);

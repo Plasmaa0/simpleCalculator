@@ -4,12 +4,12 @@ Function *createFunction(char *paramsAsString, char *body)
 {
     Function *result = new Function;
     // result->body = exprToAET(strToExpr(body));
-    result->asString = new char[EXPR_MAX_LEN + 1];
-    strncpy(result->asString, body, EXPR_MAX_LEN + 1);
-    result->argsNames = new char *[FUNCTION_MAX_ARGS_N];
-    for (int i = 0; i < FUNCTION_MAX_ARGS_N; i++)
+    result->asString = new char[constants::EXPR_MAX_LEN + 1];
+    strncpy(result->asString, body, constants::EXPR_MAX_LEN + 1);
+    result->argsNames = new char *[constants::FUNCTION_MAX_ARGS_N];
+    for (int i = 0; i < constants::FUNCTION_MAX_ARGS_N; i++)
     {
-        result->argsNames[i] = new char[MAX_VARIABLE_NAME_LEN + 1];
+        result->argsNames[i] = new char[constants::MAX_VARIABLE_NAME_LEN + 1];
     }
 
     result->argsNumber = 0;
@@ -23,7 +23,7 @@ Function *createFunction(char *paramsAsString, char *body)
         }
 
         // printf("arg %d: %s\n", result->argsNumber, argName);
-        strncpy(result->argsNames[result->argsNumber], argName, MAX_VARIABLE_NAME_LEN);
+        strncpy(result->argsNames[result->argsNumber], argName, constants::MAX_VARIABLE_NAME_LEN);
         result->argsNumber++;
         argName = strtok(NULL, ",");
     }
@@ -65,8 +65,8 @@ FunctionDictionary *createFunctionDictionary(unsigned int size)
     dict->names = new char *[size];
     for (unsigned int i = 0; i < size; i++)
     {
-        dict->names[i] = new char[MAX_VARIABLE_NAME_LEN];
-        memset(dict->names[i], 0, MAX_VARIABLE_NAME_LEN);
+        dict->names[i] = new char[constants::MAX_VARIABLE_NAME_LEN];
+        memset(dict->names[i], 0, constants::MAX_VARIABLE_NAME_LEN);
     }
     return dict;
 }
@@ -76,7 +76,7 @@ void addFunction(char *funcName, Function func, FunctionDictionary *dict)
     bool alreadyExist = false;
     for (unsigned int i = 0; i < dict->freeIndex; i++)
     {
-        if (strncmp(dict->names[i], funcName, MAX_VARIABLE_NAME_LEN) == 0)
+        if (strncmp(dict->names[i], funcName, constants::MAX_VARIABLE_NAME_LEN) == 0)
         {
             // printf("reset %s from %f to %f\n", variableName, dict->values[i], value);
             dict->functions[i] = func;
@@ -90,7 +90,7 @@ void addFunction(char *funcName, Function func, FunctionDictionary *dict)
         // if (not alreadyExist)
         // {
         // printf("call strncpy func\n");
-        strncpy(dict->names[dict->freeIndex], funcName, MAX_NUMBER_LENGTH);
+        strncpy(dict->names[dict->freeIndex], funcName, constants::MAX_NUMBER_LENGTH);
         dict->functions[dict->freeIndex] = func;
         dict->freeIndex++;
         printf("new function '%s' added\n", funcName);
@@ -106,7 +106,7 @@ bool getFunction(char *funcName, FunctionDictionary *dict, Function &func)
 {
     for (unsigned int i = 0; i < dict->size; i++)
     {
-        if (strncmp(dict->names[i], funcName, MAX_VARIABLE_NAME_LEN) == 0)
+        if (strncmp(dict->names[i], funcName, constants::MAX_VARIABLE_NAME_LEN) == 0)
         {
             // func = dict->functions[i];
             memcpy(&func, dict->functions + i, sizeof(Function));

@@ -28,7 +28,7 @@ typedef union SymbolContainer
 {
     Number number;
     char operator_;
-    char variable[MAX_VARIABLE_NAME_LEN + 1];
+    char variable[constants::MAX_VARIABLE_NAME_LEN + 1];
     char bracket;
     struct functionCall *functionCall;
 } SymbolContainer;
@@ -43,8 +43,8 @@ typedef struct Symbol
 typedef struct functionCall
 {
     int argsN;
-    Symbol args[FUNCTION_MAX_ARGS_N];
-    char functionName[MAX_VARIABLE_NAME_LEN + 1];
+    Symbol args[constants::FUNCTION_MAX_ARGS_N];
+    char functionName[constants::MAX_VARIABLE_NAME_LEN + 1];
 } functionCall;
 
 //SYMBOL
