@@ -38,7 +38,7 @@ bool evaluateFunctionCall(Symbol *functionCallSymbol, VariableDictionary *dict, 
 {
     bool success = true;
     int argsN = functionCallSymbol->entity.functionCall->argsN;
-    Number argValues[argsN];
+    Number *argValues = new Number[argsN];
     for (int i = 0; i < argsN; i++)
     {
         Symbol currentArg = functionCallSymbol->entity.functionCall->args[i];

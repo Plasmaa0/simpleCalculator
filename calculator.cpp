@@ -38,17 +38,20 @@ BETNode *exprToAET(Expression *expr, int nestLevel)
     // print(strip(slice(expr, priorOpIndex + 1, expr->length)));
     // printf("\n");
 
-    BETNode *leftSubtree = exprToAET(slice(expr, 0, priorOpIndex), nestLevel);
+    Expression *leftSubExpression = slice(expr, 0, priorOpIndex);
+    BETNode *leftSubtree = exprToAET(leftSubExpression, nestLevel + 1);
     root->left = leftSubtree;
 
-    BETNode *rightSubtree = exprToAET(slice(expr, priorOpIndex + 1, expr->length), nestLevel);
+    Expression *rightSubExpression = slice(expr, priorOpIndex + 1, expr->length);
+    BETNode *rightSubtree = exprToAET(rightSubExpression, nestLevel + 1);
     root->right = rightSubtree;
     return root;
 }
 
 BETNode *exprToAET(Expression *expr)
 {
-    return exprToAET(expr, 0);
+    BETNode *result = exprToAET(expr, 0);
+    return result;
 }
 
 void showHelp()
@@ -188,7 +191,7 @@ bool isCorrectVariableName(char *var)
 void deleteSpaces(char *expr)
 {
     expr[strcspn(expr, "\n")] = '\0';
-    char result[EXPR_MAX_LEN + 1];
+    char *result = new char[EXPR_MAX_LEN + 1];
     int resultLength = 0;
     for (unsigned int i = 0; i < strlen(expr); i++)
     {
@@ -201,6 +204,7 @@ void deleteSpaces(char *expr)
     result[resultLength] = '\0';
     strncpy(expr, result, EXPR_MAX_LEN + 1);
 }
+
 void smartLineNumberPrint(char *expr, int lineNumber)
 {
     switch (recognizeExpressionType(expr))

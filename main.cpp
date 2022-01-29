@@ -12,7 +12,7 @@ int main(int argc, char **argv)
     // }
     unsigned int dictionarySize = 30;
     char filename[] = "input.splc";
-    CalculatorInit(dictionarySize, filename);
+    CalculatorInit(dictionarySize);
 
     // if (argc == 2)
     // {
