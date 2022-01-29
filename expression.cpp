@@ -493,6 +493,10 @@ Expression *strToExpr(char *str)
 
 Expression *slice(Expression *expr, int a, int b)
 {
+    if (b - a == expr->length)
+    {
+        return expr;
+    }
     Expression *result = new Expression;
     result->length = b - a;
     result->symbols = new Symbol[result->length];
