@@ -40,7 +40,7 @@ void print(FunctionDictionary *dict)
             printf("   %s(", dict->names[i]);
             for (unsigned int argI = 0; argI < dict->functions[i].argsNumber; argI++)
             {
-                printf("%s(%u)", dict->functions[i].argsNames[argI], strlen(dict->functions[i].argsNames[argI]));
+                printf("%s(%lu)", dict->functions[i].argsNames[argI], strlen(dict->functions[i].argsNames[argI]));
                 if (argI != dict->functions[i].argsNumber - 1)
                 {
                     printf(", ");
@@ -183,7 +183,7 @@ bool evaluateFunction(Number *args, unsigned int argsN, Function *func, Function
     else
     {
 #ifdef DEBUF
-            printf("evaluateFunction SUCCESS in exprToBET(functionAsExpression)\n");
+        printf("evaluateFunction SUCCESS in exprToBET(functionAsExpression)\n");
 #endif
     }
 
@@ -191,13 +191,13 @@ bool evaluateFunction(Number *args, unsigned int argsN, Function *func, Function
     if (not success)
     {
 #ifdef DEBUF
-            printf("failure at eval(functionAsBET, localVariables, fdict, result)\n");
+        printf("failure at eval(functionAsBET, localVariables, fdict, result)\n");
 #endif
     }
     else
     {
 #ifdef DEBUF
-            printf("SUCCESS at eval(functionAsBET, localVariables, fdict, result)\n");
+        printf("SUCCESS at eval(functionAsBET, localVariables, fdict, result)\n");
 #endif
     }
 
