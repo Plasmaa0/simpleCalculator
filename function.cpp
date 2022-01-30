@@ -40,7 +40,7 @@ void print(FunctionDictionary *dict)
             printf("   %s(", dict->names[i]);
             for (unsigned int argI = 0; argI < dict->functions[i].argsNumber; argI++)
             {
-                printf("%s(%d)", dict->functions[i].argsNames[argI], strlen(dict->functions[i].argsNames[argI]));
+                printf("%s(%u)", dict->functions[i].argsNames[argI], strlen(dict->functions[i].argsNames[argI]));
                 if (argI != dict->functions[i].argsNumber - 1)
                 {
                     printf(", ");
