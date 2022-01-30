@@ -25,8 +25,8 @@ typedef enum EExpressionType
     E_COMMAND_TYPE_LAST
 } EExpressionType;
 
-BETNode *exprToAET(Expression *expr, int nestLevel);
-BETNode *exprToAET(Expression *expr);
+BETNode *exprToBET(Expression *expr, int nestLevel);
+BETNode *exprToBET(Expression *expr);
 
 //THE MAIN PURPOSE OF ALL THIS SHIT
 bool eval(char *str, VariableDictionary *dict, FunctionDictionary *fdict, Number &result);

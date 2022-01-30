@@ -3,7 +3,7 @@
 Function *createFunction(char *paramsAsString, char *body)
 {
     Function *result = new Function;
-    // result->body = exprToAET(strToExpr(body));
+    // result->body = exprToBET(strToExpr(body));
     result->asString = new char[constants::EXPR_MAX_LEN + 1];
     strncpy(result->asString, body, constants::EXPR_MAX_LEN + 1);
     result->argsNames = new char *[constants::FUNCTION_MAX_ARGS_N];
@@ -172,18 +172,18 @@ bool evaluateFunction(Number *args, unsigned int argsN, Function *func, Function
 #endif
     }
 
-    BETNode *functionAsBET = exprToAET(functionAsExpression);
+    BETNode *functionAsBET = exprToBET(functionAsExpression);
     if (functionAsBET == nullptr)
     {
 #ifdef DEBUF
-        printf("evaluateFunction error in exprToAET(functionAsExpression)\n");
+        printf("evaluateFunction error in exprToBET(functionAsExpression)\n");
 #endif
         return false;
     }
     else
     {
 #ifdef DEBUF
-            printf("evaluateFunction SUCCESS in exprToAET(functionAsExpression)\n");
+            printf("evaluateFunction SUCCESS in exprToBET(functionAsExpression)\n");
 #endif
     }
 

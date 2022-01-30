@@ -1,6 +1,6 @@
 #include "calculator.h"
 
-BETNode *exprToAET(Expression *expr, int nestLevel)
+BETNode *exprToBET(Expression *expr, int nestLevel)
 {
     int priorOpIndex = prioritizedOperatorIndex(expr);
 
@@ -39,18 +39,18 @@ BETNode *exprToAET(Expression *expr, int nestLevel)
     // printf("\n");
 
     Expression *leftSubExpression = slice(expr, 0, priorOpIndex);
-    BETNode *leftSubtree = exprToAET(leftSubExpression, nestLevel + 1);
+    BETNode *leftSubtree = exprToBET(leftSubExpression, nestLevel + 1);
     root->left = leftSubtree;
 
     Expression *rightSubExpression = slice(expr, priorOpIndex + 1, expr->length);
-    BETNode *rightSubtree = exprToAET(rightSubExpression, nestLevel + 1);
+    BETNode *rightSubtree = exprToBET(rightSubExpression, nestLevel + 1);
     root->right = rightSubtree;
     return root;
 }
 
-BETNode *exprToAET(Expression *expr)
+BETNode *exprToBET(Expression *expr)
 {
-    BETNode *result = exprToAET(expr, 0);
+    BETNode *result = exprToBET(expr, 0);
     return result;
 }
 
@@ -73,8 +73,8 @@ bool eval(char *str, VariableDictionary *dict, FunctionDictionary *fdict, Number
     // printf("strToExpr success: ");
     // print(e);
     // printf("\n");
-    BETNode *root = exprToAET(e);
-    // printf("exprToAET success\n");
+    BETNode *root = exprToBET(e);
+    // printf("exprToBET success\n");
     // prettyPrint(root);
     // print(root);
     bool evalSuccess = eval(root, dict, fdict, result);
