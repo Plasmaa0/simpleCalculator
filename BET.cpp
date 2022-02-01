@@ -2,7 +2,7 @@
 
 BETNode *createNode()
 {
-    BETNode *node = new BETNode;
+    auto *node = new BETNode;
     node->left = nullptr;
     node->right = nullptr;
     node->s = nullptr;
@@ -38,7 +38,7 @@ bool evaluateFunctionCall(Symbol *functionCallSymbol, VariableDictionary *dict, 
 {
     bool success = true;
     int argsN = functionCallSymbol->entity.functionCall->argsN;
-    Number *argValues = new Number[argsN];
+    auto *argValues = new Number[argsN];
     for (int i = 0; i < argsN; i++)
     {
         Symbol currentArg = functionCallSymbol->entity.functionCall->args[i];
@@ -74,7 +74,7 @@ bool evaluateFunctionCall(Symbol *functionCallSymbol, VariableDictionary *dict, 
 #ifdef DEBUF
         printf("                EVALUATE FUNCTION CALL --->>> EVALUATE FUNCTION\n");
 #endif
-        success = (success && evaluateFunction(argValues, argsN, &func, fdict, result));
+        success = evaluateFunction(argValues, argsN, &func, fdict, result);
     }
 #ifdef DEBUF
     printf("evaluated %s with args: ", functionCallSymbol->entity.functionCall->functionName);

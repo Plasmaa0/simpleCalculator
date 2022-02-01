@@ -2,7 +2,7 @@
 #define __FUNCTION_H__
 
 #include <iostream>
-#include <string.h>
+#include <cstring>
 
 struct FunctionDictionary;
 

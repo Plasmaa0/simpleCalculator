@@ -2,7 +2,7 @@
 
 Function *createFunction(char *paramsAsString, char *body)
 {
-    Function *result = new Function;
+    auto *result = new Function;
     // result->body = exprToBET(strToExpr(body));
     result->asString = new char[constants::EXPR_MAX_LEN + 1];
     strncpy(result->asString, body, constants::EXPR_MAX_LEN + 1);
@@ -14,7 +14,7 @@ Function *createFunction(char *paramsAsString, char *body)
 
     result->argsNumber = 0;
     char *argName = strtok(paramsAsString, ",");
-    while (argName != NULL)
+    while (argName != nullptr)
     {
         if (not isCorrectVariableName(argName))
         {
@@ -25,7 +25,7 @@ Function *createFunction(char *paramsAsString, char *body)
         // printf("arg %d: %s\n", result->argsNumber, argName);
         strncpy(result->argsNames[result->argsNumber], argName, constants::MAX_VARIABLE_NAME_LEN);
         result->argsNumber++;
-        argName = strtok(NULL, ",");
+        argName = strtok(nullptr, ",");
     }
     return result;
 }
@@ -58,7 +58,7 @@ void print(FunctionDictionary *dict)
 
 FunctionDictionary *createFunctionDictionary(unsigned int size)
 {
-    FunctionDictionary *dict = new FunctionDictionary;
+    auto *dict = new FunctionDictionary;
     dict->size = size;
     dict->freeIndex = 0;
     dict->functions = new Function[size];

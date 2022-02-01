@@ -384,7 +384,7 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
                 break;
             }
 
-            strncpy(expr, strtok(NULL, "="), constants::EXPR_MAX_LEN);
+            strncpy(expr, strtok(nullptr, "="), constants::EXPR_MAX_LEN);
             // printf("var: |%s|\nexpr: %s\n", var, expr);
             Number evaluationResult;
             bool evalSuccess = eval(expr, dict, functions, evaluationResult);
@@ -414,8 +414,8 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
             char *functionDeclaration = expr + 4; //strip function declaration keyword
             // printf("|%s|\n", functionDeclaration);
             char *functionName = strtok(functionDeclaration, "(");
-            char *variablesList = strtok(NULL, ")=");
-            char *functionBody = strtok(NULL, "=");
+            char *variablesList = strtok(nullptr, ")=");
+            char *functionBody = strtok(nullptr, "=");
             // printf("b:");
             // print(strToExpr(functionBody));
             // printf("\n");

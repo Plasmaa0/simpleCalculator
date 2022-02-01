@@ -97,7 +97,7 @@ double naturalPow(double a, int b)
     return result;
 }
 
-Number numberFromDigits(int *digitsArray, int digitsN, int *decimalPart, int decimalPartLength)
+Number numberFromDigits(const int *digitsArray, int digitsN, const int *decimalPart, int decimalPartLength)
 {
     if (digitsN + decimalPartLength > (decimalPartLength > 0 ? constants::MAX_FLOAT_LENGTH : constants::MAX_INT_LENGTH))
     {

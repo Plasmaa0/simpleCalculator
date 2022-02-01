@@ -3,7 +3,7 @@
 VariableDictionary *loadDictionary(unsigned int maxSize)
 {
     FILE *f = fopen("variables", "rb");
-    if (f == NULL)
+    if (f == nullptr)
     {
         printf("nothing to load\n");
         fclose(f);

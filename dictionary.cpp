@@ -2,7 +2,7 @@
 
 VariableDictionary *createVariableDictionary(unsigned int size)
 {
-    VariableDictionary *dict = new VariableDictionary;
+    auto *dict = new VariableDictionary;
     dict->size = size;
     dict->freeIndex = 0;
     dict->values = new Number[size];
