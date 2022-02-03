@@ -67,8 +67,8 @@ bool evaluateFunctionCall(Symbol *functionCallSymbol, VariableDictionary *dict, 
         // print(argValues[i]);
         // printf("\n");
     }
-    Function *func = new Function;
-    success = (success && getFunction(functionCallSymbol->entity.functionCall->functionName, fdict, func));
+    Function *func = nullptr;
+    success = (success && getFunction(functionCallSymbol->entity.functionCall->functionName, fdict, &func));
     if (success)
     {
 #ifdef DEBUF
