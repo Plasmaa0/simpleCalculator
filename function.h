@@ -16,6 +16,16 @@ typedef struct Function
     char *asString;
     unsigned int argsNumber;
     char **argsNames;
+    ~Function()
+    {
+        printf("Function destructor called\n");
+        delete asString;
+        for (size_t i = 0; i < argsNumber; i++)
+        {
+            delete argsNames[i];
+        }
+        delete argsNames;
+    }
 } Function;
 
 typedef struct FunctionDictionary
@@ -51,7 +61,7 @@ bool evaluateFunction(Number *args, unsigned int argsN, Function *func, Function
 
 void print(FunctionDictionary *dict);
 FunctionDictionary *createFunctionDictionary(unsigned int size);
-void addFunction(char *funcName, Function func, FunctionDictionary *dict);
-bool getFunction(char *funcName, FunctionDictionary *dict, Function &func);
+void addFunction(char *funcName, Function *func, FunctionDictionary *dict);
+bool getFunction(char *funcName, FunctionDictionary *dict, Function *func);
 
 #endif // __FUNCTION_H__

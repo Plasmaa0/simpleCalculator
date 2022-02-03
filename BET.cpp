@@ -67,14 +67,14 @@ bool evaluateFunctionCall(Symbol *functionCallSymbol, VariableDictionary *dict, 
         // print(argValues[i]);
         // printf("\n");
     }
-    Function func;
+    Function *func = new Function;
     success = (success && getFunction(functionCallSymbol->entity.functionCall->functionName, fdict, func));
     if (success)
     {
 #ifdef DEBUF
         printf("                EVALUATE FUNCTION CALL --->>> EVALUATE FUNCTION\n");
 #endif
-        success = success && evaluateFunction(argValues, argsN, &func, fdict, result);
+        success = success && evaluateFunction(argValues, argsN, func, fdict, result);
     }
 #ifdef DEBUF
     printf("evaluated %s with args: ", functionCallSymbol->entity.functionCall->functionName);
@@ -85,7 +85,6 @@ bool evaluateFunctionCall(Symbol *functionCallSymbol, VariableDictionary *dict, 
     }
     printf("\n");
 #endif
-
     return success;
 }
 
@@ -101,7 +100,10 @@ bool eval(BETNode *root, VariableDictionary *dict, FunctionDictionary *fdict, Nu
 #ifdef DEBUF
         printf("                         EVAL --->>> EVALUATE FUNCTION CALL\n");
 #endif
-        return evaluateFunctionCall(root->s, dict, fdict, result);
+        printf("a\n");
+        bool success = evaluateFunctionCall(root->s, dict, fdict, result);
+        printf("b\n");
+        return success;
     }
     if (root->s->type == ESymbolType::NUMBER)
     {

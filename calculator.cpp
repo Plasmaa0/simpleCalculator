@@ -422,7 +422,11 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
             // printf("name: |%s|\nargs: |%s|\nbody: |%s|\n", functionName, variablesList, functionBody);
             Function *func = createFunction(variablesList, functionBody);
             // printf("func entity created\n");
-            addFunction(functionName, *func, functions);
+            addFunction(functionName, func, functions);
+            delete functionDeclaration;
+            delete functionName;
+            delete functionBody;
+            delete variablesList;
             break;
         }
 

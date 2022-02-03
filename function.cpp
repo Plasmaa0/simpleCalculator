@@ -71,7 +71,7 @@ FunctionDictionary *createFunctionDictionary(unsigned int size)
     return dict;
 }
 
-void addFunction(char *funcName, Function func, FunctionDictionary *dict)
+void addFunction(char *funcName, Function *func, FunctionDictionary *dict)
 {
     bool alreadyExist = false;
     for (unsigned int i = 0; i < dict->freeIndex; i++)
@@ -79,7 +79,7 @@ void addFunction(char *funcName, Function func, FunctionDictionary *dict)
         if (strncmp(dict->names[i], funcName, constants::MAX_VARIABLE_NAME_LEN) == 0)
         {
             // printf("reset %s from %f to %f\n", variableName, dict->values[i], value);
-            dict->functions[i] = func;
+            dict->functions[i] = *func;
             alreadyExist = true;
             printf("function '%s' redefinded\n", funcName);
             break;
@@ -90,8 +90,8 @@ void addFunction(char *funcName, Function func, FunctionDictionary *dict)
         // if (not alreadyExist)
         // {
         // printf("call strncpy func\n");
-        strncpy(dict->names[dict->freeIndex], funcName, constants::MAX_NUMBER_LENGTH);
-        dict->functions[dict->freeIndex] = func;
+        strncpy(dict->names[dict->freeIndex], funcName, constants::MAX_VARIABLE_NAME_LEN);
+        dict->functions[dict->freeIndex] = *func;
         dict->freeIndex++;
         printf("new function '%s' added\n", funcName);
         // }
@@ -102,14 +102,15 @@ void addFunction(char *funcName, Function func, FunctionDictionary *dict)
     }
 }
 
-bool getFunction(char *funcName, FunctionDictionary *dict, Function &func)
+bool getFunction(char *funcName, FunctionDictionary *dict, Function *func)
 {
     for (unsigned int i = 0; i < dict->size; i++)
     {
         if (strncmp(dict->names[i], funcName, constants::MAX_VARIABLE_NAME_LEN) == 0)
         {
             // func = dict->functions[i];
-            memcpy(&func, dict->functions + i, sizeof(Function));
+            // func = dict->functions + i;
+            memcpy(func, dict->functions + i, sizeof(Function));
             // printf("found %s=%d\n", variableName, value);
             return true;
         }
