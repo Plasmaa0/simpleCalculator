@@ -201,10 +201,6 @@ void deleteSpaces(char *expr)
             resultLength++;
         }
     }
-    if (resultLength == (int)strlen(expr))
-    {
-        return;
-    }
     result[resultLength] = '\0';
     strncpy(expr, result, constants::EXPR_MAX_LEN + 1);
 }
@@ -362,7 +358,7 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
 
         case EExpressionType::EVALUATE_AND_ASSIGN:
         {
-            char var[constants::MAX_VARIABLE_NAME_LEN + 1];
+            char *var = new char[constants::MAX_VARIABLE_NAME_LEN + 1];
             bool isCompound = hasCompoundAssignment(expr);
             char op;
             if (isCompound)
