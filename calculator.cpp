@@ -104,31 +104,31 @@ EExpressionType recognizeExpressionType(char *expr)
     {
         return EExpressionType::DO_NOTHING;
     }
-    if (strcmp(expr, "exit") == 0)
+    if (strncmp(expr, "exit", 4) == 0)
     {
         return EExpressionType::EXIT;
     }
-    if (strcmp(expr, "help") == 0)
+    if (strncmp(expr, "help", 4) == 0)
     {
         return EExpressionType::HELP;
     }
-    if (strcmp(expr, "vars") == 0)
+    if (strncmp(expr, "vars", 4) == 0)
     {
         return EExpressionType::SHOW_VARIABLES;
     }
-    if (strcmp(expr, "funcs") == 0)
+    if (strncmp(expr, "funcs", 5) == 0)
     {
         return EExpressionType::SHOW_FUNCTIONS;
     }
-    if (strcmp(expr, "saveB") == 0)
+    if (strncmp(expr, "saveB", 5) == 0)
     {
         return EExpressionType::SAVE_VARIABLES_BIN;
     }
-    if (strcmp(expr, "save") == 0)
+    if (strncmp(expr, "save", 4) == 0)
     {
         return EExpressionType::SAVE_VARIABLES_TXT;
     }
-    if (strcmp(expr, "load") == 0)
+    if (strncmp(expr, "load", 4) == 0)
     {
         return EExpressionType::LOAD_VARIABLES;
     }
