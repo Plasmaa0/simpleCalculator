@@ -516,13 +516,13 @@ void setPriorities(Expression *expr)
     {
         if (expr->symbols[i].type == ESymbolType::OPENING_BRACKET)
         {
-            nestLevel += 10;
-            expr->symbols[i].priority = -nestLevel;
+            nestLevel += 1;
+            expr->symbols[i].priority = 0;
         }
         else if (expr->symbols[i].type == ESymbolType::CLOSING_BRACKET)
         {
-            nestLevel -= 10;
-            expr->symbols[i].priority = -nestLevel;
+            nestLevel -= 1;
+            expr->symbols[i].priority = 0;
         }
         else if (expr->symbols[i].type == ESymbolType::OPERATOR)
         {
