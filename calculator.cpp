@@ -201,6 +201,10 @@ void deleteSpaces(char *expr)
             resultLength++;
         }
     }
+    if (resultLength == (int)strlen(expr))
+    {
+        return;
+    }
     result[resultLength] = '\0';
     strncpy(expr, result, constants::EXPR_MAX_LEN + 1);
 }
