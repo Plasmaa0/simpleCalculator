@@ -2,7 +2,7 @@
 
 Expression *handleNumberSequences(Expression *expr)
 {
-    auto *oversizedSymbolArray = new Symbol[expr->length];
+    Symbol *oversizedSymbolArray = new Symbol[expr->length];
     int resultLength = 0;
 
     bool currentIsNumber = false;
@@ -95,7 +95,7 @@ Expression *handleNumberSequences(Expression *expr)
         resultLength++;
     }
 
-    auto *result = new Expression;
+    Expression *result = new Expression;
     result->length = resultLength;
     result->symbols = new Symbol[resultLength];
     // memcpy(result->symbols, oversizedSymbolArray, resultLength * sizeof(Symbol));
@@ -115,7 +115,7 @@ Expression *handleNumberSequences(Expression *expr)
 
 Expression *handleLetterSequences(Expression *expr)
 {
-    auto *oversizedSymbolArray = new Symbol[expr->length];
+    Symbol *oversizedSymbolArray = new Symbol[expr->length];
     int resultLength = 0;
 
     bool currentIsLetter = false;
@@ -189,7 +189,7 @@ Expression *handleLetterSequences(Expression *expr)
     }
     //must match end
 
-    auto *result = new Expression;
+    Expression *result = new Expression;
     result->length = resultLength;
     result->symbols = new Symbol[resultLength];
     for (int i = 0; i < resultLength; i++)
@@ -235,7 +235,7 @@ Expression *handleUnaryMinus(Expression *expr)
     //this        : -
     //becomes this: (-1)*
     int withUnaryLength = expr->length + unaryOperatorsCount * 3;
-    auto *withUnary = new Symbol[withUnaryLength];
+    Symbol *withUnary = new Symbol[withUnaryLength];
     int writeIndex = 0;
     for (int i = 0; i < expr->length; i++)
     {
@@ -273,7 +273,7 @@ Expression *handleUnaryMinus(Expression *expr)
     }
     // printf("wi = %d; wul = %d\n", writeIndex, withUnaryLength);
 
-    auto *result = new Expression;
+    Expression *result = new Expression;
     result->length = withUnaryLength;
     result->symbols = withUnary;
     // printf("expr:");
@@ -293,7 +293,7 @@ Expression *deleteNAS(Expression *expr)
         }
     }
 
-    auto *result = new Expression;
+    Expression *result = new Expression;
     result->length = expr->length - NASCount;
     result->symbols = new Symbol[result->length];
     int writeIndex = 0;
@@ -422,7 +422,7 @@ Expression *handleFunctions(Expression *expr)
 
 Expression *createExpr()
 {
-    auto *res = new Expression;
+    Expression *res = new Expression;
     if (res == nullptr)
     {
         printf("WTF \nWTF \nWTF \nWTF \nWTF \nWTF \nWTF \nWTF \nWTF \n");
@@ -497,7 +497,7 @@ Expression *slice(Expression *expr, int a, int b)
     {
         return expr;
     }
-    auto *result = new Expression;
+    Expression *result = new Expression;
     result->length = b - a;
     result->symbols = new Symbol[result->length];
     int k = 0;

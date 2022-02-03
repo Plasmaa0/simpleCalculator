@@ -2,7 +2,7 @@
 #define __DICTIONARY_H__
 
 #include <iostream>
-#include <cstring>
+#include <string.h>
 
 #include "constants.h"
 #include "number.h"

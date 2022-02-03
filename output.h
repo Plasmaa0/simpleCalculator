@@ -2,7 +2,7 @@
 #define __OUTPUT_H__
 
 #include <iostream>
-#include <ctime>
+#include <time.h>
 
 #include "expression.h"
 #include "symbol.h"

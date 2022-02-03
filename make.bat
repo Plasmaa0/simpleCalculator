@@ -10,20 +10,26 @@ if exist build.exe (
     del build.exe
 )
 
-echo building...
-
-g++ -Wall -g -O0 *.cpp -o build.exe
-
-echo build OK!
 
 if "%1"=="r" (
+    echo building...
+    g++ -Wall -O0 *.cpp -o build.exe
+    echo build OK!
     echo running...
     build.exe
 ) else (
     if "%1"=="d" (
+        set DEBUG=1
+        echo building...
+        g++ -Wall -g3 -O0 *.cpp -o build.exe
+        echo build OK!
         echo running GDB...
         gdb build.exe
+        set DEBUG
     ) else (
+        echo building...
+        g++ -Wall -O0 *.cpp -o build.exe
+        echo build OK!
         echo done
     )
 )

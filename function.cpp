@@ -2,7 +2,7 @@
 
 Function *createFunction(char *paramsAsString, char *body)
 {
-    auto *result = new Function;
+    Function *result = new Function;
     // result->body = exprToBET(strToExpr(body));
     result->asString = new char[constants::EXPR_MAX_LEN + 1];
     strncpy(result->asString, body, constants::EXPR_MAX_LEN + 1);
@@ -40,7 +40,7 @@ void print(FunctionDictionary *dict)
             printf("   %s(", dict->names[i]);
             for (unsigned int argI = 0; argI < dict->functions[i].argsNumber; argI++)
             {
-                printf("%s(%lu)", dict->functions[i].argsNames[argI], strlen(dict->functions[i].argsNames[argI]));
+                printf("%s(%u)", dict->functions[i].argsNames[argI], strlen(dict->functions[i].argsNames[argI]));
                 if (argI != dict->functions[i].argsNumber - 1)
                 {
                     printf(", ");
@@ -58,7 +58,7 @@ void print(FunctionDictionary *dict)
 
 FunctionDictionary *createFunctionDictionary(unsigned int size)
 {
-    auto *dict = new FunctionDictionary;
+    FunctionDictionary *dict = new FunctionDictionary;
     dict->size = size;
     dict->freeIndex = 0;
     dict->functions = new Function[size];
