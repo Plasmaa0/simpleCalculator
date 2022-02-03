@@ -62,6 +62,6 @@ bool evaluateFunction(Number *args, unsigned int argsN, Function *func, Function
 void print(FunctionDictionary *dict);
 FunctionDictionary *createFunctionDictionary(unsigned int size);
 void addFunction(char *funcName, Function *func, FunctionDictionary *dict);
-bool getFunction(char *funcName, FunctionDictionary *dict, Function *func);
+bool getFunction(char *funcName, FunctionDictionary *dict, Function **func);
 
 #endif // __FUNCTION_H__

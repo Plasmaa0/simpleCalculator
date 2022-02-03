@@ -102,15 +102,15 @@ void addFunction(char *funcName, Function *func, FunctionDictionary *dict)
     }
 }
 
-bool getFunction(char *funcName, FunctionDictionary *dict, Function *func)
+bool getFunction(char *funcName, FunctionDictionary *dict, Function **func)
 {
     for (unsigned int i = 0; i < dict->size; i++)
     {
         if (strncmp(dict->names[i], funcName, constants::MAX_VARIABLE_NAME_LEN) == 0)
         {
             // func = dict->functions[i];
-            // func = dict->functions + i;
-            memcpy(func, dict->functions + i, sizeof(Function));
+            *func = dict->functions + i;
+            // memcpy(func, dict->functions + i, sizeof(Function));
             // printf("found %s=%d\n", variableName, value);
             return true;
         }
