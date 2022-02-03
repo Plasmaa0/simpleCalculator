@@ -358,7 +358,7 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
 
         case EExpressionType::EVALUATE_AND_ASSIGN:
         {
-            char *var = new char[constants::MAX_VARIABLE_NAME_LEN + 1];
+            char var[constants::MAX_VARIABLE_NAME_LEN + 1];
             bool isCompound = hasCompoundAssignment(expr);
             char op;
             if (isCompound)
