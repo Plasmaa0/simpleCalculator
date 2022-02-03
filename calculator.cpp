@@ -169,25 +169,6 @@ char getCompoundOperator(char *expr)
     return expr[equalsSignIndex(expr) - 1];
 }
 
-bool isCorrectVariableName(char *var)
-{
-    // printf("var: %s\n", var);
-    if (recognizeSymbol(var[0]) == ESymbolType::NUMBER)
-    {
-        return false;
-    }
-
-    for (unsigned int i = 0; i < strlen(var); i++)
-    {
-        ESymbolType t = recognizeSymbol(var[i]);
-        if (not(t == ESymbolType::NUMBER or t == ESymbolType::VARIABLE or var[i] == ' '))
-        {
-            return false;
-        }
-    }
-    return true;
-}
-
 void deleteSpaces(char *expr)
 {
     expr[strcspn(expr, "\n")] = '\0';
@@ -270,10 +251,10 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
     int lineNumber = 0;
     while (running)
     {
-        lineNumber++;
         // memset(expr, 0, EXPR_MAX_LEN + 1);
         if (isFileModeOn)
         {
+            lineNumber++;
             // printf("reading..\n");
             running = fgets(expr, constants::EXPR_MAX_LEN, sourceFile) != nullptr;
             if (not running)

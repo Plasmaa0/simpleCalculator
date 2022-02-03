@@ -6,6 +6,7 @@
 
 #include "constants.h"
 #include "number.h"
+#include "util.h"
 
 typedef struct VariableDictionary
 {

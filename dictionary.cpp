@@ -18,6 +18,11 @@ VariableDictionary *createVariableDictionary(unsigned int size)
 
 void setVariable(char *variableName, Number number, VariableDictionary *dict)
 {
+    if ((not isCorrectVariableName(variableName)) and strcmp(variableName, "_") != 0)
+    {
+        printf("'%s' is invalid variable name\n", variableName);
+        return;
+    }
     auto val = (number.type == EnumberType::INTEGER ? number.value.integer : number.value.decimal);
     bool alreadyExist = false;
     for (unsigned int i = 0; i < dict->freeIndex; i++)
@@ -36,7 +41,7 @@ void setVariable(char *variableName, Number number, VariableDictionary *dict)
         // {
         // printf("\t\t\t\tdict[FREE] = %s\n", dict->keys[dict->freeIndex]);
         // printf("strncpy call\n");
-        strncpy(dict->keys[dict->freeIndex], variableName, constants::MAX_NUMBER_LENGTH);
+        strncpy(dict->keys[dict->freeIndex], variableName, constants::MAX_VARIABLE_NAME_LEN);
         dict->values[dict->freeIndex] = number;
         dict->freeIndex++;
         // }

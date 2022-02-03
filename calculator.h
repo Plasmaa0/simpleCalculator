@@ -7,6 +7,7 @@
 #include "dictionary.h"
 #include "BET.h"
 #include "number.h"
+#include "util.h"
 
 typedef enum EExpressionType
 {
@@ -36,7 +37,6 @@ EExpressionType recognizeExpressionType(char *expr);
 void deleteSpaces(char *expr);
 int equalsSignIndex(char *expr);
 bool hasCompoundAssignment(char *expr);
-bool isCorrectVariableName(char *var);
 char getCompoundOperator(char *expr);
 
 void CalculatorInit(unsigned int dictionarySize, char *filename = nullptr);
