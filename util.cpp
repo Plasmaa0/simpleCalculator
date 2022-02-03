@@ -142,3 +142,22 @@ Number numberFromDigits(const int *digitsArray, int digitsN, const int *decimalP
     // printf("NFD: %f\n", result);
     return resultNumber;
 }
+
+bool isCorrectVariableName(char *var)
+{
+    // printf("var: %s\n", var);
+    if (recognizeSymbol(var[0]) == ESymbolType::NUMBER)
+    {
+        return false;
+    }
+
+    for (unsigned int i = 0; i < strlen(var); i++)
+    {
+        ESymbolType t = recognizeSymbol(var[i]);
+        if (not(t == ESymbolType::NUMBER or t == ESymbolType::VARIABLE or var[i] == ' '))
+        {
+            return false;
+        }
+    }
+    return true;
+}
