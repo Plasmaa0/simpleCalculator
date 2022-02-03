@@ -191,7 +191,7 @@ bool isCorrectVariableName(char *var)
 void deleteSpaces(char *expr)
 {
     expr[strcspn(expr, "\n")] = '\0';
-    char *result = new char[constants::EXPR_MAX_LEN + 1];
+    char result[constants::EXPR_MAX_LEN + 1];
     int resultLength = 0;
     for (unsigned int i = 0; i < strlen(expr); i++)
     {
