@@ -49,7 +49,7 @@ bool solve(Number a, Number b, char op, Number &result)
         if (b.type == EnumberType::INTEGER)
         {
             if (isResultTypeInteger)
-                result.value.integer = naturalPow(aValue, bValue); // integer division
+                result.value.integer = naturalPow(aValue, bValue);
             else
                 result.value.decimal = naturalPow(aValue, bValue);
             return true;

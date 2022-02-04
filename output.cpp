@@ -67,7 +67,7 @@ void print(VariableDictionary *dict)
     {
         for (unsigned int i = 0; i < dict->freeIndex; i++)
         {
-            printf("   |%s| = ", dict->keys[i]);
+            printf("   %s = ", dict->keys[i]);
             print(dict->values[i], true);
             printf("\n");
         }

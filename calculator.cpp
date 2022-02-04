@@ -409,8 +409,8 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
             // printf("func entity created\n");
             addFunction(functionName, func, functions);
             delete functionDeclaration;
-            delete functionName;
-            delete functionBody;
+            delete[] functionName;
+            delete[] functionBody;
             delete variablesList;
             break;
         }
