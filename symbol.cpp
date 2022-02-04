@@ -8,7 +8,7 @@ Symbol charToSymbol(char ch)
     {
     case ESymbolType::NUMBER:
         symb.entity.number.type = EnumberType::INTEGER;
-        symb.entity.number.value.integer = atoi(&ch);
+        symb.entity.number.value.integer = (int)ch - '0'; //atoi(&ch);
         break;
     case ESymbolType::OPERATOR:
         symb.entity.operator_ = ch;
