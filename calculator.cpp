@@ -251,7 +251,7 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
     int lineNumber = 0;
     while (running)
     {
-        // memset(expr, 0, EXPR_MAX_LEN + 1);
+        // memset(expr, '\0', constants::EXPR_MAX_LEN + 1);
         if (isFileModeOn)
         {
             lineNumber++;
