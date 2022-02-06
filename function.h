@@ -18,13 +18,20 @@ typedef struct Function
     char **argsNames;
     ~Function()
     {
-        printf("Function destructor called\n");
-        delete asString;
-        for (size_t i = 0; i < argsNumber; i++)
+        if (asString != nullptr)
         {
-            delete argsNames[i];
+            printf("deleting Function[%s]\n", asString);
+            delete[] asString;
+            for (size_t i = 0; i < argsNumber; i++)
+            {
+                delete[] argsNames[i];
+            }
+            delete[] argsNames;
         }
-        delete argsNames;
+        else
+        {
+            printf("deleting undefined Function\n");
+        }
     }
 } Function;
 
@@ -34,6 +41,16 @@ typedef struct FunctionDictionary
     unsigned int freeIndex;
     char **names;
     Function *functions;
+    ~FunctionDictionary()
+    {
+        printf("deleting FunctionDictionary<%d>\n", size);
+        for (size_t i = 0; i < size; i++)
+        {
+            delete[] names[i];
+        }
+        delete[] names;
+        delete[] functions;
+    }
 } FunctionDictionary;
 
 Function *createFunction(char *paramsAsString, char *body);

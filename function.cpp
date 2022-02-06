@@ -62,6 +62,12 @@ FunctionDictionary *createFunctionDictionary(unsigned int size)
     dict->size = size;
     dict->freeIndex = 0;
     dict->functions = new Function[size];
+    for (size_t i = 0; i < size; i++)
+    {
+        dict->functions[i].asString = nullptr;
+        dict->functions[i].argsNames = nullptr;
+    }
+
     dict->names = new char *[size];
     for (unsigned int i = 0; i < size; i++)
     {

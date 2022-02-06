@@ -408,10 +408,10 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
             Function *func = createFunction(variablesList, functionBody);
             // printf("func entity created\n");
             addFunction(functionName, func, functions);
-            delete functionDeclaration;
-            delete[] functionName;
-            delete[] functionBody;
-            delete variablesList;
+            // delete[] functionDeclaration;
+            // delete[] functionName;
+            // delete[] functionBody;
+            // delete variablesList;
             break;
         }
 
@@ -429,4 +429,8 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
         }
     }
     printf("bye\n");
+    delete[] lastResult;
+    delete[] expr;
+    delete dict;
+    delete functions;
 }
