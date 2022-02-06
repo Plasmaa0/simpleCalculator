@@ -11,7 +11,7 @@ int main(int argc, char **argv)
     //     printf("%d = %s\n", i, argv[i]);
     // }
     unsigned int dictionarySize = 30;
-    char filename[] = "input.splc";
+    // char filename[] = "input.splc";
     CalculatorInit(dictionarySize);
 
     // if (argc == 2)
