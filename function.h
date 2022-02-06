@@ -20,17 +20,13 @@ typedef struct Function
     {
         if (asString != nullptr)
         {
-            printf("deleting Function[%s]\n", asString);
+            // printf("deleting %s\n", asString);
             delete[] asString;
             for (size_t i = 0; i < argsNumber; i++)
             {
                 delete[] argsNames[i];
             }
             delete[] argsNames;
-        }
-        else
-        {
-            printf("deleting undefined Function\n");
         }
     }
 } Function;
@@ -43,7 +39,6 @@ typedef struct FunctionDictionary
     Function *functions;
     ~FunctionDictionary()
     {
-        printf("deleting FunctionDictionary<%d>\n", size);
         for (size_t i = 0; i < size; i++)
         {
             delete[] names[i];

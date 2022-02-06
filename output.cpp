@@ -144,7 +144,7 @@ void print(Expression *expr)
     // setPriorities(expr);
     for (int i = 0; i < expr->length; i++)
     {
-        print(expr->symbols[i], true);
+        print(expr->symbols[i]);
         // printf("%d ", expr->symbols[i].priority);
     }
     printf("\n");

@@ -13,7 +13,8 @@ void insert(BETNode *root, Symbol *s)
 {
     if (root->s == nullptr)
     {
-        root->s = s;
+        root->s = new Symbol;
+        *root->s = *s;
         // printf("s\n");
         return;
     }
@@ -127,4 +128,15 @@ bool eval(BETNode *root, VariableDictionary *dict, FunctionDictionary *fdict, Nu
     bool solveSuccess = solve(a, b, root->s->entity.operator_, result);
     bool totalSuccess = (aSuccess && bSuccess && solveSuccess);
     return totalSuccess;
+}
+
+void destroyBET(BETNode *root)
+{
+    if (root != nullptr)
+    {
+        destroyBET(root->left);
+        destroyBET(root->right);
+        delete root->s;
+        delete root;
+    }
 }

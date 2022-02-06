@@ -22,5 +22,6 @@ BETNode *createNode();
 void insert(BETNode *root, Symbol *s);
 bool eval(BETNode *root, VariableDictionary *dict, FunctionDictionary *fdict, Number &result);
 bool evaluateFunctionCall(Symbol *functionCallSymbol, VariableDictionary *dict, FunctionDictionary *fdict, Number &result);
+void destroyBET(BETNode *root);
 
 #endif // __BET_H__

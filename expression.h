@@ -11,6 +11,17 @@ typedef struct Expression
 {
     int length;
     Symbol *symbols;
+    ~Expression()
+    {
+        // for (int i = 0; i < length; i++)
+        // {
+        //     if (symbols[i].type == ESymbolType::FUNCTION_CALL)
+        //     {
+        //         delete symbols[i].entity.functionCall;
+        //     }
+        // }
+        delete[] symbols;
+    }
 } Expression;
 
 void print(Expression *expr);

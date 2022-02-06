@@ -110,6 +110,7 @@ Expression *handleNumberSequences(Expression *expr)
     // print(result);
 
     // printf("\n");
+    delete[] oversizedSymbolArray;
     return result;
 }
 
@@ -196,6 +197,7 @@ Expression *handleLetterSequences(Expression *expr)
     {
         result->symbols[i] = oversizedSymbolArray[i];
     }
+    delete[] oversizedSymbolArray;
     return result;
 }
 
@@ -305,10 +307,6 @@ Expression *deleteNAS(Expression *expr)
             writeIndex++;
         }
     }
-    // if (writeIndex != result->length)
-    // {
-    //     printf("wrffdamfoga\n");
-    // }
     return result;
 }
 
@@ -413,20 +411,17 @@ Expression *handleFunctions(Expression *expr)
                 }
             }
         }
-        expr = deleteNAS(expr);
+        Expression *result = deleteNAS(expr);
+        return result;
         // printf("parsed function calls: ");
         // print(expr);
     }
-    return expr;
+    return slice(expr, 0, expr->length);
 }
 
 Expression *createExpr()
 {
     Expression *res = new Expression;
-    if (res == nullptr)
-    {
-        printf("WTF \nWTF \nWTF \nWTF \nWTF \nWTF \nWTF \nWTF \nWTF \n");
-    }
     res->length = 0;
     res->symbols = nullptr;
     return res;
@@ -476,27 +471,36 @@ Expression *strToExpr(char *str)
     // printf("raw\n");
     // print(expr);
     // printf("\n");
-    expr = handleLetterSequences(expr);
+    Expression *withLetters = handleLetterSequences(expr); //gives new expression
     // printf("letters\n");
     // print(expr);
     // printf("\n");
-    expr = handleNumberSequences(expr);
+    Expression *withNumbers = handleNumberSequences(withLetters); //gives new expression
     // printf("numbers\n");
     // print(expr);
     // printf("\n");
-    expr = handleUnaryMinus(expr);
+    Expression *withUnary = handleUnaryMinus(withNumbers); //gives new expression
 
-    expr = handleFunctions(expr);
-
-    return expr;
+    Expression *result = handleFunctions(withUnary); //mutates existing expression
+    /*
+    printf("\
+    expr:    %p\n\
+    letters: %p\n\
+    number:  %p\n\
+    unary:   %p\n\
+    funcs:   %p\n",
+           expr, withLetters, withNumbers, withUnary, result);
+    */
+    delete expr;
+    delete withLetters;
+    delete withNumbers;
+    // no need to do next line (read comment near initialization of 'Expression *result')
+    delete withUnary;
+    return result;
 }
 
 Expression *slice(Expression *expr, int a, int b)
 {
-    if (b - a == expr->length)
-    {
-        return expr;
-    }
     Expression *result = new Expression;
     result->length = b - a;
     result->symbols = new Symbol[result->length];
@@ -575,18 +579,22 @@ Expression *strip(Expression *expr)
         stripRight = true;
     }
 
+    Expression *result;
     if (stripLeft && stripRight)
     {
-        expr = slice(expr, 1, expr->length - 1);
+        result = slice(expr, 1, expr->length - 1);
     }
     else if (stripLeft)
     {
-        expr = slice(expr, 1, expr->length);
+        result = slice(expr, 1, expr->length);
     }
     else if (stripRight)
     {
-        expr = slice(expr, 0, expr->length - 1);
+        result = slice(expr, 0, expr->length - 1);
     }
-
-    return expr;
+    else
+    {
+        result = slice(expr, 0, expr->length); //just copy
+    }
+    return result;
 }

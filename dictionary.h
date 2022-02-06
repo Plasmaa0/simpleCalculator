@@ -16,7 +16,7 @@ typedef struct VariableDictionary
     Number *values;
     ~VariableDictionary()
     {
-        printf("deleting VariableDictionary<%d>\n", size);
+        // printf("deleting VariableDictionary<%d>\n", size);
         for (size_t i = 0; i < size; i++)
         {
             delete[] keys[i];

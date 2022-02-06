@@ -3,7 +3,6 @@
 Function *createFunction(char *paramsAsString, char *body)
 {
     Function *result = new Function;
-    // result->body = exprToBET(strToExpr(body));
     result->asString = new char[constants::EXPR_MAX_LEN + 1];
     strncpy(result->asString, body, constants::EXPR_MAX_LEN + 1);
     result->argsNames = new char *[constants::FUNCTION_MAX_ARGS_N];
@@ -19,6 +18,7 @@ Function *createFunction(char *paramsAsString, char *body)
         if (not isCorrectVariableName(argName))
         {
             printf("%s is not correct arg name\n", argName);
+            delete result;
             return nullptr;
         }
 
@@ -40,7 +40,7 @@ void print(FunctionDictionary *dict)
             printf("   %s(", dict->names[i]);
             for (unsigned int argI = 0; argI < dict->functions[i].argsNumber; argI++)
             {
-                printf("%s(%u)", dict->functions[i].argsNames[argI], strlen(dict->functions[i].argsNames[argI]));
+                printf("%s", dict->functions[i].argsNames[argI]);
                 if (argI != dict->functions[i].argsNumber - 1)
                 {
                     printf(", ");
@@ -86,6 +86,7 @@ void addFunction(char *funcName, Function *func, FunctionDictionary *dict)
         {
             // printf("reset %s from %f to %f\n", variableName, dict->values[i], value);
             dict->functions[i] = *func;
+
             alreadyExist = true;
             printf("function '%s' redefinded\n", funcName);
             break;
@@ -135,86 +136,9 @@ bool evaluateFunction(Number *args, unsigned int argsN, Function *func, Function
     VariableDictionary *localVariables = createVariableDictionary(argsN + 1);
     for (unsigned int i = 0; i < argsN; i++)
     {
-#ifdef DEBUF
-
-        printf(">>>>>>>>>>>>>>>>>>>>>>>>>>>  %d  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n", i);
-        // printf("                                   BEFORE PRINT THE VARIABLE\n");
-        // printf("local vdict and fdict:\n");
-        // print(localVariables);
-        // print(fdict);
-
-        printf("%s on [%p] var set %s = ", func->asString, func, func->argsNames[i]);
-        print(args[i]);
-        printf("\n");
-
-        // printf("                                   AFTER PRINT THE VARIABLE\n");
-        // printf("local vdict and fdict:\n");
-        // print(localVariables);
-        // print(fdict);
-
-        // printf("call set\n");
-#endif
         setVariable(func->argsNames[i], args[i], localVariables);
-
-        // printf("                                   AFTER SETTING THE VARIABLE\n");
-        // printf("local vdict and fdict:\n");
-        // print(localVariables);
-        // print(fdict);
     }
-#ifdef DEBUF
-    printf("                         EVALUATE FUNCTION --->>> EVAL\n");
-#endif
-    Expression *functionAsExpression = strToExpr(func->asString);
-    if (functionAsExpression == nullptr)
-    {
-#ifdef DEBUF
-        printf("evaluateFunction error in strToExpr(func->asString)\n");
-#endif
-        return false;
-    }
-    else
-    {
-#ifdef DEBUF
-        printf("evaluateFunction SUCCESS in strToExpr(func->asString)\n");
-#endif
-    }
-
-    BETNode *functionAsBET = exprToBET(functionAsExpression);
-    if (functionAsBET == nullptr)
-    {
-#ifdef DEBUF
-        printf("evaluateFunction error in exprToBET(functionAsExpression)\n");
-#endif
-        return false;
-    }
-    else
-    {
-#ifdef DEBUF
-        printf("evaluateFunction SUCCESS in exprToBET(functionAsExpression)\n");
-#endif
-    }
-
-    bool success = eval(functionAsBET, localVariables, fdict, result);
-    if (not success)
-    {
-#ifdef DEBUF
-        printf("failure at eval(functionAsBET, localVariables, fdict, result)\n");
-#endif
-    }
-    else
-    {
-#ifdef DEBUF
-        printf("SUCCESS at eval(functionAsBET, localVariables, fdict, result)\n");
-#endif
-    }
-
-    /**
-     * 
-     * CLEAR MEMORY FROM:
-     *  - functionAsExpression
-     *  - functionAsBET
-     *  - localVariables
-     * 
-     */
+    bool success = eval(func->asString, localVariables, fdict, result);
+    delete localVariables;
     return success;
 }

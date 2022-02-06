@@ -1,18 +1,22 @@
 #include "calculator.h"
 
-BETNode *exprToBET(Expression *expr, int nestLevel)
+BETNode *exprToBET(Expression *input, int nestLevel)
 {
-    int priorOpIndex = prioritizedOperatorIndex(expr);
+    bool wasStripped = false;
+    int priorOpIndex = prioritizedOperatorIndex(input);
 
+    Expression *expr = input;
     if (priorOpIndex == constants::PRIORITIZED_OPERATOR_NOT_FOUND)
     {
-        expr = strip(expr);
+        expr = strip(input);
+        wasStripped = true;
     }
 
     BETNode *root = createNode();
     if (expr->length == 1)
     {
-        insert(root, &expr->symbols[0]);
+        insert(root, expr->symbols + 0);
+        delete expr;
         return root;
     }
 
@@ -20,6 +24,10 @@ BETNode *exprToBET(Expression *expr, int nestLevel)
 
     if (priorOpIndex == constants::PRIORITIZED_OPERATOR_NOT_FOUND)
     {
+        // destroyBET(root);
+        printf("error creating BET\n");
+        if (nestLevel > 0)
+            delete expr;
         return nullptr;
     }
 
@@ -41,10 +49,18 @@ BETNode *exprToBET(Expression *expr, int nestLevel)
     Expression *leftSubExpression = slice(expr, 0, priorOpIndex);
     BETNode *leftSubtree = exprToBET(leftSubExpression, nestLevel + 1);
     root->left = leftSubtree;
+    // printf("L deleting ");
+    // print(leftSubExpression);
+    delete leftSubExpression;
 
     Expression *rightSubExpression = slice(expr, priorOpIndex + 1, expr->length);
     BETNode *rightSubtree = exprToBET(rightSubExpression, nestLevel + 1);
     root->right = rightSubtree;
+    // printf("R deleting ");
+    // print(rightSubExpression);
+    delete rightSubExpression;
+    if (wasStripped) // this means that one extra Expression was allocated
+        delete expr;
     return root;
 }
 
@@ -69,11 +85,11 @@ void showHelp()
 bool eval(char *str, VariableDictionary *dict, FunctionDictionary *fdict, Number &result)
 {
     // printf("######################################################\n");
-    Expression *e = strToExpr(str);
+    Expression *asExpression = strToExpr(str);
     // printf("strToExpr success: ");
-    // print(e);
+    // print(asExpression);
     // printf("\n");
-    BETNode *root = exprToBET(e);
+    BETNode *root = exprToBET(asExpression);
     // printf("exprToBET success\n");
     // prettyPrint(root);
     // print(root);
@@ -95,6 +111,16 @@ bool eval(char *str, VariableDictionary *dict, FunctionDictionary *fdict, Number
     // post_order(root);
     // printf("\n");
 
+    for (int i = 0; i < asExpression->length; i++)
+    {
+        if (asExpression->symbols[i].type == ESymbolType::FUNCTION_CALL)
+        {
+            delete asExpression->symbols[i].entity.functionCall;
+        }
+    }
+
+    delete asExpression;
+    destroyBET(root);
     return evalSuccess;
 }
 
@@ -343,7 +369,7 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
 
         case EExpressionType::EVALUATE_AND_ASSIGN:
         {
-            char *var = new char[constants::MAX_VARIABLE_NAME_LEN + 1];
+            char var[constants::MAX_VARIABLE_NAME_LEN + 1];
             bool isCompound = hasCompoundAssignment(expr);
             char op;
             if (isCompound)
