@@ -347,6 +347,7 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
             VariableDictionary *newDict = loadDictionary(dictionarySize);
             if (newDict != nullptr)
             {
+                delete dict;
                 dict = newDict;
             }
 
