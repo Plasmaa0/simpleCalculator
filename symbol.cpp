@@ -8,7 +8,7 @@ Symbol charToSymbol(char ch)
     {
     case ESymbolType::NUMBER:
         symb.entity.number.type = EnumberType::INTEGER;
-        symb.entity.number.value.integer = (int)ch - '0'; //atoi(&ch);
+        symb.entity.number.value.integer = (int)ch - '0';
         break;
     case ESymbolType::OPERATOR:
         symb.entity.operator_ = ch;
@@ -26,9 +26,8 @@ Symbol charToSymbol(char ch)
     case ESymbolType::DECIMAL_COMMA:
         break;
     case ESymbolType::NOT_A_SYMBOL:
-    //проваливаемся в общий случай
+    // go to default case
     default:
-        // printf("%c is not a symbol\n", ch);
         break;
     }
     return symb;
@@ -94,8 +93,6 @@ unsigned int priority(char symb)
 
 void print(Symbol symb, bool brackets)
 {
-    // if (symb.type != ESymbolType::NOT_A_SYMBOL)
-    // {
     if (brackets)
         printf("{");
     switch (symb.type)
@@ -133,12 +130,11 @@ void print(Symbol symb, bool brackets)
 
         break;
     case ESymbolType::NOT_A_SYMBOL:
-    //проваливаемся в общий случай
+    // go to default case
     default:
-        printf("NAS"); //Not A Symbol
+        printf("NAS"); // Not A Symbol
         break;
     }
     if (brackets)
         printf("}");
-    // }
 }

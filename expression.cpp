@@ -50,16 +50,16 @@ Expression *handleNumberSequences(Expression *expr)
             Symbol newSymbol;
             if (currentNumberLength + decimalPartLength > 0)
             {
-                //number finished construction
-                // print(digitsBuffer, currentNumberLength);
+                // number finished construction
+                //  print(digitsBuffer, currentNumberLength);
                 Number number = numberFromDigits(digitsBuffer, currentNumberLength, decimalPartBuffer, decimalPartLength);
                 // printf("%d", number);
 
-                //create symbol
+                // create symbol
                 newSymbol.type = ESymbolType::NUMBER;
                 newSymbol.entity.number = number;
 
-                //reset cycle
+                // reset cycle
                 memset(digitsBuffer, 0, constants::MAX_NUMBER_LENGTH * sizeof(int));
                 memset(decimalPartBuffer, 0, constants::MAX_NUMBER_LENGTH * sizeof(int));
                 decimalPartLength = 0;
@@ -67,7 +67,7 @@ Expression *handleNumberSequences(Expression *expr)
                 currentIsNumber = false;
                 decimalPart = false;
 
-                //add to array
+                // add to array
                 oversizedSymbolArray[resultLength] = newSymbol;
                 resultLength++;
             }
@@ -81,16 +81,16 @@ Expression *handleNumberSequences(Expression *expr)
     if (currentNumberLength + decimalPartLength > 0)
     {
         Symbol newSymbol;
-        //number finished construction
-        // print(digitsBuffer, currentNumberLength);
+        // number finished construction
+        //  print(digitsBuffer, currentNumberLength);
         Number number = numberFromDigits(digitsBuffer, currentNumberLength, decimalPartBuffer, decimalPartLength);
         // printf("%d", number);
 
-        //create symbol
+        // create symbol
         newSymbol.type = ESymbolType::NUMBER;
         newSymbol.entity.number = number;
 
-        //add to array
+        // add to array
         oversizedSymbolArray[resultLength] = newSymbol;
         resultLength++;
     }
@@ -148,47 +148,47 @@ Expression *handleLetterSequences(Expression *expr)
         else
         {
             Symbol newSymbol;
-            //must match start
+            // must match start
             if (currentVariableLength > 0)
             {
-                //create symbol
+                // create symbol
                 newSymbol.type = ESymbolType::VARIABLE;
                 // printf("2\n");
                 strncpy(newSymbol.entity.variable, digitsBuffer, currentVariableLength);
                 newSymbol.entity.variable[currentVariableLength] = '\0';
                 // print(newSymbol);
 
-                //reset cycle
+                // reset cycle
                 currentVariableLength = 0;
                 currentIsLetter = false;
 
-                //add to array
+                // add to array
                 oversizedSymbolArray[resultLength] = newSymbol;
                 resultLength++;
             }
-            //must match end
+            // must match end
             newSymbol = expr->symbols[symbolIndex];
             oversizedSymbolArray[resultLength] = newSymbol;
             resultLength++;
         }
     }
 
-    //must match start
+    // must match start
     if (currentVariableLength > 0)
     {
         Symbol newSymbol;
 
-        //create symbol
+        // create symbol
         newSymbol.type = ESymbolType::VARIABLE;
         // printf("1\n");
         strncpy(newSymbol.entity.variable, digitsBuffer, currentVariableLength);
         newSymbol.entity.variable[currentVariableLength] = '\0';
 
-        //add to array
+        // add to array
         oversizedSymbolArray[resultLength] = newSymbol;
         resultLength++;
     }
-    //must match end
+    // must match end
 
     Expression *result = new Expression;
     result->length = resultLength;
@@ -234,8 +234,8 @@ Expression *handleUnaryMinus(Expression *expr)
         }
     }
 
-    //this        : -
-    //becomes this: (-1)*
+    // this        : -
+    // becomes this: (-1)*
     int withUnaryLength = expr->length + unaryOperatorsCount * 3;
     Symbol *withUnary = new Symbol[withUnaryLength];
     int writeIndex = 0;
@@ -250,12 +250,12 @@ Expression *handleUnaryMinus(Expression *expr)
             withUnary[writeIndex + 1].entity.number.type = EnumberType::INTEGER;
             if (expr->symbols[i].entity.operator_ == '-')
             {
-                //unary minus
+                // unary minus
                 withUnary[writeIndex + 1].entity.number.value.integer = -1;
             }
             else
             {
-                //unary plus
+                // unary plus
                 withUnary[writeIndex + 1].entity.number.value.integer = 1;
             }
 
@@ -313,7 +313,7 @@ Expression *deleteNAS(Expression *expr)
 Expression *handleFunctions(Expression *expr)
 {
     bool hasFunctionCalls = false;
-    //setting the priority of evaluating every function
+    // setting the priority of evaluating every function
     int maxPriority = 0;
     {
         int priority = 0;
@@ -346,8 +346,8 @@ Expression *handleFunctions(Expression *expr)
 
     if (hasFunctionCalls)
     {
-        //pick the function with max priority and parse it's parameters
-        // printf("pr:\n");
+        // pick the function with max priority and parse it's parameters
+        //  printf("pr:\n");
         for (int priority = maxPriority; priority >= 0; priority--)
         {
             int funcIndex;
@@ -364,7 +364,7 @@ Expression *handleFunctions(Expression *expr)
                 ESymbolType currentSymbolType = expr->symbols[symbolIndex].type;
                 if ((not lookingForArgs) and expr->symbols[symbolIndex].priority == priority)
                 {
-                    //reset funnctionCall
+                    // reset funnctionCall
                     func.entity.functionCall = new struct functionCall;
                     func.entity.functionCall->argsN = 0;
 
@@ -389,8 +389,8 @@ Expression *handleFunctions(Expression *expr)
                     {
                         // printf(".\n");
                         expr->symbols[funcIndex] = func;
-                        expr->symbols[funcIndex + 1].type = ESymbolType::NOT_A_SYMBOL; //opening bracket
-                        expr->symbols[symbolIndex].type = ESymbolType::NOT_A_SYMBOL;   //closing bracket
+                        expr->symbols[funcIndex + 1].type = ESymbolType::NOT_A_SYMBOL; // opening bracket
+                        expr->symbols[symbolIndex].type = ESymbolType::NOT_A_SYMBOL;   // closing bracket
 
                         // printf("constructed function: ");
                         // print(func);
@@ -399,9 +399,9 @@ Expression *handleFunctions(Expression *expr)
                         lookingForArgs = false;
                     }
                     /**
-                     * 
+                     *
                      * TODO: сделать чтобы functionCall не менялся на Not_A_symbol
-                     * 
+                     *
                      */
                     // if (currentSymbolType != ESymbolType::FUNCTION_CALL)
                     // print(expr->symbols[symbolIndex]);
@@ -429,12 +429,9 @@ Expression *createExpr()
 
 Expression *strToExpr(char *str)
 {
-    // malloc();
     Expression *expr = createExpr();
-    // Expression *expr = new Expression;
 
     expr->length = strlen(str);
-    // printf("len: %d\n", expr->length);
     if (expr->length > constants::EXPR_MAX_LEN)
     {
         printf("expression is longer than it can be\n");
@@ -448,53 +445,26 @@ Expression *strToExpr(char *str)
             spacesCounter++;
         }
     }
-    // printf("spcs: %d\n", spacesCounter);
 
     expr->symbols = new Symbol[expr->length - spacesCounter];
-    // printf("creating..\n");
     int writeIndex = 0;
     for (int symbolIndex = 0; symbolIndex < expr->length; symbolIndex++)
     {
         if (str[symbolIndex] != ' ')
         {
             expr->symbols[writeIndex] = charToSymbol(str[symbolIndex]);
-            // if (expr->symbols[writeIndex].type == ESymbolType::NOT_A_SYMBOL)
-            // {
-            //     printf("%c is unknown symbol. it may cause problems.\n", str[symbolIndex]);
-            // }
             writeIndex++;
         }
     }
 
-    // printf("spaces: %d\n", spacesCounter);
     expr->length -= spacesCounter;
-    // printf("raw\n");
-    // print(expr);
-    // printf("\n");
-    Expression *withLetters = handleLetterSequences(expr); //gives new expression
-    // printf("letters\n");
-    // print(expr);
-    // printf("\n");
-    Expression *withNumbers = handleNumberSequences(withLetters); //gives new expression
-    // printf("numbers\n");
-    // print(expr);
-    // printf("\n");
-    Expression *withUnary = handleUnaryMinus(withNumbers); //gives new expression
-
-    Expression *result = handleFunctions(withUnary); //mutates existing expression
-    /*
-    printf("\
-    expr:    %p\n\
-    letters: %p\n\
-    number:  %p\n\
-    unary:   %p\n\
-    funcs:   %p\n",
-           expr, withLetters, withNumbers, withUnary, result);
-    */
+    Expression *withLetters = handleLetterSequences(expr);
+    Expression *withNumbers = handleNumberSequences(withLetters);
+    Expression *withUnary = handleUnaryMinus(withNumbers);
+    Expression *result = handleFunctions(withUnary);
     delete expr;
     delete withLetters;
     delete withNumbers;
-    // no need to do next line (read comment near initialization of 'Expression *result')
     delete withUnary;
     return result;
 }
@@ -594,7 +564,7 @@ Expression *strip(Expression *expr)
     }
     else
     {
-        result = slice(expr, 0, expr->length); //just copy
+        result = slice(expr, 0, expr->length); // just copy
     }
     return result;
 }

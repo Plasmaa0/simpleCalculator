@@ -21,8 +21,6 @@ Function *createFunction(char *paramsAsString, char *body)
             delete result;
             return nullptr;
         }
-
-        // printf("arg %d: %s\n", result->argsNumber, argName);
         strncpy(result->argsNames[result->argsNumber], argName, constants::MAX_VARIABLE_NAME_LEN);
         result->argsNumber++;
         argName = strtok(nullptr, ",");
@@ -84,9 +82,7 @@ void addFunction(char *funcName, Function *func, FunctionDictionary *dict)
     {
         if (strncmp(dict->names[i], funcName, constants::MAX_VARIABLE_NAME_LEN) == 0)
         {
-            // printf("reset %s from %f to %f\n", variableName, dict->values[i], value);
             dict->functions[i] = *func;
-
             alreadyExist = true;
             printf("function '%s' redefinded\n", funcName);
             break;
@@ -94,14 +90,10 @@ void addFunction(char *funcName, Function *func, FunctionDictionary *dict)
     }
     if (dict->freeIndex < dict->size and (not alreadyExist))
     {
-        // if (not alreadyExist)
-        // {
-        // printf("call strncpy func\n");
         strncpy(dict->names[dict->freeIndex], funcName, constants::MAX_VARIABLE_NAME_LEN);
         dict->functions[dict->freeIndex] = *func;
         dict->freeIndex++;
         printf("new function '%s' added\n", funcName);
-        // }
     }
     else if (not alreadyExist)
     {
@@ -115,10 +107,7 @@ bool getFunction(char *funcName, FunctionDictionary *dict, Function **func)
     {
         if (strncmp(dict->names[i], funcName, constants::MAX_VARIABLE_NAME_LEN) == 0)
         {
-            // func = dict->functions[i];
             *func = dict->functions + i;
-            // memcpy(func, dict->functions + i, sizeof(Function));
-            // printf("found %s=%d\n", variableName, value);
             return true;
         }
     }

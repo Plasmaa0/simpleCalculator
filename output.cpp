@@ -19,39 +19,6 @@ void print(const BETNode *root, int depth)
         printf("\n");
         print(root->left, depth);
     }
-
-    // if (root != nullptr)
-    // {
-    //     if (root->right != nullptr)
-    //     {
-    //         tabulate(depth);
-    //         printf("right:");
-    //         print(root->right, depth + 1);
-    //     }
-
-    //     if (depth > 0)
-    //     {
-    //         tabulate(1);
-    //     }
-    //     print(*root->s, true);
-    //     printf("\n");
-
-    //     if (root->left != nullptr)
-    //     {
-    //         tabulate(depth);
-    //         printf("left:");
-    //         print(root->left, depth + 1);
-    //     }
-    // }
-
-    // else
-    // {
-    //     if (depth > 0)
-    //     {
-    //         tabulate(1);
-    //     }
-    //     printf("EMPTY\n");
-    // }
 }
 
 void print(const BETNode *root)
@@ -141,11 +108,9 @@ void prettyPrint(BETNode *node)
 
 void print(Expression *expr)
 {
-    // setPriorities(expr);
     for (int i = 0; i < expr->length; i++)
     {
         print(expr->symbols[i]);
-        // printf("%d ", expr->symbols[i].priority);
     }
     printf("\n");
 }
@@ -181,7 +146,6 @@ void saveDictionary(VariableDictionary *dict, bool asBinary)
         {
             if (dict->values[i].type != EnumberType::NAN)
             {
-                // printf(">> %s = %.2f\n", dict->keys[i], dict->values[i]);
                 if (asBinary)
                 {
                     fwrite(dict->keys[i], constants::MAX_VARIABLE_NAME_LEN, sizeof(char), f);
@@ -200,7 +164,6 @@ void saveDictionary(VariableDictionary *dict, bool asBinary)
                     default:
                         break;
                     }
-                    // fprintf(f, "%s=%f\n", dict->keys[i], dict->values[i]);
                 }
                 savedSuccesfullyCounter++;
             }

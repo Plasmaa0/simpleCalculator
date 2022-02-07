@@ -25,7 +25,6 @@ BETNode *exprToBET(Expression *input, int nestLevel)
     if (priorOpIndex == constants::PRIORITIZED_OPERATOR_NOT_FOUND)
     {
         // destroyBET(root);
-        printf("error creating BET\n");
         if (nestLevel > 0)
             delete expr;
         return nullptr;
@@ -34,32 +33,16 @@ BETNode *exprToBET(Expression *input, int nestLevel)
     Symbol *priorSymbol = expr->symbols + priorOpIndex;
     insert(root, priorSymbol);
 
-    // printf("prior op index: %d\n", priorOpIndex);
-    // printf("prior op: ");
-    // print(*priorSymbol);
-    // printf("\n");
-    // printf("expression: ");
-    // print(expr);
-    // printf("left subtree:");
-    // print(strip(slice(expr, 0, priorOpIndex)));
-    // printf("right subtree:");
-    // print(strip(slice(expr, priorOpIndex + 1, expr->length)));
-    // printf("\n");
-
     Expression *leftSubExpression = slice(expr, 0, priorOpIndex);
     BETNode *leftSubtree = exprToBET(leftSubExpression, nestLevel + 1);
     root->left = leftSubtree;
-    // printf("L deleting ");
-    // print(leftSubExpression);
     delete leftSubExpression;
 
     Expression *rightSubExpression = slice(expr, priorOpIndex + 1, expr->length);
     BETNode *rightSubtree = exprToBET(rightSubExpression, nestLevel + 1);
     root->right = rightSubtree;
-    // printf("R deleting ");
-    // print(rightSubExpression);
     delete rightSubExpression;
-    if (wasStripped) // this means that one extra Expression was allocated
+    if (wasStripped)
         delete expr;
     return root;
 }
@@ -84,7 +67,6 @@ void showHelp()
 
 bool eval(char *str, VariableDictionary *dict, FunctionDictionary *fdict, Number &result)
 {
-    // printf("######################################################\n");
     Expression *asExpression = strToExpr(str);
     // printf("strToExpr success: ");
     // print(asExpression);
@@ -94,12 +76,7 @@ bool eval(char *str, VariableDictionary *dict, FunctionDictionary *fdict, Number
     // prettyPrint(root);
     // print(root);
     bool evalSuccess = eval(root, dict, fdict, result);
-    // if (evalSuccess)
-    //     printf("OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK OK \n");
-    // else
-    //     printf("FAILURE FAILURE FAILURE FAILURE FAILURE FAILURE FAILURE FAILURE\n");
 
-    // printf("|%d|\n", (evalSuccess ? 111111 : 999999));
     // printf("eval success\n");
     // printf("pre-order: ");
     // pre_order(root);
@@ -162,12 +139,10 @@ EExpressionType recognizeExpressionType(char *expr)
     {
         if (strncmp(expr, "def:", 4) == 0)
         {
-            // printf("f create\n");
             return EExpressionType::CREATE_FUNCTION;
         }
         else
         {
-            // printf("not f\n");
             return EExpressionType::EVALUATE_AND_ASSIGN;
         }
     }
@@ -277,19 +252,14 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
     int lineNumber = 0;
     while (running)
     {
-        // memset(expr, '\0', constants::EXPR_MAX_LEN + 1);
         if (isFileModeOn)
         {
             lineNumber++;
-            // printf("reading..\n");
             running = fgets(expr, constants::EXPR_MAX_LEN, sourceFile) != nullptr;
             if (not running)
             {
                 break;
             }
-
-            // printf("read |%s|\n", expr);
-            // fgetc(sourceFile);
         }
         else
         {
@@ -298,7 +268,6 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
         }
 
         deleteSpaces(expr);
-        // printf("got |%s|\n", expr);
         if (isFileModeOn)
         {
             smartLineNumberPrint(expr, lineNumber);
@@ -308,7 +277,7 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
         {
         case EExpressionType::DO_NOTHING:
         {
-            //doing nothing
+            // doing nothing
             break;
         }
 
@@ -350,7 +319,6 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
                 delete dict;
                 dict = newDict;
             }
-
             break;
         }
 
@@ -361,7 +329,6 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
             if (evalSuccess)
             {
                 setVariable(lastResult, evaluationResult, dict);
-                // std::cout << "res: ";
                 print(evaluationResult);
                 printf("\n");
             }
@@ -376,14 +343,10 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
             if (isCompound)
             {
                 op = getCompoundOperator(expr);
-                // printf("op: %c\n", op);
                 char opDivider[2];
                 opDivider[0] = op;
                 opDivider[1] = ' ';
                 strncpy(var, strtok(expr, opDivider), constants::MAX_VARIABLE_NAME_LEN);
-                // if (strchr(var, ' ') != nullptr) //strip trailing whitespace if exist
-                //     var[var - strchr(var, ' ') - 1] = '\0';
-                // strtok(NULL, "="); //skip the '='
             }
             else
             {
@@ -397,7 +360,6 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
             }
 
             strncpy(expr, strtok(nullptr, "="), constants::EXPR_MAX_LEN);
-            // printf("var: |%s|\nexpr: %s\n", var, expr);
             Number evaluationResult;
             bool evalSuccess = eval(expr, dict, functions, evaluationResult);
             if (evalSuccess)
@@ -423,22 +385,12 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
 
         case EExpressionType::CREATE_FUNCTION:
         {
-            char *functionDeclaration = expr + 4; //strip function declaration keyword
-            // printf("|%s|\n", functionDeclaration);
+            char *functionDeclaration = expr + 4; // strip function declaration keyword
             char *functionName = strtok(functionDeclaration, "(");
             char *variablesList = strtok(nullptr, ")=");
             char *functionBody = strtok(nullptr, "=");
-            // printf("b:");
-            // print(strToExpr(functionBody));
-            // printf("\n");
-            // printf("name: |%s|\nargs: |%s|\nbody: |%s|\n", functionName, variablesList, functionBody);
             Function *func = createFunction(variablesList, functionBody);
-            // printf("func entity created\n");
             addFunction(functionName, func, functions);
-            // delete[] functionDeclaration;
-            // delete[] functionName;
-            // delete[] functionBody;
-            // delete variablesList;
             break;
         }
 

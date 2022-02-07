@@ -6,7 +6,6 @@ bool solve(Number a, Number b, char op, Number &result)
     auto aValue = (a.type == EnumberType::INTEGER ? a.value.integer : a.value.decimal);
     auto bValue = (b.type == EnumberType::INTEGER ? b.value.integer : b.value.decimal);
     bool isResultTypeInteger = ((a.type == EnumberType::FLOATING_POINT or b.type == EnumberType::FLOATING_POINT) ? false : true);
-    // Number result;
     result.type = (isResultTypeInteger ? EnumberType::INTEGER : EnumberType::FLOATING_POINT);
 
     switch (op)
@@ -76,7 +75,7 @@ bool solve(Number a, Number b, char op, Number &result)
         printf("invalid operator [%c] [SOLVE]\n", op);
         break;
     }
-    return false; // may be uninitialized result
+    return false;
 }
 
 double naturalPow(double a, int b)
@@ -138,14 +137,11 @@ Number numberFromDigits(const int *digitsArray, int digitsN, const int *decimalP
     {
         resultNumber.value.integer = integer;
     }
-
-    // printf("NFD: %f\n", result);
     return resultNumber;
 }
 
 bool isCorrectVariableName(char *var)
 {
-    // printf("var: %s\n", var);
     if (recognizeSymbol(var[0]) == ESymbolType::NUMBER)
     {
         return false;
