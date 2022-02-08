@@ -1,28 +1,27 @@
 CC=g++
-C_RELEASE_FLAGS=-o0
-C_DEBUG_FLAGS=-Wall -g3 -o0 -ggdb -DDEBUG
+CFLAGS=-Wall -g3 -o0 -ggdb -D DEBUG
 SOURCES=$(wildcard *.cpp)
 OBJDIR=objects
 OBJECTS=$(SOURCES:%.cpp=$(OBJDIR)\\%.o)
 EXECUTABLE=build.exe
 
-all: release
+all: $(EXECUTABLE)
 
 clean:
 	del $(OBJECTS)
 	del $(EXECUTABLE)
 
-mem: debug
+mem: $(EXECUTABLE)
 	drmemory -ignore_kernel $(EXECUTABLE)
 
-gdb: debug
+gdb: $(EXECUTABLE)
 	gdb $(EXECUTABLE)
 
-debug: $(OBJECTS)
-	$(CC) $(C_DEBUG_FLAGS) $(OBJECTS) -o $(EXECUTABLE)
+run: $(EXECUTABLE)
+	$(EXECUTABLE)
 
-release: $(OBJECTS)
-	$(CC) $(C_RELEASE_FLAGS) $(OBJECTS) -o $(EXECUTABLE)
+$(EXECUTABLE): $(OBJECTS)
+	$(CC) $(CFLAGS) $(OBJECTS) -o $(EXECUTABLE)
 
 $(OBJDIR)\\%.o: %.cpp
-	$(CC) $< -c -o $@
+	$(CC) $(CFLAGS) $< -c -o $@
