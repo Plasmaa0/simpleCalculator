@@ -4,6 +4,7 @@
 /lines.py
 /.gitignore
 /tests
+/objects
 test/compare.exe
 test/build.exe
 /cmake-build-debug/.ninja_deps
