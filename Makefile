@@ -8,12 +8,6 @@ EXECUTABLE=build.exe
 
 all: release
 
-c:
-	echo $(SOURCES)
-	echo $(OBJECTS)
-
-o: $(OBJECTS)
-
 clean:
 	del $(OBJECTS)
 	del $(EXECUTABLE)
