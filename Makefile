@@ -8,9 +8,6 @@ EXECUTABLE=build.exe
 
 all: $(EXECUTABLE)
 
-release:
-	echo OK
-
 clean:
 	del $(OBJECTS)
 	del $(EXECUTABLE)
