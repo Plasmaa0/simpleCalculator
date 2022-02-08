@@ -1,4 +1,3 @@
-[![CodeQL](https://github.com/Plasmaa0/simpleCalculator/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Plasmaa0/simpleCalculator/actions/workflows/codeql-analysis.yml)
 # Simple Interpreting Calculator Project
 
 ## Requirements
