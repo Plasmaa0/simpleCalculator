@@ -5,7 +5,8 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-    unsigned int dictionarySize = 30;
-    CalculatorInit(dictionarySize);
+    unsigned int variableDictionarySize = 100;
+    unsigned int functionDictionarySize = 20;
+    CalculatorInit(variableDictionarySize, functionDictionarySize);
     return 0;
 }

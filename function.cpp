@@ -97,7 +97,7 @@ void addFunction(char *funcName, Function *func, FunctionDictionary *dict)
     }
     else if (not alreadyExist)
     {
-        printf("dictionary overflow, can't add function %s\n", funcName);
+        printf("dictionary overflow, can't add function '%s'\n", funcName);
     }
 }
 

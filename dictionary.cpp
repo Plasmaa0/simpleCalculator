@@ -22,7 +22,6 @@ void setVariable(char *variableName, Number number, VariableDictionary *dict)
         printf("'%s' is invalid variable name\n", variableName);
         return;
     }
-    auto val = (number.type == EnumberType::INTEGER ? number.value.integer : number.value.decimal);
     bool alreadyExist = false;
     for (unsigned int i = 0; i < dict->freeIndex; i++)
     {
@@ -41,7 +40,9 @@ void setVariable(char *variableName, Number number, VariableDictionary *dict)
     }
     else if (not alreadyExist)
     {
-        printf("dictionary overflow, can't add variable %s = %f\n", variableName, val);
+        printf("dictionary overflow, can't add variable %s = ", variableName);
+        print(number, true);
+        printf("\n");
     }
 }
 
