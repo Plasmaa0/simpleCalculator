@@ -1,11 +1,15 @@
 CC=g++
 CFLAGS=-Wall -g3 -o0 -ggdb -D DEBUG
-SOURCES=$(wildcard *.cpp)
+SOURCEDIR=source
+SOURCES=$(wildcard $(SOURCEDIR)/*.cpp)
 OBJDIR=objects
-OBJECTS=$(SOURCES:%.cpp=$(OBJDIR)\\%.o)
+OBJECTS=$(SOURCES:$(SOURCEDIR)/%.cpp=$(OBJDIR)\\%.o)
 EXECUTABLE=build.exe
 
 all: $(EXECUTABLE)
+
+c:
+	echo $(SOURCES)
 
 clean:
 	del $(OBJECTS)
@@ -23,5 +27,5 @@ run: $(EXECUTABLE)
 $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(CFLAGS) $(OBJECTS) -o $(EXECUTABLE)
 
-$(OBJDIR)\\%.o: %.cpp
+$(OBJDIR)\\%.o: $(SOURCEDIR)\%.cpp
 	$(CC) $(CFLAGS) $< -c -o $@
