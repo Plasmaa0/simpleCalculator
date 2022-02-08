@@ -388,6 +388,10 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
             char *functionDeclaration = expr + 4; // strip function declaration keyword
             char *functionName = strtok(functionDeclaration, "(");
             char *variablesList = strtok(nullptr, ")=");
+            if (strncmp(variablesList, "null", 4) == 0)
+            {
+                variablesList = nullptr;
+            }
             char *functionBody = strtok(nullptr, "=");
             Function *func = createFunction(variablesList, functionBody);
             addFunction(functionName, func, functions);

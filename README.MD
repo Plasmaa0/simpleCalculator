@@ -5,7 +5,7 @@
 
 ## To build and run project:
 ```
-run.bat
+make run
 ```
 
 ## Demo
@@ -26,68 +26,134 @@ run.bat
    - Else (the node is operator) return the result of recursive call of the same function on the right and left child.
 
 ## Main features
+- Functions
 - Types: floating point, integer, nan
 - Basic binary operations: - + * /
+- Binary shifts < and >
 - Unary + and -
 - Multiple digits numbers. ex: 123
 - Multiple digits variables (including numbers on non-first position). ex: length1
 - Floating point number. 3.14 or .15
 - Positive integer powers: 2^3 -> 8
 - Space ignoring in expressions for better user experience.
-- Invalid result handling
 - Syntax errors handling
 
 ## Other features
 
 ### See the result of previous evaluation with reserved underscore '_' variable
 ```
-3*4 + 2^5
-> 44.000000
-_
-> 44.000000
+>>> 3*4 + 2^5
+44
+>>> _
+44
+>>> 
 ```
 
 ### Display current variables with their values with 'vars' command
 ```
-x = 1
-> 1.000000
-y = 2
-> 2.000000
-z = x*y^2
-> 4.000000
-vars
-> VARIABLES:
->> _ = 4.00
->> x = 1.00
->> y = 2.00
->> z = 4.00
-> END
+>>> x=1
+1
+>>> y=2
+2
+>>> z=x*y^2
+4
+>>> vars
+VARIABLES:
+   _ = int   4
+   x = int   1
+   y = int   2
+   z = int   4
+END
+```
+
+### Functions
+Define a function with keyword:
+```
+def:
+```
+Syntaxis of defining a function:
+```
+def: name([arg1, arg2, ...]) = expression
+```
+Example:
+```
+>>> def: mult_add_square(a,b,c)=a*b+c^2
+new function 'mult_add_square' added
+```
+Maximum number of function args see in constants.h: FUNCTION_MAX_ARGS_N.
+Args can be:
+- Number
+- Variable
+- Call of other function
+**Args can't be expression (like '3+1' or 'x*10').**
+Example of calling a function defined in previous example with variable and number arg:
+```
+>>> x = 2
+2
+>>> mult_add_square(x,3,4) // 2*3 + 4^2 = 6 + 16 = 22
+22
+```
+Example of calling a function with argument as another function call:
+```
+>>> def: f(x) = x^2
+new function 'f' added
+>>> def: g(x) = x+1
+new function 'g' added
+>>> g(f(2))
+5
+```
+**Functions can use other functions in their expression:**
+```
+>>> def: f(x) = x^2
+new function 'f' added
+>>> def: g(y) = f(y)*2
+new function 'g' added
+>>> g(2)
+8
+```
+**BUT functions can't use global variables in their expressions:**
+```
+>>> a = 10
+10
+>>> def: f(x) = x+a
+new function 'f' added
+>>> f(1)
+VARIABLE a NOT EXIST
+```
+To define a function with no args use null keyword
+```
+>>> def: f(null) = 10*0.5
+new function 'f' added
+>>> funcs
+FUNCTIONS:
+   f() = 10*0.5
+END
 ```
 
 ### Save current variables in text or binary file. Load previously saved variables if binary file with them exists. Use keywords 'save', 'saveB', 'load'.
 ### Save and load example:
 ```
-x = 1
-> 1.000000
-y = 2
-> 2.000000
-saveB
-> successfully saved 3 variables
-x = 0
-> 0.000000
-y = 0
-> 0.000000
-load
-> successfully loaded 3 variables
-x
-> 1.000000
-y
-> 2.000000
+>>> x=1
+1
+>>> y=2
+2
+>>> saveB
+successfully saved 3 variables
+>>> x=0
+0
+>>> y=0
+0
+>>> load
+successfully loaded 3 variables
+>>> x
+1
+>>> y
+2
 ```
 
 
 ### Close the application with 'exit'
 ```
-exit
-> bye
+>>> exit
+bye
 ```
