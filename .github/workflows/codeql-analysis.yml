@@ -63,7 +63,7 @@ jobs:
     #    uses a compiled language
 
     - run: |
-        make
+        make release
     #   make bootstrap
     #   make release
 
