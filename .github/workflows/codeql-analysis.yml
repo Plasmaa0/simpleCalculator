@@ -63,7 +63,7 @@ jobs:
     #    uses a compiled language
 
     - run: |
-        g++ -O0 *.cpp -o build.exe
+        make
     #   make bootstrap
     #   make release
 
