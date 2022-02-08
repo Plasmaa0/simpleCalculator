@@ -219,7 +219,7 @@ void smartLineNumberPrint(char *expr, int lineNumber)
     }
 }
 
-void CalculatorInit(unsigned int dictionarySize, char *filename)
+void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDictionarySize, char *filename)
 {
     bool isFileModeOn = filename != nullptr;
     FILE *sourceFile;
@@ -242,8 +242,8 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
     {
         printf("Started in file mode. Reading file '%s'\n", filename);
     }
-    VariableDictionary *dict = createVariableDictionary(dictionarySize);
-    FunctionDictionary *functions = createFunctionDictionary(dictionarySize);
+    VariableDictionary *dict = createVariableDictionary(variableDictionarySize);
+    FunctionDictionary *functions = createFunctionDictionary(functionDictionarySize);
     char *lastResult = new char[2];
     lastResult[0] = '_';
     lastResult[1] = '\0';
@@ -313,7 +313,7 @@ void CalculatorInit(unsigned int dictionarySize, char *filename)
 
         case EExpressionType::LOAD_VARIABLES:
         {
-            VariableDictionary *newDict = loadDictionary(dictionarySize);
+            VariableDictionary *newDict = loadDictionary(variableDictionarySize);
             if (newDict != nullptr)
             {
                 delete dict;

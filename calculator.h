@@ -29,7 +29,7 @@ typedef enum EExpressionType
 BETNode *exprToBET(Expression *expr, int nestLevel);
 BETNode *exprToBET(Expression *expr);
 
-//THE MAIN PURPOSE OF ALL THIS SHIT
+// THE MAIN PURPOSE OF ALL THIS SHIT
 bool eval(char *str, VariableDictionary *dict, FunctionDictionary *fdict, Number &result);
 
 EExpressionType recognizeExpressionType(char *expr);
@@ -39,6 +39,6 @@ int equalsSignIndex(char *expr);
 bool hasCompoundAssignment(char *expr);
 char getCompoundOperator(char *expr);
 
-void CalculatorInit(unsigned int dictionarySize, char *filename = nullptr);
+void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDictionarySize, char *filename = nullptr);
 void smartLineNumberPrint(char *expr, int lineNumber);
 #endif // __CALCULATOR_H__
