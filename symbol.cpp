@@ -39,7 +39,7 @@ ESymbolType recognizeSymbol(char symbol)
     {
         return ESymbolType::NUMBER;
     }
-    else if (symbol == '+' || symbol == '-' || symbol == '*' || symbol == '/' || symbol == '^' || symbol == '%')
+    else if (symbol == '+' || symbol == '-' || symbol == '*' || symbol == '/' || symbol == '^' || symbol == '%' || symbol == '<' || symbol == '>')
     {
         return ESymbolType::OPERATOR;
     }
@@ -51,7 +51,7 @@ ESymbolType recognizeSymbol(char symbol)
     {
         return ESymbolType::CLOSING_BRACKET;
     }
-    else if (('a' <= symbol && symbol <= 'z') || symbol == '_')
+    else if (('A' <= symbol && symbol <= 'Z') || ('a' <= symbol && symbol <= 'z') || symbol == '_')
     {
         return ESymbolType::VARIABLE;
     }
@@ -70,19 +70,23 @@ unsigned int priority(char symb)
 {
     switch (symb)
     {
-    case '+':
-    case '-':
+    case '<':
+    case '>':
         return 1;
         break;
-    case '%':
+    case '+':
+    case '-':
         return 2;
+        break;
+    case '%':
+        return 3;
         break;
     case '*':
     case '/':
-        return 3;
+        return 4;
         break;
     case '^':
-        return 4;
+        return 5;
         break;
     default:
         printf("invalid op - %c\n", symb);

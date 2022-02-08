@@ -59,6 +59,42 @@ bool solve(Number a, Number b, char op, Number &result)
             return false;
         }
         break;
+    case '<':
+        if (b.type == EnumberType::INTEGER)
+        {
+            if (isResultTypeInteger)
+                result.value.integer = (int)aValue << (int)bValue;
+            else
+            {
+                printf("unavailable byte move < due to operand types\n");
+                return false;
+            }
+            return true;
+        }
+        else
+        {
+            printf("unavailable byte move < due to operand types\n");
+            return false;
+        }
+        break;
+    case '>':
+        if (b.type == EnumberType::INTEGER)
+        {
+            if (isResultTypeInteger)
+                result.value.integer = (int)aValue >> (int)bValue;
+            else
+            {
+                printf("unavailable byte move > due to operand types\n");
+                return false;
+            }
+            return true;
+        }
+        else
+        {
+            printf("unavailable byte move > due to operand types\n");
+            return false;
+        }
+        break;
     case '%':
         if (modulusAvailable)
         {
