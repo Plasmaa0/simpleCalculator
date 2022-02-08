@@ -66,7 +66,7 @@ VARIABLES:
 END
 ```
 
-### Functions
+## Functions
 Define a function with keyword:
 ```
 def:
@@ -80,11 +80,11 @@ Example:
 >>> def: mult_add_square(a,b,c)=a*b+c^2
 new function 'mult_add_square' added
 ```
-Maximum number of function args see in constants.h: FUNCTION_MAX_ARGS_N.
+Maximum number of function args see in constants.h: FUNCTION_MAX_ARGS_N.\
 Args can be:
 - Number
 - Variable
-- Call of other function
+- Call of other function\
 **Args can't be expression (like '3+1' or 'x*10').**
 Example of calling a function defined in previous example with variable and number arg:
 ```
