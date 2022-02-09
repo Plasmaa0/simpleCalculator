@@ -4,7 +4,7 @@ SOURCEDIR=source
 SOURCES=$(wildcard $(SOURCEDIR)/*.cpp)
 OBJDIR=objects
 OBJECTS=$(SOURCES:$(SOURCEDIR)/%.cpp=$(OBJDIR)\\%.o)
-EXECUTABLE=build.exe
+EXECUTABLE=calculator.exe
 
 all: $(EXECUTABLE)
 

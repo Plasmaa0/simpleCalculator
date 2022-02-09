@@ -66,14 +66,14 @@ bool solve(Number a, Number b, char op, Number &result)
                 result.value.integer = (int)aValue << (int)bValue;
             else
             {
-                printf("unavailable byte move < due to operand types\n");
+                printf("unavailable bitwise shift < due to operand types\n");
                 return false;
             }
             return true;
         }
         else
         {
-            printf("unavailable byte move < due to operand types\n");
+            printf("unavailable bitwise shift < due to operand types\n");
             return false;
         }
         break;
