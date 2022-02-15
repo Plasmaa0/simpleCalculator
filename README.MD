@@ -1,3 +1,4 @@
+![](https://tokei.rs/b1/github/Plasmaa0/simpleCalculator)
 # Simple Interpreting Calculator Project
 
 - [Simple Interpreting Calculator Project](#simple-interpreting-calculator-project)
