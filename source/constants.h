@@ -4,7 +4,7 @@
 namespace constants
 {
     const short MAJOR_VERSION = 0;
-    const short MINOR_VERSION = 3;
+    const short MINOR_VERSION = 4;
 
     const int PRIORITIZED_OPERATOR_NOT_FOUND = -1;
 
