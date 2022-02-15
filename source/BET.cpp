@@ -59,7 +59,7 @@ bool evaluateFunctionCall(Symbol *functionCallSymbol, VariableDictionary *dict, 
     success = (success && getFunction(functionCallSymbol->entity.functionCall->functionName, fdict, &func));
     if (success)
     {
-        success = success && evaluateFunction(argValues, argsN, func, fdict, result);
+        success = success && evaluateFunction(argValues, argsN, func, dict, fdict, result);
     }
     return success;
 }

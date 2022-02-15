@@ -101,39 +101,43 @@ bool eval(char *str, VariableDictionary *dict, FunctionDictionary *fdict, Number
     return evalSuccess;
 }
 
-EExpressionType recognizeExpressionType(char *expr)
+EExpressionType recognizeExpressionType(char *expr, bool importRunning)
 {
     if (expr[0] == '\0' or expr[0] == '#')
     {
         return EExpressionType::DO_NOTHING;
     }
-    if (strncmp(expr, "exit", 4) == 0)
+    if (strncmp(expr, "exit", 4) == 0 and (not importRunning))
     {
         return EExpressionType::EXIT;
     }
-    if (strncmp(expr, "help", 4) == 0)
+    if (strncmp(expr, "help", 4) == 0 and (not importRunning))
     {
         return EExpressionType::HELP;
     }
-    if (strncmp(expr, "vars", 4) == 0)
+    if (strncmp(expr, "vars", 4) == 0 and (not importRunning))
     {
         return EExpressionType::SHOW_VARIABLES;
     }
-    if (strncmp(expr, "funcs", 5) == 0)
+    if (strncmp(expr, "funcs", 5) == 0 and (not importRunning))
     {
         return EExpressionType::SHOW_FUNCTIONS;
     }
-    if (strncmp(expr, "saveB", 5) == 0)
+    if (strncmp(expr, "saveB", 5) == 0 and (not importRunning))
     {
         return EExpressionType::SAVE_VARIABLES_BIN;
     }
-    if (strncmp(expr, "save", 4) == 0)
+    if (strncmp(expr, "save", 4) == 0 and (not importRunning))
     {
         return EExpressionType::SAVE_VARIABLES_TXT;
     }
-    if (strncmp(expr, "load", 4) == 0)
+    if (strncmp(expr, "load", 4) == 0 and (not importRunning))
     {
         return EExpressionType::LOAD_VARIABLES;
+    }
+    if (strncmp(expr, "import", 6) == 0)
+    {
+        return EExpressionType::IMPORT;
     }
     if (strchr(expr, '='))
     {
@@ -146,12 +150,12 @@ EExpressionType recognizeExpressionType(char *expr)
             return EExpressionType::EVALUATE_AND_ASSIGN;
         }
     }
-    else
+    else if (not importRunning)
     {
         return EExpressionType::EVALUATE;
     }
-
-    printf("unrecognized expression\n");
+    if (not importRunning)
+        printf("unrecognized expression\n");
     return EExpressionType::DO_NOTHING;
 }
 
@@ -193,7 +197,7 @@ void deleteSpaces(char *expr)
 
 void smartLineNumberPrint(char *expr, int lineNumber)
 {
-    switch (recognizeExpressionType(expr))
+    switch (recognizeExpressionType(expr, false))
     {
     case EExpressionType::HELP:
     case EExpressionType::SHOW_VARIABLES:
@@ -249,6 +253,7 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
     lastResult[1] = '\0';
     char *expr = new char[constants::EXPR_MAX_LEN + 1];
     bool running = true;
+    bool importRunning = false;
     int lineNumber = 0;
     while (running)
     {
@@ -258,6 +263,15 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
             running = fgets(expr, constants::EXPR_MAX_LEN, sourceFile) != nullptr;
             if (not running)
             {
+                if (importRunning)
+                {
+                    isFileModeOn = false;
+                    importRunning = false;
+                    running = true;
+                    printf("import finished\n");
+                    fclose(sourceFile);
+                    continue;
+                }
                 break;
             }
         }
@@ -268,12 +282,12 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
         }
 
         deleteSpaces(expr);
-        if (isFileModeOn)
+        if (isFileModeOn and (not importRunning))
         {
             smartLineNumberPrint(expr, lineNumber);
         }
 
-        switch (recognizeExpressionType(expr))
+        switch (recognizeExpressionType(expr, importRunning))
         {
         case EExpressionType::DO_NOTHING:
         {
@@ -339,6 +353,11 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
         {
             char var[constants::MAX_VARIABLE_NAME_LEN + 1];
             bool isCompound = hasCompoundAssignment(expr);
+            if (isCompound and importRunning)
+            {
+                break;
+            }
+
             char op;
             if (isCompound)
             {
@@ -375,8 +394,11 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
                 else
                 {
                     setVariable(lastResult, evaluationResult, dict);
-                    print(evaluationResult);
-                    printf("\n");
+                    if (not importRunning)
+                    {
+                        print(evaluationResult);
+                        printf("\n");
+                    }
                     setVariable(var, evaluationResult, dict);
                 }
             }
@@ -394,13 +416,37 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
             }
             char *functionBody = strtok(nullptr, "=");
             Function *func = createFunction(variablesList, functionBody);
-            addFunction(functionName, func, functions);
+            addFunction(functionName, func, functions, not importRunning);
             break;
         }
 
         case EExpressionType::SHOW_FUNCTIONS:
         {
             print(functions);
+            break;
+        }
+
+        case EExpressionType::IMPORT:
+        {
+            char lib[FILENAME_MAX + 1];
+            if (strlen(expr) <= 6)
+            {
+                printf("expected library name after import\n");
+                break;
+            }
+
+            strncpy(lib, expr + 6, FILENAME_MAX);
+            strncat(lib, ".splc", FILENAME_MAX);
+            printf("importing: '%s'\n", expr + 6);
+            importRunning = true;
+            isFileModeOn = true;
+            sourceFile = fopen(lib, "r");
+            if (sourceFile == nullptr)
+            {
+                isFileModeOn = false;
+                importRunning = false;
+                printf("failed to open the lib '%s'\n", expr + 6);
+            }
             break;
         }
 

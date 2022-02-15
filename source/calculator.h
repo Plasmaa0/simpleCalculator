@@ -1,6 +1,10 @@
 #ifndef __CALCULATOR_H__
 #define __CALCULATOR_H__
 
+#ifndef FILENAME_MAX
+#define FILENAME_MAX (260)
+#endif
+
 #include "function.h"
 #include "io.h"
 #include "expression.h"
@@ -23,6 +27,7 @@ typedef enum EExpressionType
     EVALUATE_AND_ASSIGN,
     CREATE_FUNCTION,
     SHOW_FUNCTIONS,
+    IMPORT,
     E_COMMAND_TYPE_LAST
 } EExpressionType;
 
@@ -32,7 +37,7 @@ BETNode *exprToBET(Expression *expr);
 // THE MAIN PURPOSE OF ALL THIS SHIT
 bool eval(char *str, VariableDictionary *dict, FunctionDictionary *fdict, Number &result);
 
-EExpressionType recognizeExpressionType(char *expr);
+EExpressionType recognizeExpressionType(char *expr, bool importRunning);
 
 void deleteSpaces(char *expr);
 int equalsSignIndex(char *expr);

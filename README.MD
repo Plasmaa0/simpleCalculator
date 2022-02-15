@@ -37,6 +37,7 @@ make run
 - Positive integer powers: 2^3 -> 8
 - Space ignoring in expressions for better user experience.
 - Syntax errors handling
+- External Libraries
 
 ## Other features
 
@@ -64,6 +65,16 @@ VARIABLES:
    y = int   2
    z = int   4
 END
+```
+
+## External libraries
+Create .splc file with variable and function declarations.\
+On runtime use 'import' keyword.\
+Insude a library file you can only declare functions and assign values to variables. NOTHING MORE. Any other commands will be ignored.
+```
+>>> import math
+importing: 'math'
+import finished
 ```
 
 ## Functions
