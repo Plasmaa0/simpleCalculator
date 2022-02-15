@@ -19,6 +19,8 @@ namespace constants
 
     const int FUNCTION_MAX_ARGS_N = 10;
     const int PRIORITY_MAX = 10000000;
+
+    const double EPSILON = 1e-50;
 } // namespace constants
 
 #endif // __CONSTANTS_H__

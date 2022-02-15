@@ -32,7 +32,7 @@ bool solve(Number a, Number b, char op, Number &result)
         return true;
         break;
     case '/':
-        if (bValue == 0)
+        if (fabs(bValue) < constants::EPSILON)
         {
             printf("zero division error\n");
             return false;

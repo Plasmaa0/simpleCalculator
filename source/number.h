@@ -11,11 +11,9 @@ typedef union NumberContainer
 
 typedef enum EnumberType
 {
-    ENUMBER_TYPE_FIRST = 0,
-    INTEGER = 0,
+    INTEGER,
     FLOATING_POINT,
-    NAN,
-    ENUMBER_TYPE_LAST
+    NOT_A_NUMBER
 } EnumberType;
 
 typedef struct Number

@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string.h>
+#include <cmath>
 
 #include "constants.h"
 #include "symbol.h"

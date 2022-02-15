@@ -144,7 +144,7 @@ void saveDictionary(VariableDictionary *dict, bool asBinary)
     {
         for (unsigned int i = 0; i < dict->size; i++)
         {
-            if (dict->values[i].type != EnumberType::NAN)
+            if (dict->values[i].type != EnumberType::NOT_A_NUMBER)
             {
                 if (asBinary)
                 {

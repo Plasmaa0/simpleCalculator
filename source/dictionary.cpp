@@ -10,7 +10,7 @@ VariableDictionary *createVariableDictionary(unsigned int size)
     for (unsigned int i = 0; i < size; i++)
     {
         dict->keys[i] = new char[constants::MAX_VARIABLE_NAME_LEN + 1];
-        dict->values[i].type = EnumberType::NAN;
+        dict->values[i].type = EnumberType::NOT_A_NUMBER;
     }
     return dict;
 }
