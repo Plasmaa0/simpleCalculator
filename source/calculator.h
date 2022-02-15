@@ -49,9 +49,17 @@ typedef struct SystemState
     FILE *libFile;
     VariableDictionary *varDict;
     FunctionDictionary *funcDict;
-    char *filename;
+    char *fileName;
+    char *libName;
     char *lastResult;
     char *expr;
+    ~SystemState()
+    {
+        delete varDict;
+        delete funcDict;
+        delete[] lastResult;
+        delete[] expr;
+    }
 } SystemState;
 
 BETNode *exprToBET(Expression *expr, int nestLevel);
@@ -67,7 +75,17 @@ int equalsSignIndex(char *expr);
 bool hasCompoundAssignment(char *expr);
 char getCompoundOperator(char *expr);
 
-SystemState *setup(unsigned int variableDictionarySize, unsigned int functionDictionarySize, char *filename = nullptr);
-void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDictionarySize, char *filename = nullptr);
+// HANDLERS
+
+void showHelp();
+EInputBehaviour handlerEvaluate(SystemState *state);
+EInputBehaviour handlerEvaluateAndAssign(SystemState *state);
+EInputBehaviour handlerCreateFunction(SystemState *state);
+EInputBehaviour handlerImport(SystemState *state);
+EInputBehaviour handlerEcho(SystemState *state);
+
+EInputBehaviour getInput(SystemState *state);
+SystemState *setup(unsigned int variableDictionarySize, unsigned int functionDictionarySize, char *fileName = nullptr);
+void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDictionarySize, char *fileName = nullptr);
 void smartLineNumberPrint(char *expr, int lineNumber);
 #endif // __CALCULATOR_H__

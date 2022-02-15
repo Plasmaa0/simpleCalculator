@@ -242,7 +242,7 @@ EInputBehaviour getInput(SystemState *state)
             if (state->importRunning)
             {
                 fclose(state->libFile);
-                if (state->filename == nullptr)
+                if (state->fileName == nullptr)
                 {
                     state->isFileModeOn = false;
                 }
@@ -269,20 +269,21 @@ EInputBehaviour getInput(SystemState *state)
     return EInputBehaviour::NORMAL;
 }
 
-SystemState *setup(unsigned int variableDictionarySize, unsigned int functionDictionarySize, char *filename)
+SystemState *setup(unsigned int variableDictionarySize, unsigned int functionDictionarySize, char *fileName)
 {
     SystemState *state = new SystemState;
-    state->isFileModeOn = filename != nullptr;
-    state->filename = filename;
+    state->isFileModeOn = fileName != nullptr;
+    state->fileName = fileName;
     if (state->isFileModeOn)
     {
-        state->sourceFile = fopen(filename, "r");
+        state->sourceFile = fopen(fileName, "r");
         if (state->sourceFile == nullptr)
         {
             state->isFileModeOn = false;
-            printf("failed to open the file '%s'. file mode will not be enabled\n", filename);
+            printf("failed to open the file '%s'. file mode will not be enabled\n", fileName);
         }
     }
+    state->fileName = fileName;
     state->varDict = createVariableDictionary(variableDictionarySize);
     state->funcDict = createFunctionDictionary(functionDictionarySize);
     state->lastResult = new char[2];
@@ -297,13 +298,154 @@ SystemState *setup(unsigned int variableDictionarySize, unsigned int functionDic
     return state;
 }
 
-void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDictionarySize, char *filename)
+EInputBehaviour handlerEvaluate(SystemState *state)
 {
-    SystemState *state = setup(variableDictionarySize, functionDictionarySize, filename);
+    Number evaluationResult;
+    bool evalSuccess = eval(state->expr, state->varDict, state->funcDict, evaluationResult);
+    if (evalSuccess)
+    {
+        setVariable(state->lastResult, evaluationResult, state->varDict);
+        if (state->outputEnabled)
+        {
+            print(evaluationResult);
+            printf("\n");
+            if (state->isFileModeOn)
+                state->outputEnabled = false;
+        }
+    }
+    return EInputBehaviour::NORMAL;
+}
+
+EInputBehaviour handlerEvaluateAndAssign(SystemState *state)
+{
+    char var[constants::MAX_VARIABLE_NAME_LEN + 1];
+    bool isCompound = hasCompoundAssignment(state->expr);
+    if (isCompound and state->importRunning)
+    {
+        // not allowed
+        printf("compound operator not allowed in libraries. ('%s':%d)\n", state->libName, state->lineNumber);
+        return EInputBehaviour::BREAK;
+    }
+
+    char op;
+    if (isCompound)
+    {
+        op = getCompoundOperator(state->expr);
+        char opDivider[2];
+        opDivider[0] = op;
+        opDivider[1] = ' ';
+        strncpy(var, strtok(state->expr, opDivider), constants::MAX_VARIABLE_NAME_LEN);
+    }
+    else
+    {
+        strncpy(var, strtok(state->expr, " ="), constants::MAX_VARIABLE_NAME_LEN);
+    }
+
+    if (not isCorrectVariableName(var))
+    {
+        printf("invalid variable name\n");
+        return EInputBehaviour::BREAK;
+    }
+
+    char *expr = strtok(nullptr, "=");
+    if (expr != nullptr)
+    {
+        strncpy(state->expr, expr, constants::EXPR_MAX_LEN);
+    }
+    else
+    {
+        printf("expected expression after =\n");
+        return EInputBehaviour::BREAK;
+    }
+
+    Number evaluationResult;
+    bool evalSuccess = eval(state->expr, state->varDict, state->funcDict, evaluationResult);
+    if (evalSuccess)
+    {
+        if (isCompound)
+        {
+            Number oldVariableValue;
+            Number newVariableValue;
+            getVariable(var, state->varDict, oldVariableValue);
+            solve(oldVariableValue, evaluationResult, op, newVariableValue);
+            setVariable(var, newVariableValue, state->varDict);
+        }
+        else
+        {
+            setVariable(state->lastResult, evaluationResult, state->varDict);
+            if ((not state->importRunning) and state->outputEnabled)
+            {
+                print(evaluationResult);
+                printf("\n");
+                if (state->isFileModeOn)
+                    state->outputEnabled = false;
+            }
+            setVariable(var, evaluationResult, state->varDict);
+        }
+    }
+    return EInputBehaviour::NORMAL;
+}
+
+EInputBehaviour handlerCreateFunction(SystemState *state)
+{
+    char *functionDeclaration = state->expr + 4; // strip function declaration keyword
+    char *functionName = strtok(functionDeclaration, "(");
+    char *variablesList = strtok(nullptr, ")=");
+    if (strncmp(variablesList, "null", 4) == 0)
+    {
+        variablesList = nullptr;
+    }
+    char *functionBody = strtok(nullptr, "=");
+    Function *func = createFunction(variablesList, functionBody);
+    addFunction(functionName, func, state->funcDict, ((not state->importRunning) and state->outputEnabled));
+    if (state->isFileModeOn)
+        state->outputEnabled = false;
+    return EInputBehaviour::NORMAL;
+}
+
+EInputBehaviour handlerImport(SystemState *state)
+{
+    state->sourceLineSaved = state->lineNumber;
+    state->lineNumber = 0;
+    char lib[FILENAME_MAX + 1];
+    if (strlen(state->expr) <= 6)
+    {
+        printf("expected library name after import\n");
+        return EInputBehaviour::BREAK;
+    }
+
+    strncpy(lib, state->expr + 6, FILENAME_MAX);
+    strncat(lib, ".splc", FILENAME_MAX);
+    state->libName = lib;
+    printf("importing: '%s'\n", state->expr + 6);
+    state->importRunning = true;
+    state->isFileModeOn = true;
+    state->libFile = fopen(lib, "r");
+    if (state->libFile == nullptr)
+    {
+        state->isFileModeOn = false;
+        state->importRunning = false;
+        printf("failed to open the lib '%s'\n", state->expr + 6);
+    }
+    return EInputBehaviour::NORMAL;
+}
+
+EInputBehaviour handlerEcho(SystemState *state)
+{
+    if (state->isFileModeOn)
+        smartLineNumberPrint("!", state->lineNumber);
+    printf("%s", state->expr + 1);
+    state->outputEnabled = true;
+    return EInputBehaviour::NORMAL;
+}
+
+void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDictionarySize, char *fileName)
+{
+    SystemState *state = setup(variableDictionarySize, functionDictionarySize, fileName);
     printf("simpleCalculator version %d.%d\nType 'help' for help.\n", constants::MAJOR_VERSION, constants::MINOR_VERSION);
     if (state->isFileModeOn)
     {
-        printf("Started in file mode. Reading file '%s'\n", filename);
+        printf("Started in file mode. Reading file '%s'\n", fileName);
     }
     while (state->running)
     {
@@ -365,95 +507,21 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
 
         case EExpressionType::EVALUATE:
         {
-            Number evaluationResult;
-            bool evalSuccess = eval(state->expr, state->varDict, state->funcDict, evaluationResult);
-            if (evalSuccess)
-            {
-                setVariable(state->lastResult, evaluationResult, state->varDict);
-                if (state->outputEnabled)
-                {
-                    print(evaluationResult);
-                    printf("\n");
-                    if (state->isFileModeOn)
-                        state->outputEnabled = false;
-                }
-            }
+            handlerEvaluate(state);
             break;
         }
 
         case EExpressionType::EVALUATE_AND_ASSIGN:
         {
-            char var[constants::MAX_VARIABLE_NAME_LEN + 1];
-            bool isCompound = hasCompoundAssignment(state->expr);
-            if (isCompound and state->importRunning)
-            {
-                // not allowed
+            inputBehaviour = handlerEvaluateAndAssign(state);
+            if (inputBehaviour == EInputBehaviour::BREAK)
                 break;
-            }
-
-            char op;
-            if (isCompound)
-            {
-                op = getCompoundOperator(state->expr);
-                char opDivider[2];
-                opDivider[0] = op;
-                opDivider[1] = ' ';
-                strncpy(var, strtok(state->expr, opDivider), constants::MAX_VARIABLE_NAME_LEN);
-            }
-            else
-            {
-                strncpy(var, strtok(state->expr, " ="), constants::MAX_VARIABLE_NAME_LEN);
-            }
-
-            if (not isCorrectVariableName(var))
-            {
-                printf("invalid variable name\n");
-                break;
-            }
-
-            strncpy(state->expr, strtok(nullptr, "="), constants::EXPR_MAX_LEN);
-            Number evaluationResult;
-            bool evalSuccess = eval(state->expr, state->varDict, state->funcDict, evaluationResult);
-            if (evalSuccess)
-            {
-                if (isCompound)
-                {
-                    Number oldVariableValue;
-                    Number newVariableValue;
-                    getVariable(var, state->varDict, oldVariableValue);
-                    solve(oldVariableValue, evaluationResult, op, newVariableValue);
-                    setVariable(var, newVariableValue, state->varDict);
-                }
-                else
-                {
-                    setVariable(state->lastResult, evaluationResult, state->varDict);
-                    if ((not state->importRunning) and state->outputEnabled)
-                    {
-                        print(evaluationResult);
-                        printf("\n");
-                        if (state->isFileModeOn)
-                            state->outputEnabled = false;
-                    }
-                    setVariable(var, evaluationResult, state->varDict);
-                }
-            }
             break;
         }
 
         case EExpressionType::CREATE_FUNCTION:
         {
-            char *functionDeclaration = state->expr + 4; // strip function declaration keyword
-            char *functionName = strtok(functionDeclaration, "(");
-            char *variablesList = strtok(nullptr, ")=");
-            if (strncmp(variablesList, "null", 4) == 0)
-            {
-                variablesList = nullptr;
-            }
-            char *functionBody = strtok(nullptr, "=");
-            Function *func = createFunction(variablesList, functionBody);
-            addFunction(functionName, func, state->funcDict, ((not state->importRunning) and state->outputEnabled));
-            if (state->isFileModeOn)
-                state->outputEnabled = false;
+            handlerCreateFunction(state);
             break;
         }
 
@@ -465,36 +533,16 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
 
         case EExpressionType::IMPORT:
         {
-            state->sourceLineSaved = state->lineNumber;
-            state->lineNumber = 0;
-            char lib[FILENAME_MAX + 1];
-            if (strlen(state->expr) <= 6)
-            {
-                printf("expected library name after import\n");
+            inputBehaviour = handlerImport(state);
+            if (inputBehaviour == EInputBehaviour::BREAK)
                 break;
-            }
-
-            strncpy(lib, state->expr + 6, FILENAME_MAX);
-            strncat(lib, ".splc", FILENAME_MAX);
-            printf("importing: '%s'\n", state->expr + 6);
-            state->importRunning = true;
-            state->isFileModeOn = true;
-            state->libFile = fopen(lib, "r");
-            if (state->sourceFile == nullptr)
-            {
-                state->isFileModeOn = false;
-                state->importRunning = false;
-                printf("failed to open the lib '%s'\n", state->expr + 6);
-            }
             break;
         }
 
         case EExpressionType::ECHO:
         {
-            if (state->isFileModeOn)
-                smartLineNumberPrint("!", state->lineNumber);
-            printf("%s", state->expr + 1);
-            state->outputEnabled = true;
+            handlerEcho(state);
+            break;
         }
 
         default:
@@ -505,8 +553,5 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
         }
     }
     printf("bye\n");
-    delete[] state->lastResult;
-    delete[] state->expr;
-    delete state->varDict;
-    delete state->funcDict;
+    delete state;
 }

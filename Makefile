@@ -11,6 +11,7 @@ all: $(EXECUTABLE)
 clean:
 	del $(OBJECTS)
 	del $(EXECUTABLE)
+	del variables*
 
 mem: $(EXECUTABLE)
 	drmemory -ignore_kernel $(EXECUTABLE)
