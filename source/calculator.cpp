@@ -141,7 +141,7 @@ EExpressionType recognizeExpressionType(char *expr, bool importRunning)
     }
     if (strchr(expr, '='))
     {
-        if (strncmp(expr, "def:", 4) == 0)
+        if (strncmp(expr, "def", 3) == 0)
         {
             return EExpressionType::CREATE_FUNCTION;
         }
@@ -238,10 +238,10 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
     }
     else
     {
-        printf("filemode off\n");
+        // printf("filemode off\n");
     }
 
-    printf("\nsimpleCalculator version %d.%d\nType 'help' for help.\n", constants::MAJOR_VERSION, constants::MINOR_VERSION);
+    printf("simpleCalculator version %d.%d\nType 'help' for help.\n", constants::MAJOR_VERSION, constants::MINOR_VERSION);
     if (isFileModeOn)
     {
         printf("Started in file mode. Reading file '%s'\n", filename);
