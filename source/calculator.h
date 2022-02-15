@@ -15,8 +15,7 @@
 
 typedef enum EExpressionType
 {
-    E_COMMAND_TYPE_FIRST = 0,
-    EXIT = 0,
+    EXIT,
     HELP,
     DO_NOTHING,
     SHOW_VARIABLES,
@@ -28,9 +27,15 @@ typedef enum EExpressionType
     CREATE_FUNCTION,
     SHOW_FUNCTIONS,
     IMPORT,
-    ECHO,
-    E_COMMAND_TYPE_LAST
+    ECHO
 } EExpressionType;
+
+typedef enum EInputBehaviour
+{
+    NORMAL,
+    BREAK,
+    CONTINUE
+} EInputBehaviour;
 
 typedef struct SystemState
 {
@@ -44,6 +49,7 @@ typedef struct SystemState
     FILE *libFile;
     VariableDictionary *varDict;
     FunctionDictionary *funcDict;
+    char *filename;
     char *lastResult;
     char *expr;
 } SystemState;

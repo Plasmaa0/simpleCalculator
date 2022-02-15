@@ -228,10 +228,52 @@ void smartLineNumberPrint(char *expr, int lineNumber)
     }
 }
 
+EInputBehaviour getInput(SystemState *state)
+{
+    if (state->isFileModeOn)
+    {
+        state->lineNumber++;
+        if (state->importRunning)
+            state->running = fgets(state->expr, constants::EXPR_MAX_LEN, state->libFile) != nullptr;
+        else
+            state->running = fgets(state->expr, constants::EXPR_MAX_LEN, state->sourceFile) != nullptr;
+        if (not state->running)
+        {
+            if (state->importRunning)
+            {
+                fclose(state->libFile);
+                if (state->filename == nullptr)
+                {
+                    state->isFileModeOn = false;
+                }
+                else
+                {
+                    state->isFileModeOn = true;
+                    state->lineNumber = state->sourceLineSaved;
+                }
+
+                state->importRunning = false;
+                state->running = true;
+                printf("import finished\n");
+                return EInputBehaviour::CONTINUE;
+            }
+            return EInputBehaviour::BREAK;
+        }
+    }
+    else
+    {
+        state->outputEnabled = true;
+        printf(">>> ");
+        fgets(state->expr, constants::EXPR_MAX_LEN, stdin);
+    }
+    return EInputBehaviour::NORMAL;
+}
+
 SystemState *setup(unsigned int variableDictionarySize, unsigned int functionDictionarySize, char *filename)
 {
     SystemState *state = new SystemState;
     state->isFileModeOn = filename != nullptr;
+    state->filename = filename;
     if (state->isFileModeOn)
     {
         state->sourceFile = fopen(filename, "r");
@@ -265,49 +307,17 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
     }
     while (state->running)
     {
-        if (state->isFileModeOn)
-        {
-            state->lineNumber++;
-            if (state->importRunning)
-                state->running = fgets(state->expr, constants::EXPR_MAX_LEN, state->libFile) != nullptr;
-            else
-                state->running = fgets(state->expr, constants::EXPR_MAX_LEN, state->sourceFile) != nullptr;
-            if (not state->running)
-            {
-                if (state->importRunning)
-                {
-                    fclose(state->libFile);
-                    if (filename == nullptr)
-                    {
-                        state->isFileModeOn = false;
-                    }
-                    else
-                    {
-                        state->isFileModeOn = true;
-                        state->lineNumber = state->sourceLineSaved;
-                    }
-
-                    state->importRunning = false;
-                    state->running = true;
-                    printf("import finished\n");
-                    continue;
-                }
-                break;
-            }
-        }
-        else
-        {
-            state->outputEnabled = true;
-            printf(">>> ");
-            fgets(state->expr, constants::EXPR_MAX_LEN, stdin);
-        }
+        EInputBehaviour inputBehaviour = getInput(state);
+        if (inputBehaviour == EInputBehaviour::BREAK)
+            break;
+        else if (inputBehaviour == EInputBehaviour::CONTINUE)
+            continue;
 
         if (state->expr[0] != '!')
             deleteSpaces(state->expr);
+
         if (state->isFileModeOn and (not state->importRunning) and state->outputEnabled)
-        {
             smartLineNumberPrint(state->expr, state->lineNumber);
-        }
 
         switch (recognizeExpressionType(state->expr, state->importRunning))
         {
@@ -349,12 +359,7 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
 
         case EExpressionType::LOAD_VARIABLES:
         {
-            VariableDictionary *newDict = loadDictionary(variableDictionarySize);
-            if (newDict != nullptr)
-            {
-                delete state->varDict;
-                state->varDict = newDict;
-            }
+            loadDictionary(variableDictionarySize, state->varDict);
             break;
         }
 
