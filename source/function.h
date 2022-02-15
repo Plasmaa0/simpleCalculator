@@ -49,7 +49,7 @@ typedef struct FunctionDictionary
 } FunctionDictionary;
 
 Function *createFunction(char *paramsAsString, char *body);
-bool evaluateFunction(Number *args, unsigned int argsN, Function *func, FunctionDictionary *fdict, Number &result);
+bool evaluateFunction(Number *args, unsigned int argsN, Function *func, VariableDictionary *globals, FunctionDictionary *fdict, Number &result);
 
 // typedef enum EArgType
 // {
@@ -69,11 +69,11 @@ bool evaluateFunction(Number *args, unsigned int argsN, Function *func, Function
 //     Arg args[FUNCTION_MAX_ARGS_N];
 //     char functionName[MAX_VARIABLE_NAME_LEN + 1];
 // } functionCall;
-//FUNCTION DICTIONARY
+// FUNCTION DICTIONARY
 
 void print(FunctionDictionary *dict);
 FunctionDictionary *createFunctionDictionary(unsigned int size);
-void addFunction(char *funcName, Function *func, FunctionDictionary *dict);
+void addFunction(char *funcName, Function *func, FunctionDictionary *dict, bool displayMsg);
 bool getFunction(char *funcName, FunctionDictionary *dict, Function **func);
 
 #endif // __FUNCTION_H__

@@ -75,7 +75,7 @@ FunctionDictionary *createFunctionDictionary(unsigned int size)
     return dict;
 }
 
-void addFunction(char *funcName, Function *func, FunctionDictionary *dict)
+void addFunction(char *funcName, Function *func, FunctionDictionary *dict, bool displayMsg)
 {
     bool alreadyExist = false;
     for (unsigned int i = 0; i < dict->freeIndex; i++)
@@ -84,7 +84,8 @@ void addFunction(char *funcName, Function *func, FunctionDictionary *dict)
         {
             dict->functions[i] = *func;
             alreadyExist = true;
-            printf("function '%s' redefinded\n", funcName);
+            if (displayMsg)
+                printf("function '%s' redefinded\n", funcName);
             break;
         }
     }
@@ -93,11 +94,13 @@ void addFunction(char *funcName, Function *func, FunctionDictionary *dict)
         strncpy(dict->names[dict->freeIndex], funcName, constants::MAX_VARIABLE_NAME_LEN);
         dict->functions[dict->freeIndex] = *func;
         dict->freeIndex++;
-        printf("new function '%s' added\n", funcName);
+        if (displayMsg)
+            printf("new function '%s' added\n", funcName);
     }
     else if (not alreadyExist)
     {
-        printf("dictionary overflow, can't add function '%s'\n", funcName);
+        if (displayMsg)
+            printf("dictionary overflow, can't add function '%s'\n", funcName);
     }
 }
 
@@ -115,18 +118,28 @@ bool getFunction(char *funcName, FunctionDictionary *dict, Function **func)
     return false;
 }
 
-bool evaluateFunction(Number *args, unsigned int argsN, Function *func, FunctionDictionary *fdict, Number &result)
+bool evaluateFunction(Number *args, unsigned int argsN, Function *func, VariableDictionary *globals, FunctionDictionary *fdict, Number &result)
 {
     if (func->argsNumber != argsN)
     {
         printf("incompatible argument number\n");
         return false;
     }
-    VariableDictionary *localVariables = createVariableDictionary(argsN + 1);
+    VariableDictionary *localVariables = createVariableDictionary(argsN + globals->freeIndex);
+
+    // globals first
+    for (unsigned int i = 0; i < globals->freeIndex; i++)
+    {
+        setVariable(globals->keys[i], globals->values[i], localVariables);
+    }
+
+    // locals second (to override globals if there are variablese with repeating names)
+    // so the local variables will be prioritized
     for (unsigned int i = 0; i < argsN; i++)
     {
         setVariable(func->argsNames[i], args[i], localVariables);
     }
+
     bool success = eval(func->asString, localVariables, fdict, result);
     delete localVariables;
     return success;

@@ -111,15 +111,6 @@ new function 'g' added
 >>> g(2)
 8
 ```
-**BUT functions can't use global variables in their expressions:**
-```
->>> a = 10
-10
->>> def: f(x) = x+a
-new function 'f' added
->>> f(1)
-VARIABLE a NOT EXIST
-```
 To define a function with no args use null keyword
 ```
 >>> def: f(null) = 10*0.5
