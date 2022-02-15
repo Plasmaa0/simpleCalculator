@@ -21,6 +21,8 @@ make run
 <img src="docs/example03.gif" alt="example03" width="400" height="600"/>
 
 ## Algorithm
+[**GeeksForGeeks**](https://www.geeksforgeeks.org/expression-tree/)\
+[**Wikipedia**](https://en.wikipedia.org/wiki/Binary_expression_tree)
 1. Get the expression as a string.
    - If string contains assignment operation then split it to variable and expression to evaluate. ('x=1+2' -> variable to assign a value to: 'x' and value to be assigned '1+2' (will be evaluated in next steps))
 2. Convert string to array of special symbols (operators, operands, brackets, etc).
