@@ -30,12 +30,12 @@ typedef enum EExpressionType
     ECHO
 } EExpressionType;
 
-typedef enum EInputBehaviour
+typedef enum ESystemBehaviour
 {
     NORMAL,
     BREAK,
     CONTINUE
-} EInputBehaviour;
+} ESystemBehaviour;
 
 typedef struct SystemState
 {
@@ -78,13 +78,13 @@ char getCompoundOperator(char *expr);
 // HANDLERS
 
 void showHelp();
-EInputBehaviour handlerEvaluate(SystemState *state);
-EInputBehaviour handlerEvaluateAndAssign(SystemState *state);
-EInputBehaviour handlerCreateFunction(SystemState *state);
-EInputBehaviour handlerImport(SystemState *state);
-EInputBehaviour handlerEcho(SystemState *state);
+ESystemBehaviour handlerEvaluate(SystemState *state);
+ESystemBehaviour handlerEvaluateAndAssign(SystemState *state);
+ESystemBehaviour handlerCreateFunction(SystemState *state);
+ESystemBehaviour handlerImport(SystemState *state);
+ESystemBehaviour handlerEcho(SystemState *state);
 
-EInputBehaviour getInput(SystemState *state);
+ESystemBehaviour getInput(SystemState *state);
 SystemState *setup(unsigned int variableDictionarySize, unsigned int functionDictionarySize, char *fileName = nullptr);
 void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDictionarySize, char *fileName = nullptr);
 void smartLineNumberPrint(char *expr, int lineNumber);

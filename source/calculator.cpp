@@ -228,7 +228,7 @@ void smartLineNumberPrint(char *expr, int lineNumber)
     }
 }
 
-EInputBehaviour getInput(SystemState *state)
+ESystemBehaviour getInput(SystemState *state)
 {
     if (state->isFileModeOn)
     {
@@ -255,9 +255,9 @@ EInputBehaviour getInput(SystemState *state)
                 state->importRunning = false;
                 state->running = true;
                 printf("import finished\n");
-                return EInputBehaviour::CONTINUE;
+                return ESystemBehaviour::CONTINUE;
             }
-            return EInputBehaviour::BREAK;
+            return ESystemBehaviour::BREAK;
         }
     }
     else
@@ -266,7 +266,7 @@ EInputBehaviour getInput(SystemState *state)
         printf(">>> ");
         fgets(state->expr, constants::EXPR_MAX_LEN, stdin);
     }
-    return EInputBehaviour::NORMAL;
+    return ESystemBehaviour::NORMAL;
 }
 
 SystemState *setup(unsigned int variableDictionarySize, unsigned int functionDictionarySize, char *fileName)
@@ -298,7 +298,7 @@ SystemState *setup(unsigned int variableDictionarySize, unsigned int functionDic
     return state;
 }
 
-EInputBehaviour handlerEvaluate(SystemState *state)
+ESystemBehaviour handlerEvaluate(SystemState *state)
 {
     Number evaluationResult;
     bool evalSuccess = eval(state->expr, state->varDict, state->funcDict, evaluationResult);
@@ -313,10 +313,10 @@ EInputBehaviour handlerEvaluate(SystemState *state)
                 state->outputEnabled = false;
         }
     }
-    return EInputBehaviour::NORMAL;
+    return ESystemBehaviour::NORMAL;
 }
 
-EInputBehaviour handlerEvaluateAndAssign(SystemState *state)
+ESystemBehaviour handlerEvaluateAndAssign(SystemState *state)
 {
     char var[constants::MAX_VARIABLE_NAME_LEN + 1];
     bool isCompound = hasCompoundAssignment(state->expr);
@@ -324,7 +324,7 @@ EInputBehaviour handlerEvaluateAndAssign(SystemState *state)
     {
         // not allowed
         printf("compound operator not allowed in libraries. ('%s':%d)\n", state->libName, state->lineNumber);
-        return EInputBehaviour::BREAK;
+        return ESystemBehaviour::BREAK;
     }
 
     char op;
@@ -344,7 +344,7 @@ EInputBehaviour handlerEvaluateAndAssign(SystemState *state)
     if (not isCorrectVariableName(var))
     {
         printf("invalid variable name\n");
-        return EInputBehaviour::BREAK;
+        return ESystemBehaviour::BREAK;
     }
 
     char *expr = strtok(nullptr, "=");
@@ -355,7 +355,7 @@ EInputBehaviour handlerEvaluateAndAssign(SystemState *state)
     else
     {
         printf("expected expression after =\n");
-        return EInputBehaviour::BREAK;
+        return ESystemBehaviour::BREAK;
     }
 
     Number evaluationResult;
@@ -383,10 +383,10 @@ EInputBehaviour handlerEvaluateAndAssign(SystemState *state)
             setVariable(var, evaluationResult, state->varDict);
         }
     }
-    return EInputBehaviour::NORMAL;
+    return ESystemBehaviour::NORMAL;
 }
 
-EInputBehaviour handlerCreateFunction(SystemState *state)
+ESystemBehaviour handlerCreateFunction(SystemState *state)
 {
     char *functionDeclaration = state->expr + 4; // strip function declaration keyword
     char *functionName = strtok(functionDeclaration, "(");
@@ -400,10 +400,10 @@ EInputBehaviour handlerCreateFunction(SystemState *state)
     addFunction(functionName, func, state->funcDict, ((not state->importRunning) and state->outputEnabled));
     if (state->isFileModeOn)
         state->outputEnabled = false;
-    return EInputBehaviour::NORMAL;
+    return ESystemBehaviour::NORMAL;
 }
 
-EInputBehaviour handlerImport(SystemState *state)
+ESystemBehaviour handlerImport(SystemState *state)
 {
     state->sourceLineSaved = state->lineNumber;
     state->lineNumber = 0;
@@ -411,7 +411,7 @@ EInputBehaviour handlerImport(SystemState *state)
     if (strlen(state->expr) <= 6)
     {
         printf("expected library name after import\n");
-        return EInputBehaviour::BREAK;
+        return ESystemBehaviour::BREAK;
     }
 
     strncpy(lib, state->expr + 6, FILENAME_MAX);
@@ -427,16 +427,16 @@ EInputBehaviour handlerImport(SystemState *state)
         state->importRunning = false;
         printf("failed to open the lib '%s'\n", state->expr + 6);
     }
-    return EInputBehaviour::NORMAL;
+    return ESystemBehaviour::NORMAL;
 }
 
-EInputBehaviour handlerEcho(SystemState *state)
+ESystemBehaviour handlerEcho(SystemState *state)
 {
     if (state->isFileModeOn)
         smartLineNumberPrint("!", state->lineNumber);
     printf("%s", state->expr + 1);
     state->outputEnabled = true;
-    return EInputBehaviour::NORMAL;
+    return ESystemBehaviour::NORMAL;
 }
 
 void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDictionarySize, char *fileName)
@@ -449,10 +449,10 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
     }
     while (state->running)
     {
-        EInputBehaviour inputBehaviour = getInput(state);
-        if (inputBehaviour == EInputBehaviour::BREAK)
+        ESystemBehaviour inputBehaviour = getInput(state);
+        if (inputBehaviour == ESystemBehaviour::BREAK)
             break;
-        else if (inputBehaviour == EInputBehaviour::CONTINUE)
+        else if (inputBehaviour == ESystemBehaviour::CONTINUE)
             continue;
 
         if (state->expr[0] != '!')
@@ -514,7 +514,7 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
         case EExpressionType::EVALUATE_AND_ASSIGN:
         {
             inputBehaviour = handlerEvaluateAndAssign(state);
-            if (inputBehaviour == EInputBehaviour::BREAK)
+            if (inputBehaviour == ESystemBehaviour::BREAK)
                 break;
             break;
         }
@@ -534,7 +534,7 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
         case EExpressionType::IMPORT:
         {
             inputBehaviour = handlerImport(state);
-            if (inputBehaviour == EInputBehaviour::BREAK)
+            if (inputBehaviour == ESystemBehaviour::BREAK)
                 break;
             break;
         }
