@@ -41,6 +41,24 @@ make run
 
 ## Other features
 
+## Use ! sign to print something
+- In a console mode it'll just print message after '!'
+- In a file mode it'll print message after '!' and result of evaluating of next line of file.
+```
+File mode:
+   File:
+   !radius = 
+   radius = 10
+
+   Output:
+   [6]: radius=
+   [7]: 10
+
+Console mode:
+   >>> !hello
+   hello
+```
+
 ### See the result of previous evaluation with reserved underscore '_' variable
 ```
 >>> 3*4 + 2^5

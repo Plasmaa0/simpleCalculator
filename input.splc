@@ -1,6 +1,9 @@
 # .splc - SimPLe Calulator
 import math
 
+!define
+def: f(x) = x^2
+
 !radius = 
 radius = 10
 
