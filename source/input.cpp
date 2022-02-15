@@ -1,6 +1,6 @@
 #include "input.h"
 
-bool loadDictionary(unsigned int maxSize, VariableDictionary *old)
+bool loadDictionary(VariableDictionary *old)
 {
     FILE *f = fopen("variables", "rb");
     if (f == nullptr)
