@@ -1,7 +1,7 @@
 # .splc - SimPLe Calulator
 import math
 
-!define
+!defining a function that squares the number
 def: f(x) = x^2
 
 !radius = 
@@ -9,3 +9,6 @@ radius = 10
 
 !area =
 a = area(radius)
+
+!square of area (a^2)
+a^2

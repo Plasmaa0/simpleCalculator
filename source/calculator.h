@@ -32,6 +32,22 @@ typedef enum EExpressionType
     E_COMMAND_TYPE_LAST
 } EExpressionType;
 
+typedef struct SystemState
+{
+    bool isFileModeOn;
+    bool running;
+    bool importRunning;
+    bool outputEnabled;
+    int lineNumber;
+    int sourceLineSaved;
+    FILE *sourceFile;
+    FILE *libFile;
+    VariableDictionary *varDict;
+    FunctionDictionary *funcDict;
+    char *lastResult;
+    char *expr;
+} SystemState;
+
 BETNode *exprToBET(Expression *expr, int nestLevel);
 BETNode *exprToBET(Expression *expr);
 
@@ -45,6 +61,7 @@ int equalsSignIndex(char *expr);
 bool hasCompoundAssignment(char *expr);
 char getCompoundOperator(char *expr);
 
+SystemState *setup(unsigned int variableDictionarySize, unsigned int functionDictionarySize, char *filename = nullptr);
 void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDictionarySize, char *filename = nullptr);
 void smartLineNumberPrint(char *expr, int lineNumber);
 #endif // __CALCULATOR_H__
