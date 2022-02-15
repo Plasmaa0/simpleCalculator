@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-Wall -g3 -o0 -ggdb -D DEBUG
+CFLAGS=-Wall -Wextra -g3 -o0 -ggdb -D DEBUG
 SOURCEDIR=source
 SOURCES=$(wildcard $(SOURCEDIR)/*.cpp)
 OBJDIR=objects
