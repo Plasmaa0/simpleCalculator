@@ -372,8 +372,6 @@ ESystemBehaviour handlerCreateFunction(SystemState *state)
         printf("invalid function declaration. see 'help'.\n");
         return ESystemBehaviour::CONTINUE;
     }
-
-    printf("|%s|%s|%s|\n", functionName, variablesList, functionBody);
     Function *func = createFunction(variablesList, functionBody);
     addFunction(functionName, func, state->funcDict, ((not state->importRunning) and state->outputEnabled));
     if (state->isFileModeOn)
