@@ -1,10 +1,18 @@
 # Simple Interpreting Calculator Project
 
+- [Simple Interpreting Calculator Project](#simple-interpreting-calculator-project)
+  - [Requirements](#requirements)
+  - [Building and running the project:](#building-and-running-the-project)
+  - [Demo](#demo)
+  - [Algorithm](#algorithm)
+  - [Main features](#main-features)
+  - [Other features](#other-features)
+
 ## Requirements
  - g++ compiler
 
-## To build and run project:
-```
+## Building and running the project:
+```bash
 make run
 ```
 
@@ -81,7 +89,7 @@ make run
 
 ## Other features
 
-## Use ! sign to print something
+**Use ! sign to print something**
 - In a console mode it'll just print message after '!'
 - In a file mode it'll print message after '!' and result of evaluating of next line of file.
 ```
@@ -99,7 +107,7 @@ Console mode:
    hello
 ```
 
-### See the result of previous evaluation with reserved underscore '_' variable
+**See the result of previous evaluation with reserved underscore '_' variable**
 ```
 >>> 3*4 + 2^5
 44
@@ -108,7 +116,7 @@ Console mode:
 >>> 
 ```
 
-### Display current variables with their values with 'vars' command
+**Display current variables with their values with 'vars' command**
 ```
 >>> x=1
 1
@@ -125,7 +133,7 @@ VARIABLES:
 END
 ```
 
-## External libraries
+**External libraries**
 Create .splc file with variable and function declarations.\
 On runtime use 'import' keyword.\
 Inside a library file you can only declare functions and assign values to variables. NOTHING MORE. Any other commands will be ignored.\
@@ -139,7 +147,7 @@ import finished
 ```
 There is a predefined math.splc with definition of pi, e, area(radius) - calculate area of a circle with a given radius.
 
-## Functions
+**Functions**
 Define a function with keyword:
 ```
 def:
@@ -194,8 +202,8 @@ FUNCTIONS:
 END
 ```
 
-### Save current variables in text or binary file. Load previously saved variables if binary file with them exists. Use keywords 'save', 'saveB', 'load'.
-### Save and load example:
+**Save current variables in text or binary file. Load previously saved variables if binary file with them exists. Use keywords 'save', 'saveB', 'load'.\
+Save and load example:**
 ```
 >>> x=1
 1
@@ -216,7 +224,7 @@ successfully loaded 3 variables
 ```
 
 
-### Close the application with 'exit'
+**Close the application with 'exit'**
 ```
 >>> exit
 bye
