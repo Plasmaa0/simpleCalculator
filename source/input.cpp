@@ -1,13 +1,13 @@
 #include "input.h"
 
-VariableDictionary *loadDictionary(unsigned int maxSize)
+bool loadDictionary(unsigned int maxSize, VariableDictionary *old)
 {
     FILE *f = fopen("variables", "rb");
     if (f == nullptr)
     {
         printf("nothing to load\n");
         fclose(f);
-        return nullptr;
+        return false;
     }
     else
     {
@@ -23,10 +23,12 @@ VariableDictionary *loadDictionary(unsigned int maxSize)
             setVariable(key, n, result);
         }
         fclose(f);
+        delete old;
+        old = result;
         printf("successfully loaded %d variables\n", size);
-        return result;
+        return true;
     }
     fclose(f);
     printf("null\n");
-    return nullptr;
+    return false;
 }

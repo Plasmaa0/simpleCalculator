@@ -5,6 +5,6 @@
 
 #include "dictionary.h"
 
-VariableDictionary *loadDictionary(unsigned int maxSize);
+bool loadDictionary(unsigned int maxSize, VariableDictionary *old);
 
 #endif // __INPUT_H__
