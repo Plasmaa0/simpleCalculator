@@ -107,6 +107,10 @@ EExpressionType recognizeExpressionType(char *expr, bool importRunning)
     {
         return EExpressionType::DO_NOTHING;
     }
+    if (expr[0] == '!')
+    {
+        return EExpressionType::ECHO;
+    }
     if (strncmp(expr, "exit", 4) == 0 and (not importRunning))
     {
         return EExpressionType::EXIT;
@@ -199,6 +203,7 @@ void smartLineNumberPrint(char *expr, int lineNumber)
 {
     switch (recognizeExpressionType(expr, false))
     {
+    case EExpressionType::ECHO:
     case EExpressionType::HELP:
     case EExpressionType::SHOW_VARIABLES:
     case EExpressionType::SAVE_VARIABLES_BIN:
@@ -227,6 +232,7 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
 {
     bool isFileModeOn = filename != nullptr;
     FILE *sourceFile;
+    FILE *libfile;
     if (isFileModeOn)
     {
         sourceFile = fopen(filename, "r");
@@ -254,22 +260,36 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
     char *expr = new char[constants::EXPR_MAX_LEN + 1];
     bool running = true;
     bool importRunning = false;
+    bool outputEnabled = false;
     int lineNumber = 0;
+    int sourceLineSaved = 0;
     while (running)
     {
         if (isFileModeOn)
         {
             lineNumber++;
-            running = fgets(expr, constants::EXPR_MAX_LEN, sourceFile) != nullptr;
+            if (importRunning)
+                running = fgets(expr, constants::EXPR_MAX_LEN, libfile) != nullptr;
+            else
+                running = fgets(expr, constants::EXPR_MAX_LEN, sourceFile) != nullptr;
             if (not running)
             {
                 if (importRunning)
                 {
-                    isFileModeOn = false;
+                    fclose(libfile);
+                    if (filename == nullptr)
+                    {
+                        isFileModeOn = false;
+                    }
+                    else
+                    {
+                        isFileModeOn = true;
+                        lineNumber = sourceLineSaved;
+                    }
+
                     importRunning = false;
                     running = true;
                     printf("import finished\n");
-                    fclose(sourceFile);
                     continue;
                 }
                 break;
@@ -277,12 +297,13 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
         }
         else
         {
+            outputEnabled = true;
             printf(">>> ");
             fgets(expr, constants::EXPR_MAX_LEN, stdin);
         }
 
         deleteSpaces(expr);
-        if (isFileModeOn and (not importRunning))
+        if (isFileModeOn and (not importRunning) and outputEnabled)
         {
             smartLineNumberPrint(expr, lineNumber);
         }
@@ -343,8 +364,13 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
             if (evalSuccess)
             {
                 setVariable(lastResult, evaluationResult, dict);
-                print(evaluationResult);
-                printf("\n");
+                if (outputEnabled)
+                {
+                    print(evaluationResult);
+                    printf("\n");
+                    if (isFileModeOn)
+                        outputEnabled = false;
+                }
             }
             break;
         }
@@ -355,6 +381,7 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
             bool isCompound = hasCompoundAssignment(expr);
             if (isCompound and importRunning)
             {
+                // not allowed
                 break;
             }
 
@@ -394,10 +421,12 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
                 else
                 {
                     setVariable(lastResult, evaluationResult, dict);
-                    if (not importRunning)
+                    if ((not importRunning) and outputEnabled)
                     {
                         print(evaluationResult);
                         printf("\n");
+                        if (isFileModeOn)
+                            outputEnabled = false;
                     }
                     setVariable(var, evaluationResult, dict);
                 }
@@ -416,7 +445,9 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
             }
             char *functionBody = strtok(nullptr, "=");
             Function *func = createFunction(variablesList, functionBody);
-            addFunction(functionName, func, functions, not importRunning);
+            addFunction(functionName, func, functions, ((not importRunning) and outputEnabled));
+            if (isFileModeOn)
+                outputEnabled = false;
             break;
         }
 
@@ -428,6 +459,8 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
 
         case EExpressionType::IMPORT:
         {
+            sourceLineSaved = lineNumber;
+            lineNumber = 0;
             char lib[FILENAME_MAX + 1];
             if (strlen(expr) <= 6)
             {
@@ -440,7 +473,7 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
             printf("importing: '%s'\n", expr + 6);
             importRunning = true;
             isFileModeOn = true;
-            sourceFile = fopen(lib, "r");
+            libfile = fopen(lib, "r");
             if (sourceFile == nullptr)
             {
                 isFileModeOn = false;
@@ -450,9 +483,17 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
             break;
         }
 
+        case EExpressionType::ECHO:
+        {
+            if (isFileModeOn)
+                smartLineNumberPrint("!", lineNumber);
+            printf("%s\n", expr + 1);
+            outputEnabled = true;
+        }
+
         default:
         {
-            printf("expression recognition error\n");
+            // printf("expression recognition error\n");
             break;
         }
         }

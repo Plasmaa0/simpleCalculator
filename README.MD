@@ -70,7 +70,10 @@ END
 ## External libraries
 Create .splc file with variable and function declarations.\
 On runtime use 'import' keyword.\
-Insude a library file you can only declare functions and assign values to variables. NOTHING MORE. Any other commands will be ignored.
+Insude a library file you can only declare functions and assign values to variables. NOTHING MORE. Any other commands will be ignored.\
+Only one level of depth:\
+Library -> none
+InputFile -> Library -> none
 ```
 >>> import math
 importing: 'math'

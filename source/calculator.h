@@ -28,6 +28,7 @@ typedef enum EExpressionType
     CREATE_FUNCTION,
     SHOW_FUNCTIONS,
     IMPORT,
+    ECHO,
     E_COMMAND_TYPE_LAST
 } EExpressionType;
 
