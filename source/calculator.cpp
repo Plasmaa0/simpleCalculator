@@ -439,6 +439,97 @@ ESystemBehaviour handlerEcho(SystemState *state)
     return ESystemBehaviour::NORMAL;
 }
 
+ESystemBehaviour handleInput(SystemState *state)
+{
+    if (state->expr[0] != '!')
+        deleteSpaces(state->expr);
+
+    if (state->isFileModeOn and (not state->importRunning) and state->outputEnabled)
+        smartLineNumberPrint(state->expr, state->lineNumber);
+
+    switch (recognizeExpressionType(state->expr, state->importRunning))
+    {
+    case EExpressionType::DO_NOTHING:
+    {
+        // doing nothing
+        return ESystemBehaviour::NORMAL;
+    }
+
+    case EExpressionType::EXIT:
+    {
+        return ESystemBehaviour::BREAK;
+    }
+
+    case EExpressionType::HELP:
+    {
+        showHelp();
+        return ESystemBehaviour::NORMAL;
+    }
+
+    case EExpressionType::SHOW_VARIABLES:
+    {
+        print(state->varDict);
+        return ESystemBehaviour::NORMAL;
+    }
+
+    case EExpressionType::SAVE_VARIABLES_BIN:
+    {
+        saveDictionary(state->varDict, true);
+        return ESystemBehaviour::NORMAL;
+    }
+
+    case EExpressionType::SAVE_VARIABLES_TXT:
+    {
+        saveDictionary(state->varDict);
+        return ESystemBehaviour::NORMAL;
+    }
+
+    case EExpressionType::LOAD_VARIABLES:
+    {
+        if (loadDictionary(state->varDict))
+            return ESystemBehaviour::NORMAL;
+        else
+            return ESystemBehaviour::INTERNAL_ERROR;
+    }
+
+    case EExpressionType::EVALUATE:
+    {
+        return handlerEvaluate(state);
+    }
+
+    case EExpressionType::EVALUATE_AND_ASSIGN:
+    {
+        return handlerEvaluateAndAssign(state);
+    }
+
+    case EExpressionType::CREATE_FUNCTION:
+    {
+        return handlerCreateFunction(state);
+    }
+
+    case EExpressionType::SHOW_FUNCTIONS:
+    {
+        print(state->funcDict);
+        return ESystemBehaviour::NORMAL;
+    }
+
+    case EExpressionType::IMPORT:
+    {
+        return handlerImport(state);
+    }
+
+    case EExpressionType::ECHO:
+    {
+        return handlerEcho(state);
+    }
+
+    default:
+    {
+        return ESystemBehaviour::INTERNAL_ERROR;
+    }
+    }
+}
+
 void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDictionarySize, char *fileName)
 {
     SystemState *state = setup(variableDictionarySize, functionDictionarySize, fileName);
@@ -454,102 +545,26 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
             break;
         else if (inputBehaviour == ESystemBehaviour::CONTINUE)
             continue;
-
-        if (state->expr[0] != '!')
-            deleteSpaces(state->expr);
-
-        if (state->isFileModeOn and (not state->importRunning) and state->outputEnabled)
-            smartLineNumberPrint(state->expr, state->lineNumber);
-
-        switch (recognizeExpressionType(state->expr, state->importRunning))
+        ESystemBehaviour handleBehaviour = handleInput(state);
+        switch (handleBehaviour)
         {
-        case EExpressionType::DO_NOTHING:
-        {
-            // doing nothing
+        case ESystemBehaviour::NORMAL:
+            // do nothing
             break;
-        }
 
-        case EExpressionType::EXIT:
-        {
+        case ESystemBehaviour::BREAK:
             state->running = false;
             break;
-        }
 
-        case EExpressionType::HELP:
-        {
-            showHelp();
+        case ESystemBehaviour::CONTINUE:
+            printf("skip\n");
             break;
-        }
 
-        case EExpressionType::SHOW_VARIABLES:
-        {
-            print(state->varDict);
-            break;
-        }
-
-        case EExpressionType::SAVE_VARIABLES_BIN:
-        {
-            saveDictionary(state->varDict, true);
-            break;
-        }
-
-        case EExpressionType::SAVE_VARIABLES_TXT:
-        {
-            saveDictionary(state->varDict);
-            break;
-        }
-
-        case EExpressionType::LOAD_VARIABLES:
-        {
-            loadDictionary(variableDictionarySize, state->varDict);
-            break;
-        }
-
-        case EExpressionType::EVALUATE:
-        {
-            handlerEvaluate(state);
-            break;
-        }
-
-        case EExpressionType::EVALUATE_AND_ASSIGN:
-        {
-            inputBehaviour = handlerEvaluateAndAssign(state);
-            if (inputBehaviour == ESystemBehaviour::BREAK)
-                break;
-            break;
-        }
-
-        case EExpressionType::CREATE_FUNCTION:
-        {
-            handlerCreateFunction(state);
-            break;
-        }
-
-        case EExpressionType::SHOW_FUNCTIONS:
-        {
-            print(state->funcDict);
-            break;
-        }
-
-        case EExpressionType::IMPORT:
-        {
-            inputBehaviour = handlerImport(state);
-            if (inputBehaviour == ESystemBehaviour::BREAK)
-                break;
-            break;
-        }
-
-        case EExpressionType::ECHO:
-        {
-            handlerEcho(state);
-            break;
-        }
-
+        case ESystemBehaviour::INTERNAL_ERROR:
+            // fall in default case
         default:
-        {
-            // printf("expression recognition error\n");
+            printf("internal error occured\n");
             break;
-        }
         }
     }
     printf("bye\n");

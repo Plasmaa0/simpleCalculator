@@ -34,7 +34,8 @@ typedef enum ESystemBehaviour
 {
     NORMAL,
     BREAK,
-    CONTINUE
+    CONTINUE,
+    INTERNAL_ERROR
 } ESystemBehaviour;
 
 typedef struct SystemState
@@ -77,6 +78,7 @@ char getCompoundOperator(char *expr);
 
 // HANDLERS
 
+ESystemBehaviour handleInput(SystemState *state);
 void showHelp();
 ESystemBehaviour handlerEvaluate(SystemState *state);
 ESystemBehaviour handlerEvaluateAndAssign(SystemState *state);
