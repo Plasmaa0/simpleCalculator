@@ -193,3 +193,39 @@ bool isCorrectVariableName(char *var)
     }
     return true;
 }
+
+void deleteSpaces(char *expr)
+{
+    expr[strcspn(expr, "\n")] = '\0';
+    char result[constants::EXPR_MAX_LEN + 1];
+    int resultLength = 0;
+    for (unsigned int i = 0; i < strlen(expr); i++)
+    {
+        if (expr[i] != ' ')
+        {
+            result[resultLength] = expr[i];
+            resultLength++;
+        }
+    }
+    if (resultLength == (int)strlen(expr))
+    {
+        return;
+    }
+    result[resultLength] = '\0';
+    strncpy(expr, result, constants::EXPR_MAX_LEN + 1);
+}
+
+int equalsSignIndex(char *expr)
+{
+    return strchr(expr, '=') - expr;
+}
+
+bool hasCompoundAssignment(char *expr)
+{
+    return recognizeSymbol(expr[equalsSignIndex(expr) - 1]) == ESymbolType::OPERATOR;
+}
+
+char getCompoundOperator(char *expr)
+{
+    return expr[equalsSignIndex(expr) - 1];
+}

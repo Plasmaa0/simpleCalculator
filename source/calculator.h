@@ -57,7 +57,7 @@ typedef struct SystemState
     ~SystemState()
     {
         delete varDict;
-        delete funcDict;
+        // delete funcDict;
         delete[] lastResult;
         delete[] expr;
     }
@@ -71,10 +71,6 @@ bool eval(char *str, VariableDictionary *dict, FunctionDictionary *fdict, Number
 
 EExpressionType recognizeExpressionType(char *expr, bool importRunning);
 
-void deleteSpaces(char *expr);
-int equalsSignIndex(char *expr);
-bool hasCompoundAssignment(char *expr);
-char getCompoundOperator(char *expr);
 
 // HANDLERS
 
@@ -85,6 +81,8 @@ ESystemBehaviour handlerEvaluateAndAssign(SystemState *state);
 ESystemBehaviour handlerCreateFunction(SystemState *state);
 ESystemBehaviour handlerImport(SystemState *state);
 ESystemBehaviour handlerEcho(SystemState *state);
+
+// MAIN
 
 ESystemBehaviour getInput(SystemState *state);
 SystemState *setup(unsigned int variableDictionarySize, unsigned int functionDictionarySize, char *fileName = nullptr);

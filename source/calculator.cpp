@@ -62,6 +62,7 @@ void showHelp()
     saveB - save variables in binary file (for loading them in future)\n\
     load - load variables from binary file\n\
     define a function: 'def: name(arg1, arg2, ...) = expression'\n\
+    def: name(null) = ... <- func with no parameters\n\
     exit - close program\n");
 }
 
@@ -161,42 +162,6 @@ EExpressionType recognizeExpressionType(char *expr, bool importRunning)
     if (not importRunning)
         printf("unrecognized expression\n");
     return EExpressionType::DO_NOTHING;
-}
-
-int equalsSignIndex(char *expr)
-{
-    return strchr(expr, '=') - expr;
-}
-
-bool hasCompoundAssignment(char *expr)
-{
-    return recognizeSymbol(expr[equalsSignIndex(expr) - 1]) == ESymbolType::OPERATOR;
-}
-
-char getCompoundOperator(char *expr)
-{
-    return expr[equalsSignIndex(expr) - 1];
-}
-
-void deleteSpaces(char *expr)
-{
-    expr[strcspn(expr, "\n")] = '\0';
-    char result[constants::EXPR_MAX_LEN + 1];
-    int resultLength = 0;
-    for (unsigned int i = 0; i < strlen(expr); i++)
-    {
-        if (expr[i] != ' ')
-        {
-            result[resultLength] = expr[i];
-            resultLength++;
-        }
-    }
-    if (resultLength == (int)strlen(expr))
-    {
-        return;
-    }
-    result[resultLength] = '\0';
-    strncpy(expr, result, constants::EXPR_MAX_LEN + 1);
 }
 
 void smartLineNumberPrint(char *expr, int lineNumber)
@@ -344,7 +309,7 @@ ESystemBehaviour handlerEvaluateAndAssign(SystemState *state)
     if (not isCorrectVariableName(var))
     {
         printf("invalid variable name\n");
-        return ESystemBehaviour::BREAK;
+        return ESystemBehaviour::CONTINUE;
     }
 
     char *expr = strtok(nullptr, "=");
@@ -355,7 +320,7 @@ ESystemBehaviour handlerEvaluateAndAssign(SystemState *state)
     else
     {
         printf("expected expression after =\n");
-        return ESystemBehaviour::BREAK;
+        return ESystemBehaviour::CONTINUE;
     }
 
     Number evaluationResult;
@@ -391,11 +356,24 @@ ESystemBehaviour handlerCreateFunction(SystemState *state)
     char *functionDeclaration = state->expr + 4; // strip function declaration keyword
     char *functionName = strtok(functionDeclaration, "(");
     char *variablesList = strtok(nullptr, ")=");
+    if (strlen(functionDeclaration) <= 0 or strlen(functionName) <= 0 or strlen(variablesList) <= 0)
+    {
+        printf("invalid function declaration. see 'help'.\n");
+        return ESystemBehaviour::CONTINUE;
+    }
+
     if (strncmp(variablesList, "null", 4) == 0)
     {
         variablesList = nullptr;
     }
     char *functionBody = strtok(nullptr, "=");
+    if (functionBody == nullptr)
+    {
+        printf("invalid function declaration. see 'help'.\n");
+        return ESystemBehaviour::CONTINUE;
+    }
+
+    printf("|%s|%s|%s|\n", functionName, variablesList, functionBody);
     Function *func = createFunction(variablesList, functionBody);
     addFunction(functionName, func, state->funcDict, ((not state->importRunning) and state->outputEnabled));
     if (state->isFileModeOn)
@@ -411,7 +389,7 @@ ESystemBehaviour handlerImport(SystemState *state)
     if (strlen(state->expr) <= 6)
     {
         printf("expected library name after import\n");
-        return ESystemBehaviour::BREAK;
+        return ESystemBehaviour::CONTINUE;
     }
 
     strncpy(lib, state->expr + 6, FILENAME_MAX);
@@ -557,7 +535,6 @@ void CalculatorInit(unsigned int variableDictionarySize, unsigned int functionDi
             break;
 
         case ESystemBehaviour::CONTINUE:
-            printf("skip\n");
             break;
 
         case ESystemBehaviour::INTERNAL_ERROR:
