@@ -128,15 +128,16 @@ END
 ## External libraries
 Create .splc file with variable and function declarations.\
 On runtime use 'import' keyword.\
-Insude a library file you can only declare functions and assign values to variables. NOTHING MORE. Any other commands will be ignored.\
+Inside a library file you can only declare functions and assign values to variables. NOTHING MORE. Any other commands will be ignored.\
 Only one level of depth:\
-Library -> none
+Library -> none\
 InputFile -> Library -> none
 ```
 >>> import math
 importing: 'math'
 import finished
 ```
+There is a predefined math.splc with definition of pi, e, area(radius) - calculate area of a circle with a given radius.
 
 ## Functions
 Define a function with keyword:
