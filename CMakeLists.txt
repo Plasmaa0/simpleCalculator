@@ -4,7 +4,7 @@ project ( calc )
 
 set ( APP_NAME calc )
 
-set ( SRC_DIR D:/infa/labINFA2/calc )
+set ( SRC_DIR source )
 set( CMAKE_BUILD_TYPE DEBUG )
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")

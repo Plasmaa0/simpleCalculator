@@ -58,3 +58,5 @@ test/build.exe
 /cmake-build-debug/.cmake/api/v1/reply/toolchains-v1-50d408e93673c83158bc.json
 /cmake-build-debug/CMakeFiles/calc.dir/util.cpp.obj
 /.vs/VSWorkspaceState.json
+build
+.idea
